@@ -59,3 +59,16 @@ Step 4:
 **Analysis:** Target achieved in 4th step. Achieved target of 99.40 accuracy, got 99.4 or more accuracy in 6 epochs out of 15 epochs. Looking at the graphs and epochs output still feel that train and test accuracy is varying still and underfitting is still occuring a little.
 
 ----------------------------------------------------------------------------------------------------------------------------------------
+
+Step 5:
+-------
+**Target for step 5:** Train model further try to acheive 99.40 target in more no of epochs and also try to reduce underfitting further
+
+**Changes made :** Introduced decaying learning rate by using ReduceLROnPlateau from torch.optim.lr_scheduler
+
+**Result:** Best train accuracy = 99.49 Best test accuracy = 99.45 Parameters = 9,755
+
+**Analysis:** Test accuracy did not improve much but the difference between the train and the test accuracy has reduced. Apart from the initial 2-3 epochs the model is not underfitting and is just overfitting which is a good result. As we can see in the leraning rate graph that after first few epoch as the learning rate decays we have achieved target accuracy and we have consistently achieved our target of 99.4 for 11 epochs. Although could not get to the model to train more and achieve higher accuracy. May be need to optimize more so that higher accuracy can be achieved.
+
+
+----------------------------------------------------------------------------------------------------------------------------------------
