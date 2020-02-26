@@ -19,65 +19,17 @@ but model test accuracy reduced. set factor = 0.00005 for L1
 ------------------------------------------------------------------------------------------------------------------------------
 ### L1
 
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L1-MisclassifiedImages/0.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L1-MisclassifiedImages/1.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L1-MisclassifiedImages/2.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L1-MisclassifiedImages/3.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L1-MisclassifiedImages/4.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L1-MisclassifiedImages/5.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L1-MisclassifiedImages/6.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L1-MisclassifiedImages/7.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L1-MisclassifiedImages/8.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L1-MisclassifiedImages/9.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L1-MisclassifiedImages/10.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L1-MisclassifiedImages/11.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L1-MisclassifiedImages/12.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L1-MisclassifiedImages/13.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L1-MisclassifiedImages/14.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L1-MisclassifiedImages/15.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L1-MisclassifiedImages/16.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L1-MisclassifiedImages/17.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L1-MisclassifiedImages/18.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L1-MisclassifiedImages/19.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L1-MisclassifiedImages/20.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L1-MisclassifiedImages/21.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L1-MisclassifiedImages/22.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L1-MisclassifiedImages/23.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L1-MisclassifiedImages/24.png)
+![Image](https://github.com/csharpshooter/EVA/blob/master/A6/L1%20misclassified%20Images.png)
 
 -----------------------------------------------------------------------------------------------------------------------------
 
 ### L2
 
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L2-MisclassifiedImages/0.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L2-MisclassifiedImages/1.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L2-MisclassifiedImages/2.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L2-MisclassifiedImages/3.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L2-MisclassifiedImages/4.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L2-MisclassifiedImages/5.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L2-MisclassifiedImages/6.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L2-MisclassifiedImages/7.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L2-MisclassifiedImages/8.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L2-MisclassifiedImages/9.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L2-MisclassifiedImages/10.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L2-MisclassifiedImages/11.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L2-MisclassifiedImages/12.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L2-MisclassifiedImages/13.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L2-MisclassifiedImages/14.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L2-MisclassifiedImages/15.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L2-MisclassifiedImages/16.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L2-MisclassifiedImages/17.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L2-MisclassifiedImages/18.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L2-MisclassifiedImages/19.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L2-MisclassifiedImages/20.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L2-MisclassifiedImages/21.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L2-MisclassifiedImages/22.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L2-MisclassifiedImages/23.png)
-![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L2-MisclassifiedImages/24.png)
+![Image](https://github.com/csharpshooter/EVA/blob/master/A6/L2%20misclassified%20Images.png)
 
 -----------------------------------------------------------------------------------------------------------------------------
 
-### L1 and L2
+### L1 and L2 combined
 
 ![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L1L2-MisclassifiedImages/0.png)
 ![Image](https://github.com/csharpshooter/EVA/blob/master/A6/A6-L1L2-MisclassifiedImages/1.png)
