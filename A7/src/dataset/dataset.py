@@ -1,14 +1,15 @@
 from torchvision import datasets
 
-def Dataset():
 
-    def __init__(self):
+class Dataset(object):
+    # def __init__(self, name):
+    #     self.name = name
+    #     print(name)
 
-        def gettraindataset(train_transforms):
-            return  datasets.CIFAR10('data', train=True,
-                                      download=True, transform=train_transforms)
+    def gettraindataset(self, train_transforms):
+        return datasets.CIFAR10(root='data', train=True,
+                                download=True, transform=train_transforms)
 
-
-        def gettraindataset(test_transforms):
-            return  datasets.CIFAR10('data', train=False,
-                                     download=True, transform=test_transforms)
+    def gettestdataset(self, test_transforms):
+        return datasets.CIFAR10(root='data', train=False,
+                                download=True, transform=test_transforms)
