@@ -2,3 +2,13 @@
 A7/.idea/
 
 A7/src/dataset/__pycache__/
+
+A7/data/cifar-10-batches-py/
+
+A7/data/
+
+A7/src/models/__pycache__/
+
+A7/src/preprocessing/__pycache__/
+
+A7/src/utils/__pycache__/
