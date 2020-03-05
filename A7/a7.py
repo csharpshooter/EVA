@@ -42,11 +42,17 @@ for idx in np.arange(20):
 cnn_model, device = utils.Utils.createmodel()
 train_model = train.TrainModel()
 train_model.showmodelsummary(cnn_model)
-optimizer = utils.Utils.createoptimizer(cnn_model, lr=0.01, momentum=0.9, weight_decay=0.0)
+optimizer = utils.Utils.createoptimizer(cnn_model, lr=0.1, momentum=0.9, weight_decay=0)
+scheduler = utils.Utils.createscheduler(optimizer, mode='max', factor=0.1, patience=5,
+                                        verbose=True)
 
-
-for epoch in range(0,25):
+lr_data = []
+epochs = 25
+for epoch in range(0, epochs):
+    print("EPOCH:", epoch)
     train_model.train(cnn_model, device, train_loader, optimizer, 1)
-    train_model.test(cnn_model,device,test_loader)
-
-
+    t_acc_epoch = train_model.test(cnn_model, device, test_loader)
+    scheduler.step(t_acc_epoch)
+    for param_groups in optimizer.param_groups:
+        print("Learning rate =", param_groups['lr'], " for epoch: ", epoch + 1)  # print LR for different epochs
+        lr_data.append(param_groups['lr'])

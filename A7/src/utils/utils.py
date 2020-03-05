@@ -27,13 +27,10 @@ class Utils:
     # else:
     # 	print(gpu_info)
 
-    def savemodel(self, model, epoch, optimizer, train_losses, train_acc, test_acc, test_losses):
+    def savemodel(self, model, epoch, optimizer, train_losses, train_acc, test_acc, test_losses, path):
         # Prepare model model saving directory.
         # save_dir = os.path.join(os.getcwd(), 'saved_models')
         t = datetime.datetime.today()
-        path = "/home/abhijit/Downloads/PytorchModels/EVA/A7/A7-" + str(t) + ".pth"
-        print(t)
-        print(path)
 
         torch.save({
             'epoch': epoch,
@@ -48,8 +45,7 @@ class Utils:
         }, path)
 
     def loadmodel(path):
-        checkpoint = torch.load(
-            "/home/abhijit/Downloads/PytorchModels/EVA/A6/A6-None-2020-02-25 22:10:47.703768.pth")
+        checkpoint = torch.load(path)
 
         epoch = checkpoint['epoch']
         train_losses = checkpoint['train_losses']
@@ -57,6 +53,7 @@ class Utils:
         test_losses = checkpoint['test_losses']
         test_acc = checkpoint['test_acc']
         lr_data = checkpoint['lr_data']
+        return checkpoint
 
     def createmodel(checkpoint=None):
         use_cuda = torch.cuda.is_available()
@@ -64,15 +61,18 @@ class Utils:
         print(device)
         model = CNN_Model().to(device)
 
-        # if checkpoint != None:
-        #     model.load_state_dict(checkpoint['model_state_dict'])
-
         return model, device
 
     def createoptimizer(model, lr=0.1, momentum=0.9, weight_decay=0):
         optimizer = optim.SGD(model.parameters(), lr=lr, momentum=momentum, weight_decay=weight_decay)
 
-        # if model != None:
-        #     optimizer.load_state_dict(model['optimizer_state_dict'])
-
         return optimizer
+
+    def createscheduler(optimizer, mode, factor, patience=5, verbose=True, threshold=0.01,
+                                         threshold_mode='rel', cooldown=0, min_lr=0, eps=1e-08):
+        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode=mode, factor=factor, patience=patience,
+                                                               verbose=verbose, threshold=threshold,
+                                                               threshold_mode=threshold_mode,
+                                                               cooldown=cooldown, min_lr=min_lr, eps=eps)
+
+        return scheduler

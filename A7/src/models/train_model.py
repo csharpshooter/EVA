@@ -13,7 +13,7 @@ class TrainModel:
         self.train_acc = []
         self.test_acc = []
         self.reg_loss_l1 = []
-        self.factor = 0.00005
+        self.factor = 0
         self.loss_type = self.getlossfunction()
 
     def showmodelsummary(self, model):
