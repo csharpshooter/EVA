@@ -1,7 +1,6 @@
-import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import src.models.depthwise_seperable_conv2d
+from .depthwise_seperable_conv2d import DepthwiseSeparableConv2d
 
 
 class CNN_Model(nn.Module):
@@ -20,11 +19,12 @@ class CNN_Model(nn.Module):
 
         self.convblock1 = nn.Sequential(
             # Defining a 2D convolution layer
-            nn.Conv2d(32, 64, kernel_size=3, stride=1, bias=False, dilation=1, padding=1),  # RF = 5
-            nn.BatchNorm2d(64),
+            # nn.Conv2d(32, 64, kernel_size=3, stride=1, bias=False, dilation=1, padding=1),  # RF = 5
+            DepthwiseSeparableConv2d(32, 32, 1),
+            nn.BatchNorm2d(32),
             nn.ReLU(inplace=True),
             nn.Dropout(0.1),
-            nn.Conv2d(64, 64, kernel_size=3, stride=1, dilation=2, bias=False, padding=1),  # RF = 9
+            nn.Conv2d(32, 64, kernel_size=3, stride=1, dilation=2, bias=False, padding=1),  # RF = 9
             nn.BatchNorm2d(64),
             nn.ReLU(inplace=True),
             nn.Dropout(0.1),
@@ -36,12 +36,13 @@ class CNN_Model(nn.Module):
             nn.BatchNorm2d(32),
             nn.ReLU(inplace=True),
             nn.Dropout(0.1),
-            nn.Conv2d(32, 64, kernel_size=3, stride=1, dilation=1, bias=False, padding=1),  # RF = 18
-            nn.BatchNorm2d(64),
+            # nn.Conv2d(32, 64, kernel_size=3, stride=1, dilation=1, bias=False, padding=1),  # RF = 18
+            DepthwiseSeparableConv2d(32, 32, 1),
+            nn.BatchNorm2d(32),
             nn.ReLU(inplace=True),
             nn.Dropout(0.1),
-            nn.Conv2d(64, 64, kernel_size=3, stride=1, dilation=2, bias=False, padding=1),
-                                                                                            # RF = 26
+            nn.Conv2d(32, 64, kernel_size=3, stride=1, dilation=2, bias=False, padding=1),
+            # RF = 26
             nn.BatchNorm2d(64),
             nn.ReLU(inplace=True),
             nn.Dropout(0.1),
@@ -53,11 +54,12 @@ class CNN_Model(nn.Module):
             nn.BatchNorm2d(32),
             nn.ReLU(inplace=True),
             nn.Dropout(0.1),
-            nn.Conv2d(32, 64, kernel_size=3, stride=1, dilation=1, bias=False, padding=1),  # RF = 44
-            nn.BatchNorm2d(64),
+            # nn.Conv2d(32, 64, kernel_size=3, stride=1, dilation=1, bias=False, padding=1),  # RF = 44
+            DepthwiseSeparableConv2d(32, 32, 1),
+            nn.BatchNorm2d(32),
             nn.ReLU(inplace=True),
             nn.Dropout(0.1),
-            nn.Conv2d(64, 64, kernel_size=3, stride=1, dilation=2, bias=False, padding=0),  # RF = 60
+            nn.Conv2d(32, 64, kernel_size=3, stride=1, dilation=2, bias=False, padding=0),  # RF = 60
             nn.BatchNorm2d(64),
             nn.ReLU(inplace=True),
             nn.Dropout(0.1),

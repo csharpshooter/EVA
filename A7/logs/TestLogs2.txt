@@ -1,0 +1,179 @@
+/home/abhijit/.virtualenvs/dl4cv/bin/python /snap/pycharm-community/179/plugins/python-ce/helpers/pydev/pydevconsole.py --mode=client --port=32995
+import sys; print('Python %s on %s' % (sys.version, sys.platform))
+sys.path.extend(['/home/abhijit/EVARepo/EVA/A7'])
+Python 3.6.9 (default, Nov  7 2019, 10:44:02) 
+Type 'copyright', 'credits' or 'license' for more information
+IPython 7.11.1 -- An enhanced Interactive Python. Type '?' for help.
+PyDev console: using IPython 7.11.1
+Python 3.6.9 (default, Nov  7 2019, 10:44:02) 
+[GCC 8.3.0] on linux
+runfile('/home/abhijit/EVARepo/EVA/A7/a7.py', wdir='/home/abhijit/EVARepo/EVA/A7')
+Backend TkAgg is interactive backend. Turning interactive mode on.
+Files already downloaded and verified
+Files already downloaded and verified
+CUDA Available? True
+256
+cuda
+----------------------------------------------------------------
+        Layer (type)               Output Shape         Param #
+================================================================
+            Conv2d-1           [-1, 32, 32, 32]             864
+       BatchNorm2d-2           [-1, 32, 32, 32]              64
+              ReLU-3           [-1, 32, 32, 32]               0
+           Dropout-4           [-1, 32, 32, 32]               0
+            Conv2d-5           [-1, 32, 32, 32]             288
+            Conv2d-6           [-1, 32, 32, 32]           1,056
+DepthwiseSeparableConv2d-7           [-1, 32, 32, 32]               0
+       BatchNorm2d-8           [-1, 32, 32, 32]              64
+              ReLU-9           [-1, 32, 32, 32]               0
+          Dropout-10           [-1, 32, 32, 32]               0
+           Conv2d-11           [-1, 64, 30, 30]          18,432
+      BatchNorm2d-12           [-1, 64, 30, 30]             128
+             ReLU-13           [-1, 64, 30, 30]               0
+          Dropout-14           [-1, 64, 30, 30]               0
+        MaxPool2d-15           [-1, 64, 15, 15]               0
+           Conv2d-16           [-1, 32, 15, 15]          18,432
+      BatchNorm2d-17           [-1, 32, 15, 15]              64
+             ReLU-18           [-1, 32, 15, 15]               0
+          Dropout-19           [-1, 32, 15, 15]               0
+           Conv2d-20           [-1, 32, 15, 15]             288
+           Conv2d-21           [-1, 32, 15, 15]           1,056
+DepthwiseSeparableConv2d-22           [-1, 32, 15, 15]               0
+      BatchNorm2d-23           [-1, 32, 15, 15]              64
+             ReLU-24           [-1, 32, 15, 15]               0
+          Dropout-25           [-1, 32, 15, 15]               0
+           Conv2d-26           [-1, 64, 13, 13]          18,432
+      BatchNorm2d-27           [-1, 64, 13, 13]             128
+             ReLU-28           [-1, 64, 13, 13]               0
+          Dropout-29           [-1, 64, 13, 13]               0
+        MaxPool2d-30             [-1, 64, 6, 6]               0
+           Conv2d-31             [-1, 32, 6, 6]          18,432
+      BatchNorm2d-32             [-1, 32, 6, 6]              64
+             ReLU-33             [-1, 32, 6, 6]               0
+          Dropout-34             [-1, 32, 6, 6]               0
+           Conv2d-35             [-1, 32, 6, 6]             288
+           Conv2d-36             [-1, 32, 6, 6]           1,056
+DepthwiseSeparableConv2d-37             [-1, 32, 6, 6]               0
+      BatchNorm2d-38             [-1, 32, 6, 6]              64
+             ReLU-39             [-1, 32, 6, 6]               0
+          Dropout-40             [-1, 32, 6, 6]               0
+           Conv2d-41             [-1, 64, 2, 2]          18,432
+      BatchNorm2d-42             [-1, 64, 2, 2]             128
+             ReLU-43             [-1, 64, 2, 2]               0
+          Dropout-44             [-1, 64, 2, 2]               0
+        AvgPool2d-45             [-1, 64, 1, 1]               0
+           Linear-46                   [-1, 10]             640
+================================================================
+Total params: 98,464
+Trainable params: 98,464
+Non-trainable params: 0
+----------------------------------------------------------------
+Input size (MB): 0.01
+Forward/backward pass size (MB): 5.36
+Params size (MB): 0.38
+Estimated Total Size (MB): 5.75
+----------------------------------------------------------------
+EPOCH: 0
+  0%|          | 0/196 [00:00<?, ?it/s]/home/abhijit/.virtualenvs/dl4cv/lib/python3.6/site-packages/torch/nn/_reduction.py:43: UserWarning: size_average and reduce args will be deprecated, please use reduction='sum' instead.
+  warnings.warn(warning.format(ret))
+Loss=1.2053282260894775 Batch_id=195 Accuracy=46.01: 100%|██████████| 196/196 [00:25<00:00,  7.59it/s]
+Test set: Average loss: 0.0053, Accuracy: 5319/10000 (53.19%)
+Learning rate = 0.1  for epoch:  1
+EPOCH: 1
+Loss=1.1141575574874878 Batch_id=195 Accuracy=61.93: 100%|██████████| 196/196 [00:26<00:00,  7.54it/s]
+Test set: Average loss: 0.0041, Accuracy: 6244/10000 (62.44%)
+Learning rate = 0.1  for epoch:  2
+EPOCH: 2
+Loss=1.0197222232818604 Batch_id=195 Accuracy=67.40: 100%|██████████| 196/196 [00:26<00:00,  7.45it/s]
+Test set: Average loss: 0.0036, Accuracy: 6855/10000 (68.55%)
+Learning rate = 0.1  for epoch:  3
+EPOCH: 3
+Loss=0.758231520652771 Batch_id=195 Accuracy=70.01: 100%|██████████| 196/196 [00:26<00:00,  7.42it/s]
+Test set: Average loss: 0.0037, Accuracy: 6781/10000 (67.81%)
+Learning rate = 0.1  for epoch:  4
+EPOCH: 4
+Loss=0.7745956182479858 Batch_id=195 Accuracy=72.21: 100%|██████████| 196/196 [00:26<00:00,  7.40it/s]
+Test set: Average loss: 0.0035, Accuracy: 6979/10000 (69.79%)
+Learning rate = 0.1  for epoch:  5
+EPOCH: 5
+Loss=0.6841539144515991 Batch_id=195 Accuracy=73.97: 100%|██████████| 196/196 [00:26<00:00,  7.41it/s]
+Test set: Average loss: 0.0033, Accuracy: 7147/10000 (71.47%)
+Learning rate = 0.1  for epoch:  6
+EPOCH: 6
+Loss=0.6242868304252625 Batch_id=195 Accuracy=75.16: 100%|██████████| 196/196 [00:26<00:00,  7.37it/s]
+Test set: Average loss: 0.0032, Accuracy: 7321/10000 (73.21%)
+Learning rate = 0.1  for epoch:  7
+EPOCH: 7
+Loss=1.1968967914581299 Batch_id=195 Accuracy=76.55: 100%|██████████| 196/196 [00:26<00:00,  7.39it/s]
+Test set: Average loss: 0.0031, Accuracy: 7317/10000 (73.17%)
+Learning rate = 0.1  for epoch:  8
+EPOCH: 8
+Loss=0.6069999933242798 Batch_id=195 Accuracy=76.98: 100%|██████████| 196/196 [00:28<00:00,  6.91it/s]
+Test set: Average loss: 0.0028, Accuracy: 7608/10000 (76.08%)
+Learning rate = 0.1  for epoch:  9
+EPOCH: 9
+Loss=0.6191862225532532 Batch_id=195 Accuracy=78.34: 100%|██████████| 196/196 [00:27<00:00,  7.20it/s]
+Test set: Average loss: 0.0027, Accuracy: 7734/10000 (77.34%)
+Learning rate = 0.1  for epoch:  10
+EPOCH: 10
+Loss=0.45728403329849243 Batch_id=195 Accuracy=78.49: 100%|██████████| 196/196 [00:26<00:00,  7.33it/s]
+Test set: Average loss: 0.0031, Accuracy: 7469/10000 (74.69%)
+Learning rate = 0.1  for epoch:  11
+EPOCH: 11
+Loss=0.7385677099227905 Batch_id=195 Accuracy=79.41: 100%|██████████| 196/196 [00:26<00:00,  7.34it/s]
+Test set: Average loss: 0.0028, Accuracy: 7616/10000 (76.16%)
+Learning rate = 0.1  for epoch:  12
+EPOCH: 12
+Loss=0.5733592510223389 Batch_id=195 Accuracy=79.61: 100%|██████████| 196/196 [00:26<00:00,  7.34it/s]
+Test set: Average loss: 0.0025, Accuracy: 7860/10000 (78.60%)
+Learning rate = 0.1  for epoch:  13
+EPOCH: 13
+Loss=0.5375683903694153 Batch_id=195 Accuracy=80.08: 100%|██████████| 196/196 [00:27<00:00,  7.24it/s]
+Test set: Average loss: 0.0028, Accuracy: 7641/10000 (76.41%)
+Learning rate = 0.1  for epoch:  14
+EPOCH: 14
+Loss=0.6035427451133728 Batch_id=195 Accuracy=80.55: 100%|██████████| 196/196 [00:27<00:00,  7.23it/s]
+Test set: Average loss: 0.0025, Accuracy: 7850/10000 (78.50%)
+Learning rate = 0.1  for epoch:  15
+EPOCH: 15
+Loss=0.41107359528541565 Batch_id=195 Accuracy=81.02: 100%|██████████| 196/196 [00:26<00:00,  7.32it/s]
+Test set: Average loss: 0.0023, Accuracy: 8043/10000 (80.43%)
+Learning rate = 0.1  for epoch:  16
+EPOCH: 16
+Loss=0.5351001620292664 Batch_id=195 Accuracy=81.35: 100%|██████████| 196/196 [00:26<00:00,  7.32it/s]
+Test set: Average loss: 0.0023, Accuracy: 8014/10000 (80.14%)
+Learning rate = 0.1  for epoch:  17
+EPOCH: 17
+Loss=0.5258516073226929 Batch_id=195 Accuracy=81.66: 100%|██████████| 196/196 [00:26<00:00,  7.31it/s]
+Test set: Average loss: 0.0024, Accuracy: 7930/10000 (79.30%)
+Learning rate = 0.1  for epoch:  18
+EPOCH: 18
+Loss=0.6241933703422546 Batch_id=195 Accuracy=81.52: 100%|██████████| 196/196 [00:26<00:00,  7.30it/s]
+Test set: Average loss: 0.0023, Accuracy: 7985/10000 (79.85%)
+Learning rate = 0.1  for epoch:  19
+EPOCH: 19
+Loss=0.5140247344970703 Batch_id=195 Accuracy=82.17: 100%|██████████| 196/196 [00:26<00:00,  7.34it/s]
+Test set: Average loss: 0.0024, Accuracy: 8013/10000 (80.13%)
+Learning rate = 0.1  for epoch:  20
+EPOCH: 20
+Loss=0.3875596225261688 Batch_id=195 Accuracy=82.48: 100%|██████████| 196/196 [00:27<00:00,  7.15it/s]
+Test set: Average loss: 0.0022, Accuracy: 8115/10000 (81.15%)
+Learning rate = 0.1  for epoch:  21
+EPOCH: 21
+Loss=0.5684379935264587 Batch_id=195 Accuracy=82.60: 100%|██████████| 196/196 [00:26<00:00,  7.36it/s]
+Test set: Average loss: 0.0025, Accuracy: 7846/10000 (78.46%)
+Epoch    22: reducing learning rate of group 0 to 1.0000e-02.
+Learning rate = 0.010000000000000002  for epoch:  22
+EPOCH: 22
+Loss=0.4600045084953308 Batch_id=195 Accuracy=84.48: 100%|██████████| 196/196 [00:27<00:00,  7.24it/s]
+Test set: Average loss: 0.0020, Accuracy: 8275/10000 (82.75%)
+Learning rate = 0.010000000000000002  for epoch:  23
+EPOCH: 23
+Loss=0.4725069999694824 Batch_id=195 Accuracy=85.24: 100%|██████████| 196/196 [00:27<00:00,  7.25it/s]
+Test set: Average loss: 0.0020, Accuracy: 8273/10000 (82.73%)
+Learning rate = 0.010000000000000002  for epoch:  24
+EPOCH: 24
+Loss=0.3347891569137573 Batch_id=195 Accuracy=85.46: 100%|██████████| 196/196 [00:28<00:00,  6.97it/s]
+Test set: Average loss: 0.0020, Accuracy: 8288/10000 (82.88%)
+Learning rate = 0.010000000000000002  for epoch:  25
+
