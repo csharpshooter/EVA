@@ -3,46 +3,79 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-class cnn_model(nn.Module):
+class CNN_Model(nn.Module):
+
     def __init__(self):
-        super(cnn_model, self).__init__()
+        super(CNN_Model, self).__init__()
+
+        self.inputblock = nn.Sequential(
+            # Defining a 2D convolution layer                                               RF = 1
+            nn.Conv2d(in_channels=3, out_channels=32, kernel_size=3, stride=1, bias=False, dilation=1, padding=1),
+            # RF = 3
+            nn.BatchNorm2d(32),
+            nn.ReLU(inplace=True),
+            nn.Dropout(0.1),
+        )
+
+        self.convblock1 = nn.Sequential(
+            # Defining a 2D convolution layer
+            nn.Conv2d(32, 64, kernel_size=3, stride=1, bias=False, dilation=1, padding=1),  # RF = 5
+            nn.BatchNorm2d(64),
+            nn.ReLU(inplace=True),
+            nn.Dropout(0.1),
+            nn.Conv2d(64, 128, kernel_size=3, stride=1, dilation=2, bias=False, padding=1),  # RF = 9
+            nn.BatchNorm2d(128),
+            nn.ReLU(inplace=True),
+            nn.Dropout(0.1),
+        )
+
+        self.convblock2 = nn.Sequential(
+            # Defining a 2D convolution layer
+            nn.Conv2d(128, 32, kernel_size=3, stride=1, bias=False, dilation=1, padding=1),  # RF = 14
+            nn.BatchNorm2d(32),
+            nn.ReLU(inplace=True),
+            nn.Dropout(0.1),
+            nn.Conv2d(32, 64, kernel_size=3, stride=1, dilation=1, bias=False, padding=1),  # RF = 18
+            nn.BatchNorm2d(64),
+            nn.ReLU(inplace=True),
+            nn.Dropout(0.1),
+            nn.Conv2d(64, 128, kernel_size=3, stride=1, dilation=2, bias=False, padding=1),
+                                                                                            # RF = 26
+            nn.BatchNorm2d(128),
+            nn.ReLU(inplace=True),
+            nn.Dropout(0.1),
+        )
+
+        self.convblock3 = nn.Sequential(
+            # Defining a 2D convolution layer
+            nn.Conv2d(128, 32, kernel_size=3, stride=1, bias=False, dilation=1, padding=1),  # RF = 36
+            nn.BatchNorm2d(32),
+            nn.ReLU(inplace=True),
+            nn.Dropout(0.1),
+            nn.Conv2d(32, 64, kernel_size=3, stride=1, dilation=1, bias=False, padding=1),  # RF = 44
+            nn.BatchNorm2d(64),
+            nn.ReLU(inplace=True),
+            nn.Dropout(0.1),
+            nn.Conv2d(64, 128, kernel_size=3, stride=1, dilation=2, bias=False, padding=0),  # RF = 60
+            nn.BatchNorm2d(128),
+            nn.ReLU(inplace=True),
+            nn.Dropout(0.1),
+        )
+
+        self.maxpool = nn.MaxPool2d(kernel_size=2, stride=2)  # RF = 10 - 28
+
+        self.gap = nn.Sequential(nn.AvgPool2d(kernel_size=2))  # RF = 60
+
+        self.linear = nn.Linear(128, 10, bias=False)  # RF = 60
 
     def forward(self, x):
-        x = convblock(1, x)
-        x = maxpool(x)
-        x = convblock(1, x)
-        x = maxpool(x)
-        x = convblock(0, x)
-        x = gap(2, x)
-        x = linear(256, 10)
-        return x
-
-
-def convblock(padding, x):
-    return nn.Sequential(
-        # Defining a 2D convolution layer
-        nn.Conv2d(1, 32, kernel_size=3, stride=1, bias=False, dilation=1, padding=padding),  # RF = 3 - 14 - 36
-        nn.BatchNorm2d(32),
-        nn.ReLU(inplace=True),
-        nn.Dropout(0.1),
-        nn.Conv2d(32, 64, kernel_size=3, stride=1, dilation=1, bias=False, padding=padding),  # RF = 5 - 18 - 44
-        nn.BatchNorm2d(64),
-        nn.ReLU(inplace=True),
-        nn.SeparableConv2d(64, 64, kernel_size=3, stride=1, dilation=2, bias=False, padding=padding, groups=64),
-                                                                                                # RF = 9 - 26 - 60
-        nn.BatchNorm2d(64),
-        nn.ReLU(inplace=True),
-        nn.Dropout(0.1),
-    )(x)
-
-
-def maxpool(x):
-    return nn.MaxPool2d(kernel_size=2, stride=2)(x)  # RF = 10 - 28
-
-
-def gap(kernel_size, x):
-    return nn.Sequential(nn.AvgPool2d(kernel_size=kernel_size))(x)  # RF = 60
-
-
-def linear(in_features, x, num_classes=10):
-    return nn.Linear(in_features, num_classes, bias=False)(x)  # RF = 60
+        x = self.inputblock(x)
+        x = self.convblock1(x)
+        x = self.maxpool(x)
+        x = self.convblock2(x)
+        x = self.maxpool(x)
+        x = self.convblock3(x)
+        x = self.gap(x)
+        x = x.view(-1, 128)
+        x = self.linear(x)
+        return F.log_softmax(x, dim=-1)

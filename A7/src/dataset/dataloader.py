@@ -21,28 +21,24 @@ class Cifar10Dataloader(object):
         print("CUDA Available?", cuda)
 
         if cuda:
-            batch_size = 128
-            num_workers = 4
-            pin_memory = True
+            self.batch_size = 256
+            self.num_workers = 4
+            self.pin_memory = True
         else:
-            shuffle = True
-            batch_size = 64
+            self.shuffle = True
+            self.batch_size = 64
+
+        print(self.batch_size)
 
         # obtain training indices that will be used for validation
         num_train = len(self.traindataset)
         indices = list(range(num_train))
         np.random.shuffle(indices)  # For reproducibility
-        split = int(np.floor(valid_size * num_train))
-        train_idx, test_idx = indices[split:], indices[:split]
-
-        # define samplers for obtaining training and validation batches
-        self.train_sampler = SubsetRandomSampler(train_idx)
-        self.test_sampler = SubsetRandomSampler(test_idx)
 
     def gettraindataloader(self):
         return torch.utils.data.DataLoader(dataset=self.traindataset, batch_size=self.batch_size,
-                                           sampler=self.train_sampler, num_workers=self.num_workers)
+                                           num_workers=self.num_workers, shuffle=True)
 
     def gettestdataloader(self):
         return torch.utils.data.DataLoader(dataset=self.testdataset, batch_size=self.batch_size,
-                                           sampler=self.test_sampler, num_workers=self.num_workers)
+                                           num_workers=self.num_workers, shuffle=True)

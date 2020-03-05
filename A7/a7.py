@@ -4,6 +4,7 @@ import src.preprocessing.preprocessing as preprocessing
 import matplotlib.pyplot as plt
 import numpy as np
 import src.utils.utils as utils
+import src.models.train_model as train
 
 # %matplotlib inline
 
@@ -37,3 +38,15 @@ for idx in np.arange(20):
     ax = fig.add_subplot(2, 20 / 2, idx + 1, xticks=[], yticks=[])
     utils.Utils.imshow(images[idx])
     ax.set_title(classes[labels[idx]])
+
+cnn_model, device = utils.Utils.createmodel()
+train_model = train.TrainModel()
+train_model.showmodelsummary(cnn_model)
+optimizer = utils.Utils.createoptimizer(cnn_model, lr=0.01, momentum=0.9, weight_decay=0.0)
+
+
+for epoch in range(0,25):
+    train_model.train(cnn_model, device, train_loader, optimizer, 1)
+    train_model.test(cnn_model,device,test_loader)
+
+

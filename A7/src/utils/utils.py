@@ -4,7 +4,7 @@ import torch.optim as optim
 import matplotlib.pyplot as plt
 import numpy as np
 
-from src.models import cnn_model
+from src.models import CNN_Model
 
 
 class Utils:
@@ -62,17 +62,17 @@ class Utils:
         use_cuda = torch.cuda.is_available()
         device = torch.device("cuda" if use_cuda else "cpu")
         print(device)
-        model = cnn_model().to(device)
+        model = CNN_Model().to(device)
 
-        if checkpoint != None:
-            model.load_state_dict(checkpoint['model_state_dict'])
+        # if checkpoint != None:
+        #     model.load_state_dict(checkpoint['model_state_dict'])
 
-        return model
+        return model, device
 
     def createoptimizer(model, lr=0.1, momentum=0.9, weight_decay=0):
         optimizer = optim.SGD(model.parameters(), lr=lr, momentum=momentum, weight_decay=weight_decay)
 
-        if model != None:
-            optimizer.load_state_dict(model['optimizer_state_dict'])
+        # if model != None:
+        #     optimizer.load_state_dict(model['optimizer_state_dict'])
 
         return optimizer
