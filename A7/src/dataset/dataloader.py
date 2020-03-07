@@ -5,7 +5,7 @@ import numpy as np
 
 class Cifar10Dataloader(object):
 
-    def __init__(self, traindataset, testdataset):
+    def __init__(self, traindataset, testdataset, batch_size=64):
         self.traindataset = traindataset
         self.testdataset = testdataset
 
@@ -21,12 +21,12 @@ class Cifar10Dataloader(object):
         print("CUDA Available?", cuda)
 
         if cuda:
-            self.batch_size = 256
+            self.batch_size = batch_size
             self.num_workers = 4
             self.pin_memory = True
         else:
             self.shuffle = True
-            self.batch_size = 64
+            self.batch_size = batch_size
 
         print(self.batch_size)
 

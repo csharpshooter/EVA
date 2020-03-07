@@ -3,6 +3,7 @@ from torch.nn import CrossEntropyLoss
 from torchsummary import summary
 from tqdm import tqdm
 from torch import functional as F
+import numpy as np
 
 
 class TrainModel:
@@ -63,7 +64,7 @@ class TrainModel:
                 desc=f'Loss={loss.item()} Batch_id={batch_idx} Accuracy={100 * correct / processed:0.2f}')
             self.train_acc.append(100 * correct / processed)
 
-    def test(self, model, device, test_loader):
+    def test(self, model, device, test_loader, batch_size, class_correct, class_total):
         model.eval()
         test_loss = 0
         correct = 0
@@ -74,7 +75,15 @@ class TrainModel:
                 output = model(data)
                 test_loss += self.loss_type(output, target).item()  # sum up batch loss
                 pred = output.argmax(dim=1, keepdim=True)  # get the index of the max log-probability
+                correct_tensor = pred.eq(target.data.view_as(pred))
                 correct += pred.eq(target.view_as(pred)).sum().item()
+                correct_new = np.squeeze(correct_tensor.cpu().numpy())
+
+                # calculate test accuracy for each object class
+                for i in range(10):
+                    label = target.data[i]
+                    class_correct[label] += correct_new[i].item()
+                    class_total[label] += 1
 
         test_loss /= len(test_loader.dataset)
         self.test_losses.append(test_loss)
@@ -89,3 +98,6 @@ class TrainModel:
 
     def getlossfunction(self):
         return CrossEntropyLoss()
+
+
+
