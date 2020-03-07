@@ -1,13 +1,14 @@
 import src.dataset.dataset as dst
 import src.dataset.dataloader as dl
 import src.preprocessing.preprocessing as preprocessing
-import matplotlib.pyplot as plt
+
 import numpy as np
 import src.utils.utils as utils
 import src.models.train_model as train
-import torch
+
 
 # %matplotlib inline
+from src.visualization import plotdata
 
 preproc = preprocessing.Preprocessing()
 
@@ -28,18 +29,8 @@ test_loader = dataloader.gettestdataloader()
 classes = ['airplane', 'automobile', 'bird', 'cat', 'deer',
            'dog', 'frog', 'horse', 'ship', 'truck']
 
-# obtain one batch of training images
 dataiterator = iter(train_loader)
-images, labels = dataiterator.next()
-images = images.numpy()  # convert images to numpy for display
-
-# plot the images in the batch, along with the corresponding labels
-fig = plt.figure(figsize=(25, 4))
-# display 20 images
-for idx in np.arange(20):
-    ax = fig.add_subplot(2, 20 / 2, idx + 1, xticks=[], yticks=[])
-    utils.Utils.imshow(images[idx])
-    ax.set_title(classes[labels[idx]])
+plotdata.PlotData.showImagesfromdataset(dataiterator, classes=classes)
 
 cnn_model, device = utils.Utils.createmodel()
 train_model = train.TrainModel()
@@ -74,47 +65,16 @@ print('\nTest Accuracy (Overall): %2d%% (%2d/%2d)' % (
     100. * np.sum(class_correct) / np.sum(class_total),
     np.sum(class_correct), np.sum(class_total)))
 
-
 # obtain one batch of test images
-dataiter = iter(test_loader)
-images, labels = dataiter.next()
-images.numpy()
-
-# move model inputs to cuda
-images = images.cuda()
-
-# get sample outputs
-output = cnn_model(images)
-# convert output probabilities to predicted class
-_, preds_tensor = torch.max(output, 1)
-preds = np.squeeze(preds_tensor.cpu().numpy())
-
-# plot the images in the batch, along with predicted and true labels
-fig = plt.figure(figsize=(15, 20))
-
-loc = 0
-for idx in np.arange(128):
-    if preds[idx]!=labels[idx].item() and loc < 25:
-        ax = fig.add_subplot(5, 5, loc+1, xticks=[], yticks=[])
-        utils.Utils.imshow(images[idx].cpu())
-        ax.set_title("{} ({})".format(classes[preds[idx]], classes[labels[idx]])
-                     ,color="red")
-        loc += 1
-
+dataiterator = iter(test_loader)
+plotdata.PlotData.plotmisclassifiedimages(dataiterator=dataiterator, model=cnn_model, classes=classes)
 
 train_losses, train_acc = train_model.gettraindata()
 test_losses, test_acc = train_model.gettestdata()
-fig, axs = plt.subplots(nrows=3, ncols=2,figsize=(15,10))
-axs[0, 0].plot(train_losses)
-axs[0, 0].set_title("Training Loss")
-axs[1, 0].plot(train_acc)
-axs[1, 0].set_title("Training Accuracy")
-axs[0, 1].plot(test_losses)
-axs[0, 1].set_title("Test Loss")
-axs[1, 1].plot(test_acc)
-axs[1, 1].set_title("Test Accuracy")
-axs[2, 0].plot(lr_data)
-axs[2, 0].set_title("Learning Rate")
-# axs[2, 1].plot(reg_loss_l1)
-# axs[2, 1].set_title("L1 Loss")
-plt.show()
+plotdata.PlotData.plottesttraingraph(train_losses=train_losses, train_acc=train_acc, test_losses=test_losses,
+                                     test_acc=test_acc, lr_data=lr_data)
+
+utils.Utils.savemodel(model=cnn_model, epoch=epochs, path="savedmodels/finalmodelwithdata.pt",
+                      optimizer_state_dict=optimizer.state_dict
+                      , train_losses=train_losses, train_acc=train_acc, test_acc=test_acc,
+                      test_losses=test_losses)

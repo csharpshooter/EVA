@@ -103,9 +103,9 @@ class TrainModel:
                 self.t_acc_max,
                 t_acc))
             from src.utils import Utils
-            Utils.savemodel(self, epoch=epoch, model=model, path="savedmodels/checkpoint.pt")
+            Utils.savemodel(epoch=epoch, model=model, path="savedmodels/checkpoint.pt")
+            self.t_acc_max = t_acc
 
-        self.t_acc_max = t_acc
         return t_acc
 
     def getlossfunction(self):

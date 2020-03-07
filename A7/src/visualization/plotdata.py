@@ -44,6 +44,8 @@ class PlotData:
                              , color="red")
                 loc += 1
 
+        plt.savefig(".images/missclassifiedimages.png")
+
     def plottesttraingraph(train_losses, train_acc, test_losses, test_acc, lr_data):
         fig, axs = plt.subplots(nrows=3, ncols=2, figsize=(15, 10))
         axs[0, 0].plot(train_losses)
@@ -56,4 +58,6 @@ class PlotData:
         axs[1, 1].set_title("Test Accuracy")
         axs[2, 0].plot(lr_data)
         axs[2, 0].set_title("Learning Rate")
+        plt.savefig(".images/traintestgraphs.png")
         plt.show()
+
