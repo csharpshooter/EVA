@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import src.utils.utils as utils
 import src.models.train_model as train
+import torch
 
 # %matplotlib inline
 
@@ -50,12 +51,12 @@ scheduler = utils.Utils.createscheduler(optimizer, mode='max', factor=0.1, patie
 lr_data = []
 class_correct = list(0. for i in range(10))
 class_total = list(0. for i in range(10))
-epochs = 25
-for epoch in range(0, epochs):
+epochs = 26
+for epoch in range(1, epochs):
     print("EPOCH:", epoch)
     train_model.train(cnn_model, device, train_loader, optimizer, 1)
-    t_acc_epoch = train_model.test(cnn_model, device, test_loader, batch_size=batch_size, class_correct=class_correct,
-                                   class_total=class_total)
+    t_acc_epoch = train_model.test(cnn_model, device, test_loader, class_correct=class_correct,
+                                   class_total=class_total, epoch=epoch)
     scheduler.step(t_acc_epoch)
     for param_groups in optimizer.param_groups:
         print("Learning rate =", param_groups['lr'], " for epoch: ", epoch + 1)  # print LR for different epochs
@@ -99,3 +100,21 @@ for idx in np.arange(128):
         ax.set_title("{} ({})".format(classes[preds[idx]], classes[labels[idx]])
                      ,color="red")
         loc += 1
+
+
+train_losses, train_acc = train_model.gettraindata()
+test_losses, test_acc = train_model.gettestdata()
+fig, axs = plt.subplots(nrows=3, ncols=2,figsize=(15,10))
+axs[0, 0].plot(train_losses)
+axs[0, 0].set_title("Training Loss")
+axs[1, 0].plot(train_acc)
+axs[1, 0].set_title("Training Accuracy")
+axs[0, 1].plot(test_losses)
+axs[0, 1].set_title("Test Loss")
+axs[1, 1].plot(test_acc)
+axs[1, 1].set_title("Test Accuracy")
+axs[2, 0].plot(lr_data)
+axs[2, 0].set_title("Learning Rate")
+# axs[2, 1].plot(reg_loss_l1)
+# axs[2, 1].set_title("L1 Loss")
+plt.show()

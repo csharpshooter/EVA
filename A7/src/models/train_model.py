@@ -2,9 +2,10 @@ import torch
 from torch.nn import CrossEntropyLoss
 from torchsummary import summary
 from tqdm import tqdm
-from torch import functional as F
 import numpy as np
 
+
+# import src.utils.utils as utils
 
 class TrainModel:
 
@@ -16,6 +17,7 @@ class TrainModel:
         self.reg_loss_l1 = []
         self.factor = 0
         self.loss_type = self.getlossfunction()
+        self.t_acc_max = 0  # track change in validation loss
 
     def showmodelsummary(self, model):
         summary(model, input_size=(3, 32, 32), device="cuda")
@@ -64,7 +66,7 @@ class TrainModel:
                 desc=f'Loss={loss.item()} Batch_id={batch_idx} Accuracy={100 * correct / processed:0.2f}')
             self.train_acc.append(100 * correct / processed)
 
-    def test(self, model, device, test_loader, batch_size, class_correct, class_total):
+    def test(self, model, device, test_loader, class_correct, class_total, epoch):
         model.eval()
         test_loss = 0
         correct = 0
@@ -94,10 +96,23 @@ class TrainModel:
 
         self.test_acc.append(100. * correct / len(test_loader.dataset))
         t_acc = 100. * correct / len(test_loader.dataset)
+
+        # save model if validation loss has decreased
+        if self.t_acc_max <= t_acc:
+            print('Validation accuracy increased ({:.6f} --> {:.6f}).  Saving model ...'.format(
+                self.t_acc_max,
+                t_acc))
+            from src.utils import Utils
+            Utils.savemodel(self, epoch=epoch, model=model, path="savedmodels/checkpoint.pt")
+
+        self.t_acc_max = t_acc
         return t_acc
 
     def getlossfunction(self):
         return CrossEntropyLoss()
 
+    def gettraindata(self):
+        return self.train_losses, self.train_acc
 
-
+    def gettestdata(self):
+        return self.test_losses, self.test_acc

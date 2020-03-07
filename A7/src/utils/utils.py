@@ -27,7 +27,8 @@ class Utils:
     # else:
     # 	print(gpu_info)
 
-    def savemodel(self, model, epoch, optimizer, train_losses, train_acc, test_acc, test_losses, path):
+    def savemodel(model, epoch, path, optimizer_state_dict=None, train_losses=None, train_acc=None, test_acc=None,
+                  test_losses=None):
         # Prepare model model saving directory.
         # save_dir = os.path.join(os.getcwd(), 'saved_models')
         t = datetime.datetime.today()
@@ -35,7 +36,7 @@ class Utils:
         torch.save({
             'epoch': epoch,
             'model_state_dict': model.state_dict(),
-            'optimizer_state_dict': optimizer.state_dict(),
+            'optimizer_state_dict': optimizer_state_dict,
             'train_losses': train_losses,
             'train_acc': train_acc,
             'test_losses': test_losses,
@@ -46,13 +47,14 @@ class Utils:
 
     def loadmodel(path):
         checkpoint = torch.load(path)
-
-        epoch = checkpoint['epoch']
-        train_losses = checkpoint['train_losses']
-        train_acc = checkpoint['train_acc']
-        test_losses = checkpoint['test_losses']
-        test_acc = checkpoint['test_acc']
-        lr_data = checkpoint['lr_data']
+        # epoch = checkpoint['epoch']
+        # model_state_dict = checkpoint['model_state_dict']
+        # optimizer_state_dict = checkpoint['optimizer_state_dict']
+        # train_losses = checkpoint['train_losses']
+        # train_acc = checkpoint['train_acc']
+        # test_losses = checkpoint['test_losses']
+        # test_acc = checkpoint['test_acc']
+        # lr_data = checkpoint['lr_data']
         return checkpoint
 
     def createmodel(checkpoint=None):
@@ -69,7 +71,7 @@ class Utils:
         return optimizer
 
     def createscheduler(optimizer, mode, factor, patience=5, verbose=True, threshold=0.01,
-                                         threshold_mode='rel', cooldown=0, min_lr=0, eps=1e-08):
+                        threshold_mode='rel', cooldown=0, min_lr=0, eps=1e-08):
         scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode=mode, factor=factor, patience=patience,
                                                                verbose=verbose, threshold=threshold,
                                                                threshold_mode=threshold_mode,
