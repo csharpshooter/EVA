@@ -18,6 +18,8 @@ class PlotData:
             utils.Utils.imshow(images[idx])
             ax.set_title(classes[labels[idx]])
 
+        plt.savefig("images/imagesfromdataset.png")
+
     def plotmisclassifiedimages(dataiterator, model, classes):
         images, labels = dataiterator.next()
         images.numpy()
