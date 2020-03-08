@@ -14,3 +14,21 @@ A7/src/preprocessing/__pycache__/
 A7/src/utils/__pycache__/
 
 A7/src/visualization/__pycache__/
+
+A8/.idea/
+
+A8/data/cifar-10-batches-py/
+
+A8/data/
+
+A8/.ipynb_checkpoints/A7-checkpoint.ipynb
+
+A8/.ipynb_checkpoints/testfile-checkpoint.ipynb
+
+A8/.ipynb_checkpoints/Untitled-checkpoint.ipynb
+
+A8/src/dataset/__pycache__/
+
+A8/src/models/__pycache__/
+
+*.pyc
