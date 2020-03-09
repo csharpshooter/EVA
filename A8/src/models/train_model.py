@@ -15,7 +15,7 @@ class TrainModel:
         self.train_acc = []
         self.test_acc = []
         self.reg_loss_l1 = []
-        self.factor = 0
+        self.factor = 0  # 0.00005
         self.loss_type = self.getlossfunction()
         self.t_acc_max = 0  # track change in validation loss
 
