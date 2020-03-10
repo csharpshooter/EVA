@@ -6,7 +6,6 @@ import numpy as np
 import src.utils.utils as utils
 import src.models.train_model as train
 
-
 # %matplotlib inline
 from src.visualization import plotdata
 
@@ -35,20 +34,21 @@ plotdata.PlotData.showImagesfromdataset(dataiterator, classes=classes)
 cnn_model, device = utils.Utils.createmodelresnet18()
 train_model = train.TrainModel()
 train_model.showmodelsummary(cnn_model)
-optimizer = utils.Utils.createoptimizer(cnn_model, lr=0.03, momentum=0.9, weight_decay=0)
-scheduler = utils.Utils.createscheduler(optimizer, mode='max', factor=0.1, patience=1,
-                                        verbose=True)
+
+optimizer = utils.Utils.createoptimizer(cnn_model, lr=0.01, momentum=0.9, weight_decay=0)
+# scheduler = utils.Utils.createscheduler(optimizer, mode='max', factor=0.1, patience=2,
+#                                         verbose=True)
 
 lr_data = []
 class_correct = list(0. for i in range(10))
 class_total = list(0. for i in range(10))
-epochs = 51
+epochs = 250
 for epoch in range(1, epochs):
     print("EPOCH:", epoch)
     train_model.train(cnn_model, device, train_loader, optimizer, 1)
     t_acc_epoch = train_model.test(cnn_model, device, test_loader, class_correct=class_correct,
                                    class_total=class_total, epoch=epoch)
-    scheduler.step(t_acc_epoch)
+#     scheduler.step(t_acc_epoch)
     for param_groups in optimizer.param_groups:
         print("Learning rate =", param_groups['lr'], " for epoch: ", epoch + 1)  # print LR for different epochs
         lr_data.append(param_groups['lr'])
@@ -60,6 +60,10 @@ for i in range(10):
             np.sum(class_correct[i]), np.sum(class_total[i])))
     else:
         print('Test Accuracy of %5s: N/A (no training examples)' % (classes[i]))
+
+print('\nTest Accuracy (Overall): %2d%% (%2d/%2d)' % (
+    100. * np.sum(class_correct) / np.sum(class_total),
+    np.sum(class_correct), np.sum(class_total)))
 
 print('\nTest Accuracy (Overall): %2d%% (%2d/%2d)' % (
     100. * np.sum(class_correct) / np.sum(class_total),
