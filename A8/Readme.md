@@ -4,7 +4,7 @@
 ----------------------
 ## Notes
 ---------------------------------------------------------------------------------------------------------------------------
-1) Used GPU
+1) Change -> Added resnet.py to assignment 7 and trained for assignment 8 rest project is same as assignment 7
 
 2) Image augmentation transforms applied on training set
   a. transforms.Pad(padding=1, padding_mode="edge")
