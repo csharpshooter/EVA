@@ -32,17 +32,17 @@
 ---------------------------------------------------------------------------------------------------------------------------
 ## Test and Train, Loss and Accuracy Graphs
 
-![Graphs](https://github.com/csharpshooter/EVA/blob/master/A7/images/traintestgraphs.png)
+![Graphs](https://github.com/csharpshooter/EVA/blob/master/A8/images/traintestgraphs.png)
 
 ---------------------------------------------------------------------------------------------------------------------------
 ## Misclassified Images Graph
 
-![Misclassified](https://github.com/csharpshooter/EVA/blob/master/A7/images/missclassifiedimages.png)
+![Misclassified](https://github.com/csharpshooter/EVA/blob/master/A8/images/missclassifiedimages.png)
 
 ---------------------------------------------------------------------------------------------------------------------------
 ## Model Summary
 
-![ModelSummary](https://github.com/csharpshooter/EVA/blob/master/A7/images/modelsummary.png)
+![ModelSummary](https://github.com/csharpshooter/EVA/blob/master/A8/images/modelsummary.png)
 
 ---------------------------------------------------------------------------------------------------------------------------
 ## Logs
