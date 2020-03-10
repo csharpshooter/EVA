@@ -23,7 +23,32 @@
 
 8) Added dropout = 0.1
 ---------------------------------------------------------------------------------------------------------------------------
+## Overall Accuracy
+--------------------
 
+Test Accuracy of airplane: 91% (17900/19613) 
+
+Test Accuracy of automobile: 95% (18719/19522) 
+
+Test Accuracy of  bird: 88% (17356/19705) 
+
+Test Accuracy of   cat: 81% (16009/19572) 
+
+Test Accuracy of  deer: 91% (18103/19771) 
+
+Test Accuracy of   dog: 86% (17165/19831) 
+
+Test Accuracy of  frog: 93% (18395/19617) 
+
+Test Accuracy of horse: 93% (18264/19563) 
+
+Test Accuracy of  ship: 95% (18751/19678) 
+
+Test Accuracy of truck: 93% (18640/19838) 
+
+Test Accuracy (Overall): 91% (179302/196710)
+
+---------------------------------------------------------------------------------------------------------------------------
 ## Project Structure
 --------------------
 
