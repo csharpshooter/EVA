@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from albumentations.pytorch import ToTensor
 
-from src.models import CNN_Model, ResNet18
+from src.models import CNN_Model, ResNet18, QuizDNN
 from torchvision import datasets
 
 
@@ -72,6 +72,14 @@ class Utils:
         device = torch.device("cuda" if use_cuda else "cpu")
         print(device)
         model = ResNet18().to(device)
+
+        return model, device
+
+    def createmodelquizdnn(checkpoint=None):
+        use_cuda = torch.cuda.is_available()
+        device = torch.device("cuda" if use_cuda else "cpu")
+        print(device)
+        model = QuizDNN().to(device)
 
         return model, device
 
