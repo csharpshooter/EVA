@@ -32,3 +32,13 @@ A8/src/dataset/__pycache__/
 A8/src/models/__pycache__/
 
 *.pyc
+
+*.iml
+
+A9/.idea/inspectionProfiles/
+
+A9/.idea/
+
+A9/data/cifar-10-batches-py/
+
+A9/data/cifar-10-python.tar.gz
