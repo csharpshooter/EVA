@@ -47,7 +47,7 @@ class Bottleneck(nn.Module):
         self.bn2 = nn.BatchNorm2d(planes)
         self.conv3 = nn.Conv2d(planes, self.expansion * planes, kernel_size=1, bias=False)
         self.bn3 = nn.BatchNorm2d(self.expansion * planes)
-        self.dropout = nn.Dropout2d(0.1)  # added by Abhijit Mali
+        self.dropout = nn.Dropout2d(0.6)  # added by Abhijit Mali
 
         self.shortcut = nn.Sequential()
         if stride != 1 or in_planes != self.expansion * planes:

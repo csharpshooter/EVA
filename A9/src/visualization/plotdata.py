@@ -37,7 +37,7 @@ class PlotData:
         fig = plt.figure(figsize=(15, 20))
 
         loc = 0
-        for idx in np.arange(128):
+        for idx in np.arange(64):
             if preds[idx] != labels[idx].item() and loc < 25:
                 ax = fig.add_subplot(5, 5, loc + 1, xticks=[], yticks=[])
                 from src.utils import utils
