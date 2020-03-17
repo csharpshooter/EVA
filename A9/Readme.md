@@ -5,7 +5,7 @@
 ## Notes
 ---------------------------------------------------------------------------------------------------------------------------
 1. Got train accuracy of 100% test accuracy of 86.770000%. Model is highly overfitting after using albumentations. 
-2. Trained model for 75 epoch with step LR with step_size=25, gamma=0.5 and starting with LR = 0.1
+2. Trained model for 75 epoch with step LR with step_size=25, gamma=0.5 and starting with LR = 0.1, weight_decay=0.0001
 3.Tried CoarseDropout as well as ChannelDropout and elastic transforms but due to increase in overfitting had to remove them so finally used only used HorizontalFlip, ToTensor and Normalize transforms. Had achieved test accuracy > 87% by just using
 normalize and totensor but not along with HorizontalFlip.
 5. Used customcompose.py class to handle teh way transforms are applied due to albumentations
