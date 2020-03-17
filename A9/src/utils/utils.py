@@ -3,7 +3,10 @@ import torch
 import torch.optim as optim
 import matplotlib.pyplot as plt
 import numpy as np
-from src.models import CNN_Model,ResNet18
+from albumentations.pytorch import ToTensor
+
+from src.models import CNN_Model, ResNet18
+from torchvision import datasets
 
 
 class Utils:
@@ -85,3 +88,25 @@ class Utils:
                                                                cooldown=cooldown, min_lr=min_lr, eps=eps)
 
         return scheduler
+
+    def createschedulersteplr(optimizer, step_size=15, gamma=0.1):
+        scheduler = torch.optim.lr_scheduler.StepLR(optimizer=optimizer, step_size=step_size, gamma=gamma)
+
+        return scheduler
+
+    def calculatemeanandstddeviation(self=None):
+        traindataset = datasets.CIFAR10('./data', train=True, download=True, transform=ToTensor())
+        testdataset = datasets.CIFAR10('./data', train=False, download=True, transform=ToTensor())
+
+        data = np.concatenate([traindataset.data, testdataset.data], axis=0)
+        data = data.astype(np.float32) / 255.
+
+        means = []
+        stdevs = []
+
+        for i in range(3):  # 3 channels
+            pixels = data[:, :, :, i].ravel()
+            means.append(np.mean(pixels))
+            stdevs.append(np.std(pixels))
+
+        return [means[0], means[1], means[2]], [stdevs[0], stdevs[1], stdevs[2]]
