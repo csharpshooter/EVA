@@ -17,6 +17,9 @@ class Cifar10Dataloader(object):
         valid_size = 0.2
 
         seed = 1
+        # For reproducibility
+        torch.manual_seed(seed)
+
         cuda = torch.cuda.is_available()
         print("CUDA Available?", cuda)
 
@@ -30,10 +33,6 @@ class Cifar10Dataloader(object):
 
         print(self.batch_size)
 
-        # obtain training indices that will be used for validation
-        num_train = len(self.traindataset)
-        indices = list(range(num_train))
-        np.random.shuffle(indices)  # For reproducibility
 
     def gettraindataloader(self):
         return torch.utils.data.DataLoader(dataset=self.traindataset, batch_size=self.batch_size,
