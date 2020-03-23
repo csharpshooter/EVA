@@ -1,10 +1,10 @@
+import cv2
+import matplotlib.pyplot as plt
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torchvision
-import matplotlib.pyplot as plt
-import numpy as np
-import cv2
 
 
 class Res18(nn.Module):
@@ -95,7 +95,7 @@ def superposeimage(heatmap, img):
     cv2.imwrite('./map.jpg', superimposed_img)
 
 
-def gradcamof(net, imgs, classes):
+def gradcamof(net, imgs, classes, prediction=None, label=None):
     netx = Res18(net)
     netx.eval()
 
@@ -108,12 +108,20 @@ def gradcamof(net, imgs, classes):
         save_image(imx, 'img1.png')
         class_pred = int(np.array(pred.cpu().argmax(dim=1)))
         imshow(torchvision.utils.make_grid(img), axes[0])
-        print(classes[class_pred])
+        # print(classes[class_pred])
         # axes.set_title(str(classes[class_pred]))
+
+        # if prediction == None:
+        #     prediction = class_pred
+        #
+        # if label == None:
+        #     prediction = class_pred
 
         # draw the heatmap
         heatmap = getheatmap(pred, class_pred, netx, img)
         axes[1].matshow(heatmap.squeeze())
+        # axes[0].set_title("Actual: " + label)
+        # axes[2].set_title("Prediction: " + classes[class_pred])
 
         imx = cv2.imread("./img1.png")
         imx = cv2.cvtColor(imx, cv2.COLOR_BGR2RGB)
@@ -130,4 +138,3 @@ def gradcamof(net, imgs, classes):
         # # resize image
         # imx = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
         axes[2].imshow(imx, cmap='gray', interpolation='bicubic')
-

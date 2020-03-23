@@ -46,11 +46,11 @@ class PlotData:
 
                 if dogradcam != True:
                     utils.Utils.imshow(images[idx].cpu())
+                    ax.set_title("Pred={} (Act={})".format(classes[preds[idx]], classes[labels[idx]])
+                                 , color="red")
                 else:
-                    gradcamof(model, img[idx], classes)
-
-                ax.set_title("Pred={} (Act={})".format(classes[preds[idx]], classes[labels[idx]])
-                             , color="red")
+                    gradcamof(net=model, imgs=img[idx].cuda(), classes=classes, prediction=classes[preds[idx]],
+                              label=classes[labels[idx]])
                 loc += 1
 
         plt.savefig("images/missclassifiedimages.png")
@@ -58,7 +58,7 @@ class PlotData:
     def plottesttraingraph(train_losses, train_acc, test_losses, test_acc, lr_data, plotonsamegraph=False):
 
         if plotonsamegraph == True:
-            fig, axs = plt.subplots(nrows=1, ncols=3, figsize=(15, 15))
+            fig, axs = plt.subplots(nrows=1, ncols=3, figsize=(30, 5))
             l, = axs[0].plot(train_losses, linestyle='--', label="Train Loss")
             l1, = axs[0].plot(test_losses, label="Test Loss")
             axs[0].set_title("Training and Test Loss")
