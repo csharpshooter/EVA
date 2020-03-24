@@ -1,3 +1,3 @@
 #utils
 from .utils import Utils
-from .modelutils import ModelUtils
+from .modelutils import *

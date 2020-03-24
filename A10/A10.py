@@ -10,6 +10,8 @@ import datetime
 
 from IPython import get_ipython
 
+from poc import GradcamExperiment
+
 print("Model execution started at:" + datetime.datetime.today().ctime())
 
 
@@ -28,6 +30,8 @@ import src.train.train_model
 # get_ipython().run_line_magic('config', 'IPCompleter.greedy=True')
 # get_ipython().run_line_magic('reload_ext', 'autoreload')
 
+
+GradcamExperiment
 
 # In[3]:
 

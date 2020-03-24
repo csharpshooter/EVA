@@ -51,7 +51,7 @@ class TrainModel:
             # Calculate loss
             loss = self.loss_type(y_pred, target)
             loss += self.factor * reg_loss
-            self.train_losses.append(loss)
+            # self.train_losses.append(loss)
 
             # Backpropagation
             loss.backward()
@@ -64,7 +64,8 @@ class TrainModel:
 
             pbar.set_description(
                 desc=f'Loss={loss.item()} Batch_id={batch_idx} Accuracy={100 * correct / processed:0.2f}')
-            self.train_acc.append(100 * correct / processed)
+        self.train_acc.append(100 * correct / processed)
+        self.train_losses.append(loss)
 
     def test(self, model, device, test_loader, class_correct, class_total, epoch):
         model.eval()

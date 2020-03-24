@@ -2,7 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 
-from src.visualization.gradcam.gradcam import gradcamof
+from src.visualization.gradcam import gradcamhelper
+#from src.visualization.gradcam.gradcam import gradcamof
 
 
 class PlotData:
@@ -22,7 +23,7 @@ class PlotData:
 
         plt.savefig("images/imagesfromdataset.png")
 
-    def plotmisclassifiedimages(dataiterator, model, classes, batch_size, dogradcam=False):
+    def plotmisclassifiedimages(dataiterator, model, classes, batch_size, dogradcam=False,device=None):
         img, labels = dataiterator.next()
         # images = img.numpy()
 
@@ -49,8 +50,9 @@ class PlotData:
                     ax.set_title("Pred={} (Act={})".format(classes[preds[idx]], classes[labels[idx]])
                                  , color="red")
                 else:
-                    gradcamof(net=model, imgs=img[idx].cuda(), classes=classes, prediction=classes[preds[idx]],
-                              label=classes[labels[idx]])
+                    # gradcamof(net=model, imgs=img[idx].cuda(), classes=classes, prediction=classes[preds[idx]],
+                    #           label=classes[labels[idx]])
+                    gradcamhelper.dogradcam(img[idx], model=model, device=device)
                 loc += 1
 
         plt.savefig("images/missclassifiedimages.png")

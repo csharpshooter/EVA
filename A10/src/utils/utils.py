@@ -17,7 +17,15 @@ class Utils:
     @staticmethod
     def imshow(img):
         img = img / 2 + 0.5  # unnormalize
-        plt.imshow(np.transpose(img, (1, 2, 0)))  # convert from Tensor image
+        plt.imshow(np.transpose(img, (1, 2, 0)))
+        # plt.imshow(np.transpose(img, (1, 2, 0)))  # convert from Tensor image
+
+    def imshowt(tensor):
+        tensor = tensor.squeeze()
+        if len(tensor.shape) > 2: tensor = tensor.permute(1, 2, 0)
+        img = tensor.cpu().numpy()
+        plt.imshow(img, cmap='gray')
+        plt.show()
 
     def printdatetime(self):
         print("Model execution started at:" + datetime.datetime.today().ctime())

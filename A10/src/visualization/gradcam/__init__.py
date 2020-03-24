@@ -1,1 +1,2 @@
-from .gradcam import Res18
+from .gradcam import GradCam
+from .base import Base
