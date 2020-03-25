@@ -142,3 +142,21 @@ class Utils:
         print('\nTest Accuracy (Overall): %2d%% (%2d/%2d)' % (
             100. * np.sum(class_correct) / np.sum(class_total),
             np.sum(class_correct), np.sum(class_total)))
+
+    def processarray(array, epochs):
+
+        indexval = int(len(array) / epochs)
+        start = 0
+        end = indexval
+        final = []
+        while len(array) > end:
+            # print(start)
+            # print(end)
+            temp = array[start:end]
+            val = sum(temp) / len(temp)
+            final.append(val)
+            start = end
+            end += indexval
+
+
+        return final

@@ -1,9 +1,11 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
-
+from src.utils import utils
 from src.visualization.gradcam import gradcamhelper
-#from src.visualization.gradcam.gradcam import gradcamof
+
+
+# from src.visualization.gradcam.gradcam import gradcamof
 
 
 class PlotData:
@@ -17,47 +19,70 @@ class PlotData:
         # display 20 images
         for idx in np.arange(20):
             ax = fig.add_subplot(2, 20 / 2, idx + 1, xticks=[], yticks=[])
-            from src.utils import utils
             utils.Utils.imshow(images[idx])
             ax.set_title(classes[labels[idx]])
 
         plt.savefig("images/imagesfromdataset.png")
 
-    def plotmisclassifiedimages(dataiterator, model, classes, batch_size, dogradcam=False,device=None):
-        img, labels = dataiterator.next()
-        # images = img.numpy()
-
-        # move model inputs to cuda
-        images = img.cuda()
-
-        # get sample outputs
-        output = model(images)
-        # convert output probabilities to predicted class
-        _, preds_tensor = torch.max(output, 1)
-        preds = np.squeeze(preds_tensor.cpu().numpy())
+    def plotmisclassifiedimages(dataiterator, model, classes, batch_size, dogradcam=False, device=None):
 
         # plot the images in the batch, along with predicted and true labels
         fig = plt.figure(figsize=(15, 20))
-
         loc = 0
-        for idx in np.arange(batch_size):
-            if preds[idx] != labels[idx].item() and loc < 25:
-                ax = fig.add_subplot(5, 5, loc + 1, xticks=[], yticks=[])
-                from src.utils import utils
+        while loc < 25:
 
-                if dogradcam != True:
-                    utils.Utils.imshow(images[idx].cpu())
-                    ax.set_title("Pred={} (Act={})".format(classes[preds[idx]], classes[labels[idx]])
-                                 , color="red")
-                else:
-                    # gradcamof(net=model, imgs=img[idx].cuda(), classes=classes, prediction=classes[preds[idx]],
-                    #           label=classes[labels[idx]])
-                    gradcamhelper.dogradcam(img[idx], model=model, device=device)
-                loc += 1
+            img, labels = dataiterator.next()
+            # images = img.numpy()
 
-        plt.savefig("images/missclassifiedimages.png")
+            # move model inputs to cuda
+            images = img.cuda()
 
-    def plottesttraingraph(train_losses, train_acc, test_losses, test_acc, lr_data, plotonsamegraph=False):
+            # get sample outputs
+            output = model(images)
+            # convert output probabilities to predicted class
+            _, preds_tensor = torch.max(output, 1)
+            preds = np.squeeze(preds_tensor.cpu().numpy())
+
+            for idx in np.arange(batch_size):
+                if preds[idx] != labels[idx].item():
+                    ax = fig.add_subplot(5, 5, loc + 1, xticks=[], yticks=[])
+
+                    if dogradcam != True:
+                        utils.Utils.imshow(images[idx].cpu())
+
+                        ax.set_title("Pred={} (Act={})".format(classes[preds[idx]], classes[labels[idx]])
+                                     , color="red")
+                    else:
+
+                        # utils.Utils.imshow(images[idx].cpu())
+
+                        gradcamimage, prediction = gradcamhelper.dogradcam(image=images[idx].unsqueeze(0), model=model,
+                                                                           device=device,
+                                                                           classes=classes)
+                        # utils.Utils.imshowt(gradcamimage[0])
+
+                        tensor = gradcamimage[0].squeeze()
+                        tensor = tensor.permute(1, 2, 0)
+                        # if len(tensor.shape) > 2: tensor = tensor.permute(1, 2, 0)
+                        img = tensor.cpu().numpy()
+                        plt.imshow(img, cmap='gray')
+
+                        ax.set_title("Pred={} (Act={})".format(prediction["prediction"], classes[labels[idx]])
+                                     , color="red")
+
+                    loc += 1
+
+                if loc >= 25:
+                    break
+
+            plt.savefig("images/missclassifiedimages.png")
+
+    def plottesttraingraph(train_losses, train_acc, test_losses, test_acc, lr_data, epochs, plotonsamegraph=False,
+                           doProcessArray=False):
+
+        if doProcessArray == True:
+            train_acc = utils.Utils.processarray(train_acc, epochs)
+            train_losses = utils.Utils.processarray(train_losses, epochs)
 
         if plotonsamegraph == True:
             fig, axs = plt.subplots(nrows=1, ncols=3, figsize=(30, 5))
