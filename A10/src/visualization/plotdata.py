@@ -84,15 +84,21 @@ class PlotData:
             train_acc = utils.Utils.processarray(train_acc, epochs)
             train_losses = utils.Utils.processarray(train_losses, epochs)
 
+        maxtestacc = round(max(test_acc), 2)
+        maxtrainacc = round(max(train_acc), 2)
+        # testloss = min(test_losses)
+        # trainloss = min(train_losses)
+
         if plotonsamegraph == True:
-            fig, axs = plt.subplots(nrows=1, ncols=3, figsize=(30, 5))
+            fig, axs = plt.subplots(nrows=1, ncols=3, figsize=(25, 10))
             l, = axs[0].plot(train_losses, linestyle='--', label="Train Loss")
             l1, = axs[0].plot(test_losses, label="Test Loss")
-            axs[0].set_title("Training and Test Loss")
+            axs[0].set_title("Training and Test Loss.")
             axs[0].legend(loc="best", ncol=1, handles=[l, l1])
             t, = axs[1].plot(train_acc, linestyle='--', label="Train Accuracy")
             t1, = axs[1].plot(test_acc, label="Test Accuracy")
-            axs[1].set_title("Training and Test Accuracy")
+            axs[1].set_title(
+                "Training and Test Accuracy. Max train acc = {}, max test acc = {}.".format(maxtrainacc, maxtestacc))
             axs[1].legend(loc="best", ncol=1, handles=[t, t1])
             axs[2].plot(lr_data)
             axs[2].set_title("Learning Rate")
