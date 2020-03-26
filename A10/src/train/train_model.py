@@ -1,8 +1,8 @@
+import numpy as np
 import torch
 from torch.nn import CrossEntropyLoss
 from torchsummary import summary
 from tqdm import tqdm
-import numpy as np
 
 
 # import src.utils.utils as utils
@@ -18,6 +18,7 @@ class TrainModel:
         self.factor = 0  # 0.000005
         self.loss_type = self.getlossfunction()
         self.t_acc_max = 0  # track change in validation loss
+        self.optimizer = None
 
     def showmodelsummary(self, model):
         summary(model, input_size=(3, 32, 32), device="cuda")
@@ -27,6 +28,7 @@ class TrainModel:
         pbar = tqdm(train_loader)
         correct = 0
         processed = 0
+        self.optimizer = optimizer
         for batch_idx, (data, target) in enumerate(pbar):
             # get samples
             data, target = data.to(device), target.to(device)
@@ -67,7 +69,7 @@ class TrainModel:
         self.train_acc.append(100 * correct / processed)
         self.train_losses.append(loss)
 
-    def test(self, model, device, test_loader, class_correct, class_total, epoch):
+    def test(self, model, device, test_loader, class_correct, class_total, epoch, lr_data):
         model.eval()
         test_loss = 0
         correct = 0
@@ -104,7 +106,12 @@ class TrainModel:
                 self.t_acc_max,
                 t_acc))
             from src.utils import Utils
-            Utils.savemodel(epoch=epoch, model=model, path="savedmodels/checkpoint.pt")
+            Utils.savemodel(model=model, epoch=epoch, path="savedmodels/checkpoint.pt",
+                            optimizer_state_dict=self.optimizer.state_dict
+                            , train_losses=self.train_losses, train_acc=self.train_acc, test_acc=self.test_acc,
+                            test_losses=self.test_losses, lr_data=lr_data, class_correct=class_correct,
+                            class_total=class_total)
+
             self.t_acc_max = t_acc
 
         return t_acc
