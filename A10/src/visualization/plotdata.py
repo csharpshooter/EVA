@@ -1,7 +1,9 @@
+import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
-from src.utils import utils
+
+from src.utils import utils, Utils
 from src.visualization.gradcam import gradcamhelper
 
 
@@ -27,9 +29,11 @@ class PlotData:
     def plotmisclassifiedimages(dataiterator, model, classes, batch_size, dogradcam=False, device=None):
 
         # plot the images in the batch, along with predicted and true labels
-        fig = plt.figure(figsize=(15, 20))
+        fig = plt.figure(figsize=(20, 20))
+
         loc = 0
-        while loc < 25:
+        count = 30
+        while loc < count:
 
             img, labels = dataiterator.next()
             # images = img.numpy()
@@ -45,7 +49,7 @@ class PlotData:
 
             for idx in np.arange(batch_size):
                 if preds[idx] != labels[idx].item():
-                    ax = fig.add_subplot(5, 5, loc + 1, xticks=[], yticks=[])
+                    ax = fig.add_subplot(6, 5, loc + 1, xticks=[], yticks=[])
 
                     if dogradcam != True:
                         utils.Utils.imshow(images[idx].cpu())
@@ -65,15 +69,17 @@ class PlotData:
                         tensor = tensor.permute(1, 2, 0)
                         # if len(tensor.shape) > 2: tensor = tensor.permute(1, 2, 0)
                         img = tensor.cpu().numpy()
-                        plt.imshow(img, cmap='gray')
+                        # img = Utils.image_resize(image=img, width=25, height=25, inter=cv2.INTER_AREA)
+                        # print(img.shape)
+                        plt.imshow(img, cmap="gray", interpolation='nearest', aspect="auto")
 
-                        ax.set_title("Pred={} (Act={})".format(prediction["prediction"], classes[labels[idx]])
+                        ax.set_title("Pred={} (Act={})".format(classes[preds[idx]], classes[labels[idx]])
                                      , color="red")
 
-                    loc += 1
+                        loc += 1
 
-                if loc >= 25:
-                    break
+                        if loc >= count:
+                            break
 
             plt.savefig("images/missclassifiedimages.png")
 
