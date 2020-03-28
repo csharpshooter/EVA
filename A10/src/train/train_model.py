@@ -1,3 +1,5 @@
+import sys
+
 import numpy as np
 import torch
 from torch.nn import CrossEntropyLoss
@@ -124,3 +126,72 @@ class TrainModel:
 
     def gettestdata(self):
         return self.test_losses, self.test_acc
+
+    def getinferredimagesfromdataset(dataiterator, model, classes, batch_size, number=25):
+
+        try:
+            misclassifiedcount = 0
+            classifiedcount = 0
+
+            misclassified = {}
+            classified = {}
+            loop = 0
+
+            while misclassifiedcount < number or classifiedcount < number:
+                loop += 1
+                # print("loop = {}".format(loop))
+
+                img, labels = dataiterator.next()
+                # images = img.numpy()
+
+                # move model inputs to cuda
+                images = img.cuda()
+
+                # print(len(img))
+
+                # get sample outputs
+                output = model(images)
+                # convert output probabilities to predicted class
+                _, preds_tensor = torch.max(output, 1)
+                preds = np.squeeze(preds_tensor.cpu().numpy())
+
+                for idx in np.arange(batch_size):
+                    # print("for")
+                    key = "Pred={} (Act={}) ".format(classes[preds[idx]], classes[labels[idx]])
+
+                    # print("m-" + str(misclassifiedcount))
+                    # print("c-" + str(classifiedcount))
+                    # print("mlen-" + str(len(misclassified)))
+                    # print("clen-" + str(len(classified)))
+                    # print(preds[idx])
+                    # print(labels[idx].item())
+                    # print(key)
+
+                    if preds[idx] != labels[idx].item():
+
+                        if misclassifiedcount < number:
+                            key = key + str(misclassifiedcount)
+                            misclassified[key] = images[idx].unsqueeze(0)
+                            misclassifiedcount += 1
+
+                    else:
+                        if classifiedcount < number:
+                            key = key + str(classifiedcount)
+                            classified[key] = images[idx].unsqueeze(0)
+                            # images[idx].cpu()
+                            classifiedcount += 1
+
+                    if misclassifiedcount >= number and classifiedcount >= number:
+                        break
+
+        except OSError as err:
+            print("OS error: {0}".format(err))
+
+        except ValueError:
+            print("Could not convert data to an integer.")
+
+        except:
+            print(sys.exc_info()[0])
+
+
+        return classified, misclassified

@@ -1,9 +1,8 @@
-import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
 
-from src.utils import utils, Utils
+from src.utils import utils
 from src.visualization.gradcam import gradcamhelper
 
 
@@ -63,19 +62,13 @@ class PlotData:
                         gradcamimage, prediction = gradcamhelper.dogradcam(image=images[idx].unsqueeze(0), model=model,
                                                                            device=device,
                                                                            classes=classes)
-                        # utils.Utils.imshowt(gradcamimage[0])
-
                         tensor = gradcamimage[0].squeeze()
                         tensor = tensor.permute(1, 2, 0)
-                        # if len(tensor.shape) > 2: tensor = tensor.permute(1, 2, 0)
                         img = tensor.cpu().numpy()
-                        # img = Utils.image_resize(image=img, width=25, height=25, inter=cv2.INTER_AREA)
-                        # print(img.shape)
                         plt.imshow(img, cmap="gray", interpolation='nearest', aspect="auto")
 
                         ax.set_title("Pred={} (Act={})".format(classes[preds[idx]], classes[labels[idx]])
                                      , color="red")
-
                         loc += 1
 
                         if loc >= count:
@@ -125,3 +118,30 @@ class PlotData:
         plt.savefig("images/traintestgraphs.png")
         plt.plot()
         plt.show()
+
+    def plotinferredimagesfromdataset(imagedict, model, device, classes, savefilename=None, dogradcam=True,
+                                      size=(10, 25),layerNo=None):
+
+        for key, value in imagedict.items():
+            fig, axes = plt.subplots(nrows=1, ncols=2, figsize=size)
+            axes[0].set_title(key)
+            if value.is_cuda == True:
+                PlotData.sh(value.squeeze(0), axes[0])
+            else:
+                axes[0].imshow(value, cmap="gray", interpolation='bicubic')
+
+            if dogradcam == True:
+                gradcamimage, prediction = gradcamhelper.dogradcam(model=model, image=value, device=device,
+                                                                   classes=classes,layerNo=layerNo)
+                tensor = gradcamimage[0].squeeze()
+                tensor = tensor.permute(1, 2, 0)
+                img = tensor.cpu().numpy()
+                axes[1].imshow(img, cmap="gray", interpolation='bicubic')
+
+            if savefilename != None:
+                fig.savefig("images/" + savefilename + ".png")
+
+    def sh(img, ax):
+        img = img / 2 + 0.5  # unnormalize
+        npimg = img.cpu().numpy()
+        ax.imshow(np.transpose(npimg, (1, 2, 0)))
