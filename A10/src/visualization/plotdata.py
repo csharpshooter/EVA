@@ -2,8 +2,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 
-from src.utils import utils, modelutils, tensor2img
+from src.utils import utils, modelutils, tensor2img, cifar10_postprocessing
 from src.visualization.gradcam import gradcamhelper
+from src.visualization.saliency.saliencymap import SaliencyMap
 from src.visualization.weights import Weights
 
 
@@ -122,7 +123,7 @@ class PlotData:
 
         loc = 0
         for key, value in imagedict.items():
-            fig, axes = plt.subplots(nrows=1, ncols=4, figsize=size)
+            fig, axes = plt.subplots(nrows=1, ncols=5, figsize=size)
             axes[0].set_title(key)
 
             modules = modelutils.module2traced(model, value)
@@ -154,6 +155,19 @@ class PlotData:
             images2 = modelutils.run_vis_plot(vis, value, modules[10], ncols=1, nrows=1)
             axes[3].imshow(tensor2img(images2))
             axes[3].set_title("Layer {} weights".format(10))
+
+            vis = SaliencyMap(model, device, classes=classes)
+            out, info = vis(value, modules[0],
+                            target_class=None,
+                            guide=True)
+
+            axes[4].imshow(tensor2img(out))
+            axes[4].set_title("Saliency")
+
+            # subplot([cifar10_postprocessing(value.squeeze().cpu()), out],
+            #         rows_titles=['original', 'saliency map'],
+            #         parse=tensor2img,
+            #         nrows=1, ncols=2)
 
             fig.savefig("images/gradcam/{}_{}.png".format(savefilename, loc), bbox_inches='tight')
 
