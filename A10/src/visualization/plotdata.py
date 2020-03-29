@@ -2,11 +2,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 
-from src.utils import utils
+from src.utils import utils, modelutils, tensor2img
 from src.visualization.gradcam import gradcamhelper
-
-
-# from src.visualization.gradcam.gradcam import gradcamof
+from src.visualization.weights import Weights
 
 
 class PlotData:
@@ -119,29 +117,47 @@ class PlotData:
         plt.plot()
         plt.show()
 
-    def plotinferredimagesfromdataset(imagedict, model, device, classes, savefilename=None, dogradcam=True,
-                                      size=(10, 25),layerNo=None):
+    def plotinferredimagesfromdataset(imagedict, model, device, classes, savefilename="",
+                                      size=(10, 25), layerNo=None):
 
+        loc = 0
         for key, value in imagedict.items():
-            fig, axes = plt.subplots(nrows=1, ncols=2, figsize=size)
+            fig, axes = plt.subplots(nrows=1, ncols=4, figsize=size)
             axes[0].set_title(key)
+
+            modules = modelutils.module2traced(model, value)
+
+            layer = None
+            if layerNo != None and layerNo < len(modules):
+                layer = modules[layerNo]
+
             if value.is_cuda == True:
                 PlotData.sh(value.squeeze(0), axes[0])
             else:
                 axes[0].imshow(value, cmap="gray", interpolation='bicubic')
 
-            if dogradcam == True:
-                gradcamimage, prediction = gradcamhelper.dogradcam(model=model, image=value, device=device,
-                                                                   classes=classes,layerNo=layerNo)
-                tensor = gradcamimage[0].squeeze()
-                tensor = tensor.permute(1, 2, 0)
-                img = tensor.cpu().numpy()
-                axes[1].imshow(img, cmap="gray", interpolation='bicubic')
+            gradcamimage, prediction = gradcamhelper.dogradcam(model=model, image=value, device=device,
+                                                               classes=classes, layer=layer)
+            tensor = gradcamimage[0].squeeze()
+            tensor = tensor.permute(1, 2, 0)
+            img = tensor.cpu().numpy()
+            axes[1].imshow(img, cmap="gray", interpolation='bicubic')
+            axes[1].set_title("Gradcam Output")
+            # axes[1].set_title("Layer {} {}".format(layer, str(layer)))
 
-            if savefilename != None:
-                fig.savefig("images/" + savefilename + ".png", bbox_inches='tight')
+            vis = Weights(model, device, classes=classes)
+            images1 = modelutils.run_vis_plot(vis, value, layer, ncols=1, nrows=1)
+            axes[2].imshow(tensor2img(images1))
+            axes[2].set_title("Layer {} weights".format(layerNo))
 
+            vis = Weights(model, device, classes=classes)
+            images2 = modelutils.run_vis_plot(vis, value, modules[10], ncols=1, nrows=1)
+            axes[3].imshow(tensor2img(images2))
+            axes[3].set_title("Layer {} weights".format(10))
 
+            fig.savefig("images/gradcam/{}_{}.png".format(savefilename, loc), bbox_inches='tight')
+
+            loc += 1
 
     def sh(img, ax):
         img = img / 2 + 0.5  # unnormalize

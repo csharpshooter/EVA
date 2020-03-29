@@ -3,7 +3,7 @@ import torch.nn.functional as F
 from torch.autograd import Variable
 from torch.nn import Conv2d, ReLU
 
-from .base import Base
+from src.visualization.base import Base
 from ...utils.modelutils import tensor2cam, module2traced
 
 
