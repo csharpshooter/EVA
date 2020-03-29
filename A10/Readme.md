@@ -13,8 +13,7 @@
 ---------------------------------------------------------------------------------------------------------------------------
 ## GRAD CAM
 -----------
-![GRAD CAM](https://github.com/csharpshooter/EVA/blob/master/A10/images/gradcam1.png)
-![GRAD CAM](https://github.com/csharpshooter/EVA/blob/master/A10/images/gradcam2.png)
+![GRAD CAM](https://github.com/csharpshooter/EVA/blob/master/A10/images/correctclassified.jpg)
 
 ---------------------------------------------------------------------------------------------------------------------------
 ## Project Structure
@@ -30,7 +29,7 @@
 ---------------------------------------------------------------------------------------------------------------------------
 ## Misclassified Images Graph
 
-![Misclassified](https://github.com/csharpshooter/EVA/blob/master/A10/images/missclassifiedimages.png)
+![Misclassified](https://github.com/csharpshooter/EVA/blob/master/A10/images/missclassfiedimages.png)
 
 ---------------------------------------------------------------------------------------------------------------------------
 ## Model Summary
