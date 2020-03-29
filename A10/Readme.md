@@ -9,6 +9,27 @@
 ## Overall Accuracy
 --------------------
 
+Test Accuracy of airplane: 85% (6787/7896)
+
+Test Accuracy of automobile: 93% (7481/8034)
+
+Test Accuracy of  bird: 77% (6164/7999)
+
+Test Accuracy of   cat: 68% (5367/7815)
+
+Test Accuracy of  deer: 80% (6374/7967)
+
+Test Accuracy of   dog: 76% (6081/7911)
+
+Test Accuracy of  frog: 88% (7051/7927)
+
+Test Accuracy of horse: 87% (6846/7837)
+
+Test Accuracy of  ship: 90% (7129/7843)
+
+Test Accuracy of truck: 89% (6945/7771)
+
+Test Accuracy (Overall): 83% (66225/79000)
 
 ---------------------------------------------------------------------------------------------------------------------------
 ## GRAD CAM
