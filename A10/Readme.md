@@ -4,32 +4,36 @@
 ----------------------
 ## Notes
 ---------------------------------------------------------------------------------------------------------------------------
+1. Based on last assignment feedback changed gradcam output layer, now using output of Layer 34, Conv2d, Output Shape = 8 for  gradcam. 
+2. Implemented new gradcam code, earlier gradcam logic was workable only for Resnet18, but the new Gradcam implementation can be applied for any pytorch model. Took output from Layer 34, Conv2d, Output Shape = 8. Then added avg pooling and relu to get gradcam.
+3. Max train accuracy = 89.69% , max test accuracy = 90.96%. Test Accuracy (Overall): 83%
+4. Used following albumentations transforms for augmentation:
+  *  RandomRotate90,
+  *  Flip,
+  *  GaussNoise,
+  *  OneOf -> MotionBlur,MedianBlur,Blur,
+  *  ShiftScaleRotate,
+  *  OneOf -> OpticalDistortion,GridDistortion,
+  *  HueSaturationValue,
+  *  Cutout
+ 5. Showing weights at layer 34 and layer 10 along with gradcam outputs
 
 ---------------------------------------------------------------------------------------------------------------------------
 ## Overall Accuracy
 --------------------
 
-Test Accuracy of airplane: 85% (6787/7896)
+- Test Accuracy of airplane: 85% (6787/7896)
+- Test Accuracy of automobile: 93% (7481/8034)
+- Test Accuracy of  bird: 77% (6164/7999)
+- Test Accuracy of   cat: 68% (5367/7815)
+- Test Accuracy of  deer: 80% (6374/7967)
+- Test Accuracy of   dog: 76% (6081/7911)
+- Test Accuracy of  frog: 88% (7051/7927)
+- Test Accuracy of horse: 87% (6846/7837)
+- Test Accuracy of  ship: 90% (7129/7843)
+- Test Accuracy of truck: 89% (6945/7771)
 
-Test Accuracy of automobile: 93% (7481/8034)
-
-Test Accuracy of  bird: 77% (6164/7999)
-
-Test Accuracy of   cat: 68% (5367/7815)
-
-Test Accuracy of  deer: 80% (6374/7967)
-
-Test Accuracy of   dog: 76% (6081/7911)
-
-Test Accuracy of  frog: 88% (7051/7927)
-
-Test Accuracy of horse: 87% (6846/7837)
-
-Test Accuracy of  ship: 90% (7129/7843)
-
-Test Accuracy of truck: 89% (6945/7771)
-
-Test Accuracy (Overall): 83% (66225/79000)
+- **Test Accuracy (Overall): 83% (66225/79000)**
 
 ---------------------------------------------------------------------------------------------------------------------------
 ## GRAD CAM
