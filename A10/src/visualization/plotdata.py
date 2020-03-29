@@ -23,7 +23,7 @@ class PlotData:
             utils.Utils.imshow(images[idx])
             ax.set_title(classes[labels[idx]])
 
-        plt.savefig("images/imagesfromdataset.png")
+        plt.savefig("images/imagesfromdataset.png", bbox_inches='tight')
 
     def plotmisclassifiedimages(dataiterator, model, classes, batch_size, dogradcam=False, device=None):
 
@@ -74,7 +74,7 @@ class PlotData:
                         if loc >= count:
                             break
 
-            plt.savefig("images/missclassifiedimages.png")
+            plt.savefig("images/missclassifiedimages.png", bbox_inches='tight')
 
     def plottesttraingraph(train_losses, train_acc, test_losses, test_acc, lr_data, epochs, plotonsamegraph=False,
                            doProcessArray=False):
@@ -115,7 +115,7 @@ class PlotData:
             axs[2, 0].plot(lr_data)
             axs[2, 0].set_title("Learning Rate")
 
-        plt.savefig("images/traintestgraphs.png")
+        plt.savefig("images/traintestgraphs.png", bbox_inches='tight')
         plt.plot()
         plt.show()
 
@@ -139,7 +139,9 @@ class PlotData:
                 axes[1].imshow(img, cmap="gray", interpolation='bicubic')
 
             if savefilename != None:
-                fig.savefig("images/" + savefilename + ".png")
+                fig.savefig("images/" + savefilename + ".png", bbox_inches='tight')
+
+
 
     def sh(img, ax):
         img = img / 2 + 0.5  # unnormalize
