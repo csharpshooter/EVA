@@ -2,7 +2,7 @@
 ----------------------
 ## Name : Abhijit Mali
 ----------------------
-## Notes
+## Notes 
 ---------------------------------------------------------------------------------------------------------------------------
 1. Based on last assignment feedback changed gradcam output layer, now using output of Layer 34, Conv2d, Output Shape = 8 for  gradcam. 
 2. Implemented new gradcam code, earlier gradcam logic was workable only for Resnet18, but the new Gradcam implementation can be applied for any pytorch model. Took output from Layer 34, Conv2d, Output Shape = 8. Then added avg pooling and relu to get gradcam.
@@ -17,7 +17,22 @@
   *  HueSaturationValue,
   *  Cutout
  5. Showing weights at layer 34 and layer 10 along with gradcam outputs
-
+ 6. Added Saliency Map for layer 34
+ 
+ ![correctsalmap](https://github.com/csharpshooter/EVA/blob/master/A10/images/gradcam/correct_0.png)
+ ![misclasssalmap](https://github.com/csharpshooter/EVA/blob/master/A10/images/gradcam/misclassifed_0.png)
+ 
+ 
+ 7. Experimented with Tensorboard - added scalars, histograms, images and model graphs
+ 
+ ![Accuracy](https://github.com/csharpshooter/EVA/blob/master/A10/images/TensorBoardA10-Accuracy.png)
+ ![Loss](https://github.com/csharpshooter/EVA/blob/master/A10/images/TensorBoardA10-Loss.png)
+ ![TrainHist](https://github.com/csharpshooter/EVA/blob/master/A10/images/TensorBoardA10%20TrainHistogram.png)
+ ![TestHist](https://github.com/csharpshooter/EVA/blob/master/A10/images/TensorBoardA10TestHistogram.png)
+ ![ModelGraph](https://github.com/csharpshooter/EVA/blob/master/A10/images/TensorBoardA10ModelGraph.png)
+  
+  **Note : Had extra time during this assignment so tried added saliency map (6) and worked on tensorboard (7) although not visible in submitted images on canvas as it was done after submitting assignment 10.**
+  
 ---------------------------------------------------------------------------------------------------------------------------
 ## Overall Accuracy
 --------------------
