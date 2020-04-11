@@ -12,7 +12,7 @@ class PytorchTransforms(object):
             transforms.RandomCrop(size=(32, 32), padding=4),
             transforms.ToTensor(),
             transforms.Normalize(mean, std),
-            transforms.RandomErasing(scale=(0.1, 0.1), ratio=(1, 1)),
+            transforms.RandomErasing(scale=(0.08, 0.08), ratio=(1, 1)),
         ])
 
     def gettesttransforms(self, mean, std):

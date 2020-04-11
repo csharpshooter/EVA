@@ -1,0 +1,231 @@
+.
+├── A11.ipynb
+├── A11.py
+├── customresnet_onecycle_A11
+│   ├── Accuracy_Test
+│   │   └── events.out.tfevents.1586641969.abhijit-OMEN-by-HP-Laptop-17-an0xx.23921.4
+│   ├── Accuracy_Train
+│   │   └── events.out.tfevents.1586641969.abhijit-OMEN-by-HP-Laptop-17-an0xx.23921.3
+│   ├── events.out.tfevents.1586641962.abhijit-OMEN-by-HP-Laptop-17-an0xx.23921.0
+│   ├── Loss_Test
+│   │   └── events.out.tfevents.1586641969.abhijit-OMEN-by-HP-Laptop-17-an0xx.23921.2
+│   └── Loss_Train
+│       └── events.out.tfevents.1586641969.abhijit-OMEN-by-HP-Laptop-17-an0xx.23921.1
+├── data
+│   ├── cifar-10-batches-py
+│   │   ├── batches.meta
+│   │   ├── data_batch_1
+│   │   ├── data_batch_2
+│   │   ├── data_batch_3
+│   │   ├── data_batch_4
+│   │   ├── data_batch_5
+│   │   ├── readme.html
+│   │   └── test_batch
+│   └── cifar-10-python.tar.gz
+├── images
+│   ├── correctclassified.jpg
+│   ├── gradcam
+│   │   ├── correct_0.png
+│   │   ├── correct_10.png
+│   │   ├── correct_11.png
+│   │   ├── correct_12.png
+│   │   ├── correct_13.png
+│   │   ├── correct_14.png
+│   │   ├── correct_15.png
+│   │   ├── correct_16.png
+│   │   ├── correct_17.png
+│   │   ├── correct_18.png
+│   │   ├── correct_19.png
+│   │   ├── correct_1.png
+│   │   ├── correct_20.png
+│   │   ├── correct_21.png
+│   │   ├── correct_22.png
+│   │   ├── correct_23.png
+│   │   ├── correct_24.png
+│   │   ├── correct_2.png
+│   │   ├── correct_3.png
+│   │   ├── correct_4.png
+│   │   ├── correct_5.png
+│   │   ├── correct_6.png
+│   │   ├── correct_7.png
+│   │   ├── correct_8.png
+│   │   ├── correct_9.png
+│   │   ├── external_0.png
+│   │   ├── external_1.png
+│   │   ├── misclassifed_0.png
+│   │   ├── misclassifed_10.png
+│   │   ├── misclassifed_11.png
+│   │   ├── misclassifed_12.png
+│   │   ├── misclassifed_13.png
+│   │   ├── misclassifed_14.png
+│   │   ├── misclassifed_15.png
+│   │   ├── misclassifed_16.png
+│   │   ├── misclassifed_17.png
+│   │   ├── misclassifed_18.png
+│   │   ├── misclassifed_19.png
+│   │   ├── misclassifed_1.png
+│   │   ├── misclassifed_20.png
+│   │   ├── misclassifed_21.png
+│   │   ├── misclassifed_22.png
+│   │   ├── misclassifed_23.png
+│   │   ├── misclassifed_24.png
+│   │   ├── misclassifed_2.png
+│   │   ├── misclassifed_3.png
+│   │   ├── misclassifed_4.png
+│   │   ├── misclassifed_5.png
+│   │   ├── misclassifed_6.png
+│   │   ├── misclassifed_7.png
+│   │   ├── misclassifed_8.png
+│   │   └── misclassifed_9.png
+│   ├── imagesfromdataset.png
+│   ├── lrrangetestgraph.png
+│   ├── misclassified
+│   ├── missclassfiedimages.png
+│   ├── modelsummary.png
+│   ├── projectstructure.png
+│   ├── TensorBoardA10-Accuracy.png
+│   ├── TensorBoardA10Images.png
+│   ├── TensorBoardA10-Loss.png
+│   ├── TensorBoardA10ModelGraph.png
+│   ├── TensorBoardA10TestHistogram.png
+│   ├── TensorBoardA10 TrainHistogram.png
+│   ├── testimages
+│   │   ├── car.webp
+│   │   ├── Cat-Dog.jpg
+│   │   ├── cat.jpg
+│   │   ├── child-hugging-cat-dog-450w-179979278.jpg
+│   │   ├── Colour-bird-e1568033112774-696x392.jpg
+│   │   ├── dog-insurance-hero.jpg
+│   │   ├── Horse.jpg
+│   │   ├── odkpair.jpeg
+│   │   ├── puppy-kitten-guinea-pig-horse-450w-290973725.jpg
+│   │   └── ship.jpg
+│   └── traintestgraphs.png
+├── poc
+│   ├── gradcamexperiment.py
+│   ├── __init__.py
+│   ├── __pycache__
+│   │   ├── gradcamexperiment.cpython-36.pyc
+│   │   └── __init__.cpython-36.pyc
+│   └── test.py
+├── projectstructure.txt
+├── Readme.md
+├── requirements.txt
+├── savedmodels
+│   ├── checkpoint-1.pt
+│   ├── checkpoint.pt
+│   ├── finalmodelwithdata-1.pt
+│   ├── finalmodelwithdata.pt
+│   ├── learningratefinder-1.pt
+│   └── learningratefinder.pt
+├── savednotebooks
+│   ├── A10-Copy1.ipynb
+│   ├── A11-1.ipynb
+│   ├── A11-2.ipynb
+│   ├── A11-3.ipynb
+│   ├── A11-4.ipynb
+│   ├── A11-old.ipynb
+│   ├── TensorBoardTest.ipynb
+│   ├── TestGradcam.ipynb
+│   ├── Untitled1.ipynb
+│   └── Untitled.ipynb
+└── src
+    ├── dataset
+    │   ├── customcifar10.py
+    │   ├── dataloader.py
+    │   ├── dataset.py
+    │   ├── __init__.py
+    │   └── __pycache__
+    │       ├── customcifar10.cpython-36.pyc
+    │       ├── dataloader.cpython-36.pyc
+    │       ├── dataset.cpython-36.pyc
+    │       └── __init__.cpython-36.pyc
+    ├── __init__.py
+    ├── models
+    │   ├── A11CustomResnetModel.py
+    │   ├── cnn_model.py
+    │   ├── depthwise_seperable_conv2d.py
+    │   ├── __init__.py
+    │   ├── __pycache__
+    │   │   ├── A11CustomResnetModel.cpython-36.pyc
+    │   │   ├── cnn_model.cpython-36.pyc
+    │   │   ├── depthwise_seperable_conv2d.cpython-36.pyc
+    │   │   ├── __init__.cpython-36.pyc
+    │   │   ├── quizdnn.cpython-36.pyc
+    │   │   └── resnet.cpython-36.pyc
+    │   ├── quizdnn.py
+    │   └── resnet.py
+    ├── preprocessing
+    │   ├── albumentationstransforms.py
+    │   ├── customcompose.py
+    │   ├── cutout.py
+    │   ├── GaussianNoise.py
+    │   ├── __init__.py
+    │   ├── preprochelper.py
+    │   ├── __pycache__
+    │   │   ├── albumentationstransforms.cpython-36.pyc
+    │   │   ├── customcompose.cpython-36.pyc
+    │   │   ├── cutout.cpython-36.pyc
+    │   │   ├── GaussianNoise.cpython-36.pyc
+    │   │   ├── __init__.cpython-36.pyc
+    │   │   ├── preprochelper.cpython-36.pyc
+    │   │   └── pytorchtransforms.cpython-36.pyc
+    │   └── pytorchtransforms.py
+    ├── __pycache__
+    │   └── __init__.cpython-36.pyc
+    ├── train
+    │   ├── __init__.py
+    │   ├── lrfinder
+    │   │   ├── __init__.py
+    │   │   ├── lrfinder.py
+    │   │   └── __pycache__
+    │   │       ├── __init__.cpython-36.pyc
+    │   │       └── lrfinder.cpython-36.pyc
+    │   ├── __pycache__
+    │   │   ├── __init__.cpython-36.pyc
+    │   │   ├── trainhelper.cpython-36.pyc
+    │   │   └── train_model.cpython-36.pyc
+    │   ├── trainhelper.py
+    │   └── train_model.py
+    ├── utils
+    │   ├── __init__.py
+    │   ├── modelutils.py
+    │   ├── __pycache__
+    │   │   ├── __init__.cpython-36.pyc
+    │   │   ├── modelutils.cpython-36.pyc
+    │   │   └── utils.cpython-36.pyc
+    │   └── utils.py
+    └── visualization
+        ├── base.py
+        ├── gradcam
+        │   ├── gradcamhelper.py
+        │   ├── gradcam.py
+        │   ├── __init__.py
+        │   ├── oldgradcam.py
+        │   └── __pycache__
+        │       ├── gradcam.cpython-36.pyc
+        │       ├── gradcamhelper.cpython-36.pyc
+        │       └── __init__.cpython-36.pyc
+        ├── __init__.py
+        ├── plotdata.py
+        ├── __pycache__
+        │   ├── base.cpython-36.pyc
+        │   ├── __init__.cpython-36.pyc
+        │   └── plotdata.cpython-36.pyc
+        ├── saliency
+        │   ├── __init__.py
+        │   ├── __pycache__
+        │   │   ├── __init__.cpython-36.pyc
+        │   │   └── saliencymap.cpython-36.pyc
+        │   └── saliencymap.py
+        ├── tensorboard
+        │   ├── __init__.py
+        │   └── tensorboardhelper.py
+        └── weights
+            ├── __init__.py
+            ├── __pycache__
+            │   ├── __init__.cpython-36.pyc
+            │   └── weights.cpython-36.pyc
+            └── weights.py
+
+38 directories, 190 files
