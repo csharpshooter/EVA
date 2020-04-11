@@ -3,8 +3,8 @@ from torch.utils.tensorboard import SummaryWriter
 
 class TensorboardHelper:
 
-    def __init__(self):
-        self.boardlabel = "educeLR_Resnet18_albumentation_A10"
+    def __init__(self, name):
+        self.boardlabel = name
         self.writer = SummaryWriter(self.boardlabel)
 
     def getsummarywriter(self, name):
