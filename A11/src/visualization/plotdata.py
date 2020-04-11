@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 
-from src.utils import utils, modelutils, tensor2img, cifar10_postprocessing
+from src.utils import utils, modelutils, tensor2img
 from src.visualization.gradcam import gradcamhelper
 from src.visualization.saliency.saliencymap import SaliencyMap
 from src.visualization.weights import Weights
@@ -93,13 +93,16 @@ class PlotData:
             l1, = axs[0].plot(test_losses, label="Test Loss")
             axs[0].set_title("Training and Test Loss.")
             axs[0].legend(loc="best", ncol=1, handles=[l, l1])
+            axs[0].grid()
             t, = axs[1].plot(train_acc, linestyle='--', label="Train Accuracy")
             t1, = axs[1].plot(test_acc, label="Test Accuracy")
             axs[1].set_title(
                 "Training and Test Accuracy. Max train acc = {}, max test acc = {}.".format(maxtrainacc, maxtestacc))
             axs[1].legend(loc="best", ncol=1, handles=[t, t1])
+            axs[1].grid()
             axs[2].plot(lr_data)
             axs[2].set_title("Learning Rate")
+            axs[2].grid()
 
         else:
             fig, axs = plt.subplots(nrows=3, ncols=2, figsize=(15, 10))
@@ -177,3 +180,30 @@ class PlotData:
         img = img / 2 + 0.5  # unnormalize
         npimg = img.cpu().numpy()
         ax.imshow(np.transpose(npimg, (1, 2, 0)))
+
+    def plotlrrangetestgraph(lr_data, test_acc, train_acc, test_losses, train_losses):
+        fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(15, 5))
+
+        l, = axs[0].plot(lr_data, test_acc, linestyle='--', label="Test Accuracy")
+        l2, = axs[0].plot(lr_data, train_acc, linestyle='--', label="Train Accuracy")
+
+        axs[0].set_xlabel('Learning Rate')
+        axs[0].set_ylabel('Accuracy')
+        axs[0].set_title("Accuracy vs LR")
+        axs[0].legend(loc="best", ncol=1, handles=[l, l2])
+        axs[0].grid()
+
+        t, = axs[1].plot(lr_data, test_losses, linestyle='--', label="Test Loss")
+        t2, = axs[1].plot(lr_data, train_losses, linestyle='--', label="Train Loss")
+
+        axs[1].set_xlabel('Learning Rate')
+        axs[1].set_ylabel('Loss')
+        axs[1].set_title("Loss vs LR")
+        axs[1].legend(loc="best", ncol=1, handles=[t, t2])
+        axs[1].grid()
+
+        fig.tight_layout()  # otherwise the right y-label is slightly clipped
+
+        plt.savefig("images/lrrangetestgraph.png", bbox_inches='tight')
+
+        plt.show()

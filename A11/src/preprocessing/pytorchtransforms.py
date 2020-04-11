@@ -1,7 +1,5 @@
 from torchvision import transforms
 
-from .cutout import Cutout
-
 
 class PytorchTransforms(object):
 
@@ -15,7 +13,8 @@ class PytorchTransforms(object):
             transforms.RandomCrop(size=(32, 32), padding=4),
             transforms.ToTensor(),
             transforms.Normalize(mean, std),
-            Cutout(1, 8)
+            transforms.RandomErasing(scale=(0.1, 0.1), ratio=(1, 1)),
+            # Cutout(1, 8)
         ])
 
     def gettesttransforms(self, mean, std):
