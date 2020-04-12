@@ -6,7 +6,7 @@
 ---------------------------------------------------------------------------------------------------------------------------
 1. Wrote own function for One Cycle Policy -> src->train->trainhelper.py. Traingle plot was done with Learning Rate (y-axis) vs Epochs on X-Axis using matplot lib.
 
-![triangleplot](https://github.com/csharpshooter/EVA/blob/master/A11/images/TrainglePlot.png)
+![triangleplot](https://github.com/csharpshooter/EVA/blob/master/A11/images/TrianglePlot.png)
 
 2. Ran model for 25 epochs for lr range test. LR range tested from 0.001 to 0.096. Found optimal Lr between 0.06 to 0.096.
 Min LR = Max LR / 15
