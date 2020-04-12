@@ -8,17 +8,19 @@
 
 ![triangleplot](https://github.com/csharpshooter/EVA/blob/master/A11/images/TrainglePlot.png)
 
-2. Ran model for 25 epochs for lr range test lr range tested from 0.001 to 0.096. Found Max Lr between 0.07 to 0.096.
+2. Ran model for 25 epochs for lr range test. LR range tested from 0.001 to 0.096. Found optimal Lr between 0.06 to 0.096.
 Min LR = Max LR / 15
 
 ![lrrangefinder](https://github.com/csharpshooter/EVA/blob/master/A11/images/lrrangetestgraph.png)
 
 3. Max train accuracy =  92.02, max test accuracy = 90.45.
+
 4. Used following pytorch transforms for augmentation:
   *  RandomRotate(20),
   *  RandomHorizontalFlip,
   *  RandomCrop(size=(32, 32), padding=4),
   *  RandomErasing(scale=(0.08, 0.08), ratio=(1, 1)),
+  
  5. Showing weights at layer 20 and layer 10 along with gradcam outputs along with saliency map.
   
  ![correctsalmap](https://github.com/csharpshooter/EVA/blob/master/A11/images/gradcam/correct_1.png)
@@ -33,6 +35,8 @@ Min LR = Max LR / 15
 ---------------------------------------------------------------------------------------------------------------------------
 ## Project Structure
 --------------------
+
+![ProjectStructure](https://github.com/csharpshooter/EVA/blob/master/A11/images/projectstructure.png)
 
 ---------------------------------------------------------------------------------------------------------------------------
 ## Test and Train, Loss and Accuracy Graphs
