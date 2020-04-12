@@ -1,10 +1,8 @@
-.
+
 ├── A11.ipynb
 ├── A11.py
 ├── customresnet_onecycle_A11
-├── data
 ├── images
-├── poc
 ├── projectstructure.txt
 ├── Readme.md
 ├── requirements.txt
@@ -64,4 +62,3 @@
             ├── __init__.py
             └── weights.py
 
-38 directories, 190 files
