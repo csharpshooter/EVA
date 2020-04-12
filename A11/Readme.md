@@ -9,11 +9,11 @@
 ![triangleplot](https://github.com/csharpshooter/EVA/blob/master/A11/images/TrianglePlot.png)
 
 2. Ran model for 25 epochs for lr range test. LR range tested from 0.001 to 0.096. Found optimal Lr between 0.06 to 0.096.
-Min LR = Max LR / 15
+Max LR = 0.068 ,Min LR = Max LR / 13 = 0.00523
 
 ![lrrangefinder](https://github.com/csharpshooter/EVA/blob/master/A11/images/lrrangetestgraph.png)
 
-3. Max train accuracy =  92.02, max test accuracy = 90.45.
+3. Max train accuracy =  93.59, max test accuracy = 91.7.
 
 4. Used following pytorch transforms for augmentation:
   *  RandomRotate(20),
@@ -54,187 +54,164 @@ Min LR = Max LR / 15
 ## Logs
 0%|          | 0/98 [00:00<?, ?it/s]
 EPOCH: 0
-Learning rate = 0.0068  for epoch:  0
+Learning rate = 0.00523  for epoch:  0
 /home/abhijit/.virtualenvs/dl4cv/lib/python3.6/site-packages/torch/nn/_reduction.py:43: UserWarning: size_average and reduce args will be deprecated, please use reduction='sum' instead.
   warnings.warn(warning.format(ret))
-Loss=1.8318748474121094 Batch_id=97 Accuracy=22.69: 100%|██████████| 98/98 [00:19<00:00,  4.95it/s]
+Loss=1.7145285606384277 Batch_id=97 Accuracy=25.03: 100%|██████████| 98/98 [00:19<00:00,  4.98it/s]
+Test set: Average loss: 0.0035, Accuracy: 3556/10000 (35.56%)
 
-Test set: Average loss: 0.0037, Accuracy: 3151/10000 (31.51%)
-
-Validation accuracy increased (0.000000 --> 31.510000).  Saving model ...
+Validation accuracy increased (0.000000 --> 35.560000).  Saving model ...
   0%|          | 0/98 [00:00<?, ?it/s]
 EPOCH: 1
-Learning rate = 0.0221  for epoch:  1
-Loss=1.475935935974121 Batch_id=97 Accuracy=35.73: 100%|██████████| 98/98 [00:22<00:00,  4.36it/s] 
+Learning rate = 0.020922500000000004  for epoch:  1
+Loss=1.4757856130599976 Batch_id=97 Accuracy=34.77: 100%|██████████| 98/98 [00:19<00:00,  4.93it/s]
+Test set: Average loss: 0.0031, Accuracy: 4613/10000 (46.13%)
 
-Test set: Average loss: 0.0030, Accuracy: 4954/10000 (49.54%)
-
-Validation accuracy increased (31.510000 --> 49.540000).  Saving model ...
+Validation accuracy increased (35.560000 --> 46.130000).  Saving model ...
   0%|          | 0/98 [00:00<?, ?it/s]
 EPOCH: 2
-Learning rate = 0.0374  for epoch:  2
-Loss=1.3536574840545654 Batch_id=97 Accuracy=43.35: 100%|██████████| 98/98 [00:33<00:00,  2.90it/s]
-
-Test set: Average loss: 0.0027, Accuracy: 5211/10000 (52.11%)
-
-Validation accuracy increased (49.540000 --> 52.110000).  Saving model ...
+Learning rate = 0.036615  for epoch:  2
+Loss=1.3833483457565308 Batch_id=97 Accuracy=45.59: 100%|██████████| 98/98 [00:29<00:00,  3.31it/s]
   0%|          | 0/98 [00:00<?, ?it/s]
+Test set: Average loss: 0.0034, Accuracy: 4316/10000 (43.16%)
+
 EPOCH: 3
-Learning rate = 0.052700000000000004  for epoch:  3
-Loss=0.9870603680610657 Batch_id=97 Accuracy=55.16: 100%|██████████| 98/98 [00:35<00:00,  2.74it/s]
+Learning rate = 0.05230750000000001  for epoch:  3
+Loss=1.1887569427490234 Batch_id=97 Accuracy=51.75: 100%|██████████| 98/98 [00:34<00:00,  2.86it/s]
+Test set: Average loss: 0.0024, Accuracy: 5615/10000 (56.15%)
 
-Test set: Average loss: 0.0022, Accuracy: 6067/10000 (60.67%)
-
-Validation accuracy increased (52.110000 --> 60.670000).  Saving model ...
+Validation accuracy increased (46.130000 --> 56.150000).  Saving model ...
   0%|          | 0/98 [00:00<?, ?it/s]
 EPOCH: 4
 Learning rate = 0.068  for epoch:  4
-Loss=0.9823508262634277 Batch_id=97 Accuracy=64.26: 100%|██████████| 98/98 [00:37<00:00,  2.58it/s]
+Loss=1.2031654119491577 Batch_id=97 Accuracy=62.59: 100%|██████████| 98/98 [00:34<00:00,  2.81it/s]
+Test set: Average loss: 0.0020, Accuracy: 6475/10000 (64.75%)
 
-Test set: Average loss: 0.0019, Accuracy: 6748/10000 (67.48%)
-
-Validation accuracy increased (60.670000 --> 67.480000).  Saving model ...
+Validation accuracy increased (56.150000 --> 64.750000).  Saving model ...
   0%|          | 0/98 [00:00<?, ?it/s]
 EPOCH: 5
-Learning rate = 0.06477894736842106  for epoch:  5
-Loss=0.7789981365203857 Batch_id=97 Accuracy=71.10: 100%|██████████| 98/98 [00:41<00:00,  2.37it/s]
+Learning rate = 0.06469631578947369  for epoch:  5
+Loss=0.8196614384651184 Batch_id=97 Accuracy=69.39: 100%|██████████| 98/98 [00:36<00:00,  2.65it/s]
+Test set: Average loss: 0.0017, Accuracy: 7027/10000 (70.27%)
 
-Test set: Average loss: 0.0018, Accuracy: 6845/10000 (68.45%)
-
-Validation accuracy increased (67.480000 --> 68.450000).  Saving model ...
+Validation accuracy increased (64.750000 --> 70.270000).  Saving model ...
   0%|          | 0/98 [00:00<?, ?it/s]
 EPOCH: 6
-Learning rate = 0.06155789473684211  for epoch:  6
-Loss=0.7338870167732239 Batch_id=97 Accuracy=74.35: 100%|██████████| 98/98 [00:41<00:00,  2.37it/s]
+Learning rate = 0.06139263157894737  for epoch:  6
+Loss=0.7618541717529297 Batch_id=97 Accuracy=73.83: 100%|██████████| 98/98 [00:40<00:00,  2.42it/s]
+Test set: Average loss: 0.0013, Accuracy: 7726/10000 (77.26%)
+
+Validation accuracy increased (70.270000 --> 77.260000).  Saving model ...
   0%|          | 0/98 [00:00<?, ?it/s]
-
-Test set: Average loss: 0.0019, Accuracy: 6576/10000 (65.76%)
-
 EPOCH: 7
-Learning rate = 0.05833684210526316  for epoch:  7
-Loss=0.6311578154563904 Batch_id=97 Accuracy=76.51: 100%|██████████| 98/98 [00:41<00:00,  2.37it/s]
+Learning rate = 0.05808894736842106  for epoch:  7
+Loss=0.6519532203674316 Batch_id=97 Accuracy=76.82: 100%|██████████| 98/98 [00:39<00:00,  2.49it/s]
+Test set: Average loss: 0.0012, Accuracy: 7893/10000 (78.93%)
 
-Test set: Average loss: 0.0012, Accuracy: 7909/10000 (79.09%)
-
-Validation accuracy increased (68.450000 --> 79.090000).  Saving model ...
+Validation accuracy increased (77.260000 --> 78.930000).  Saving model ...
   0%|          | 0/98 [00:00<?, ?it/s]
 EPOCH: 8
-Learning rate = 0.055115789473684215  for epoch:  8
-Loss=0.6519821286201477 Batch_id=97 Accuracy=78.29: 100%|██████████| 98/98 [00:41<00:00,  2.33it/s]
+Learning rate = 0.05478526315789474  for epoch:  8
+Loss=0.624919056892395 Batch_id=97 Accuracy=78.64: 100%|██████████| 98/98 [00:41<00:00,  2.36it/s] 
+Test set: Average loss: 0.0011, Accuracy: 8154/10000 (81.54%)
+
+Validation accuracy increased (78.930000 --> 81.540000).  Saving model ...
   0%|          | 0/98 [00:00<?, ?it/s]
-
-Test set: Average loss: 0.0015, Accuracy: 7436/10000 (74.36%)
-
 EPOCH: 9
-Learning rate = 0.05189473684210527  for epoch:  9
-Loss=0.6197738647460938 Batch_id=97 Accuracy=78.96: 100%|██████████| 98/98 [00:43<00:00,  2.26it/s]
+Learning rate = 0.05148157894736842  for epoch:  9
+Loss=0.5436624884605408 Batch_id=97 Accuracy=80.40: 100%|██████████| 98/98 [00:39<00:00,  2.46it/s] 
   0%|          | 0/98 [00:00<?, ?it/s]
-
-Test set: Average loss: 0.0013, Accuracy: 7663/10000 (76.63%)
+Test set: Average loss: 0.0013, Accuracy: 7731/10000 (77.31%)
 
 EPOCH: 10
-Learning rate = 0.04867368421052632  for epoch:  10
-Loss=0.5957424640655518 Batch_id=97 Accuracy=80.01: 100%|██████████| 98/98 [00:44<00:00,  2.20it/s] 
+Learning rate = 0.04817789473684211  for epoch:  10
+Loss=0.539050817489624 Batch_id=97 Accuracy=81.63: 100%|██████████| 98/98 [00:42<00:00,  2.32it/s]  
   0%|          | 0/98 [00:00<?, ?it/s]
-
-Test set: Average loss: 0.0017, Accuracy: 7274/10000 (72.74%)
+Test set: Average loss: 0.0012, Accuracy: 7817/10000 (78.17%)
 
 EPOCH: 11
-Learning rate = 0.04545263157894737  for epoch:  11
-Loss=0.6328437328338623 Batch_id=97 Accuracy=81.03: 100%|██████████| 98/98 [00:43<00:00,  2.26it/s] 
+Learning rate = 0.044874210526315794  for epoch:  11
+Loss=0.537773847579956 Batch_id=97 Accuracy=82.66: 100%|██████████| 98/98 [00:40<00:00,  2.41it/s]  
   0%|          | 0/98 [00:00<?, ?it/s]
-
-Test set: Average loss: 0.0017, Accuracy: 7079/10000 (70.79%)
+Test set: Average loss: 0.0016, Accuracy: 7272/10000 (72.72%)
 
 EPOCH: 12
-Learning rate = 0.042231578947368426  for epoch:  12
-Loss=0.6438823938369751 Batch_id=97 Accuracy=81.83: 100%|██████████| 98/98 [00:42<00:00,  2.29it/s] 
+Learning rate = 0.041570526315789474  for epoch:  12
+Loss=0.5607398152351379 Batch_id=97 Accuracy=83.37: 100%|██████████| 98/98 [00:40<00:00,  2.40it/s] 
+Test set: Average loss: 0.0011, Accuracy: 8162/10000 (81.62%)
 
-Test set: Average loss: 0.0011, Accuracy: 8134/10000 (81.34%)
-
-Validation accuracy increased (79.090000 --> 81.340000).  Saving model ...
+Validation accuracy increased (81.540000 --> 81.620000).  Saving model ...
   0%|          | 0/98 [00:00<?, ?it/s]
 EPOCH: 13
-Learning rate = 0.03901052631578948  for epoch:  13
-Loss=0.42896437644958496 Batch_id=97 Accuracy=82.56: 100%|██████████| 98/98 [00:41<00:00,  2.38it/s]
+Learning rate = 0.038266842105263155  for epoch:  13
+Loss=0.41175684332847595 Batch_id=97 Accuracy=84.22: 100%|██████████| 98/98 [00:41<00:00,  2.38it/s]
+Test set: Average loss: 0.0010, Accuracy: 8299/10000 (82.99%)
 
-Test set: Average loss: 0.0010, Accuracy: 8325/10000 (83.25%)
-
-Validation accuracy increased (81.340000 --> 83.250000).  Saving model ...
+Validation accuracy increased (81.620000 --> 82.990000).  Saving model ...
   0%|          | 0/98 [00:00<?, ?it/s]
 EPOCH: 14
-Learning rate = 0.03578947368421053  for epoch:  14
-Loss=0.4407457709312439 Batch_id=97 Accuracy=83.52: 100%|██████████| 98/98 [00:40<00:00,  2.43it/s] 
+Learning rate = 0.03496315789473684  for epoch:  14
+Loss=0.4432563781738281 Batch_id=97 Accuracy=85.17: 100%|██████████| 98/98 [00:40<00:00,  2.39it/s] 
+Test set: Average loss: 0.0008, Accuracy: 8646/10000 (86.46%)
+
+Validation accuracy increased (82.990000 --> 86.460000).  Saving model ...
   0%|          | 0/98 [00:00<?, ?it/s]
-
-Test set: Average loss: 0.0010, Accuracy: 8275/10000 (82.75%)
-
 EPOCH: 15
-Learning rate = 0.03256842105263158  for epoch:  15
-Loss=0.4933714270591736 Batch_id=97 Accuracy=84.12: 100%|██████████| 98/98 [00:41<00:00,  2.34it/s] 
+Learning rate = 0.03165947368421053  for epoch:  15
+Loss=0.39080023765563965 Batch_id=97 Accuracy=86.00: 100%|██████████| 98/98 [00:40<00:00,  2.41it/s]
   0%|          | 0/98 [00:00<?, ?it/s]
-
-Test set: Average loss: 0.0011, Accuracy: 8175/10000 (81.75%)
+Test set: Average loss: 0.0009, Accuracy: 8414/10000 (84.14%)
 
 EPOCH: 16
-Learning rate = 0.029347368421052636  for epoch:  16
-Loss=0.48405155539512634 Batch_id=97 Accuracy=84.74: 100%|██████████| 98/98 [00:43<00:00,  2.25it/s]
-
-Test set: Average loss: 0.0009, Accuracy: 8486/10000 (84.86%)
-
-Validation accuracy increased (83.250000 --> 84.860000).  Saving model ...
+Learning rate = 0.02835578947368421  for epoch:  16
+Loss=0.41148507595062256 Batch_id=97 Accuracy=86.95: 100%|██████████| 98/98 [00:45<00:00,  2.15it/s]
   0%|          | 0/98 [00:00<?, ?it/s]
+Test set: Average loss: 0.0008, Accuracy: 8617/10000 (86.17%)
+
 EPOCH: 17
-Learning rate = 0.026126315789473692  for epoch:  17
-Loss=0.4573661684989929 Batch_id=97 Accuracy=85.70: 100%|██████████| 98/98 [00:43<00:00,  2.24it/s] 
+Learning rate = 0.02505210526315789  for epoch:  17
+Loss=0.3731699287891388 Batch_id=97 Accuracy=87.74: 100%|██████████| 98/98 [00:41<00:00,  2.35it/s] 
   0%|          | 0/98 [00:00<?, ?it/s]
-
-Test set: Average loss: 0.0010, Accuracy: 8308/10000 (83.08%)
+Test set: Average loss: 0.0008, Accuracy: 8644/10000 (86.44%)
 
 EPOCH: 18
-Learning rate = 0.02290526315789474  for epoch:  18
-Loss=0.41120025515556335 Batch_id=97 Accuracy=86.65: 100%|██████████| 98/98 [00:40<00:00,  2.43it/s]
+Learning rate = 0.021748421052631577  for epoch:  18
+Loss=0.3474939465522766 Batch_id=97 Accuracy=88.82: 100%|██████████| 98/98 [00:38<00:00,  2.53it/s] 
+Test set: Average loss: 0.0008, Accuracy: 8658/10000 (86.58%)
+
+Validation accuracy increased (86.460000 --> 86.580000).  Saving model ...
   0%|          | 0/98 [00:00<?, ?it/s]
-
-Test set: Average loss: 0.0009, Accuracy: 8401/10000 (84.01%)
-
 EPOCH: 19
-Learning rate = 0.01968421052631579  for epoch:  19
-Loss=0.39725521206855774 Batch_id=97 Accuracy=87.40: 100%|██████████| 98/98 [00:42<00:00,  2.32it/s]
+Learning rate = 0.018444736842105264  for epoch:  19
+Loss=0.3990764617919922 Batch_id=97 Accuracy=89.27: 100%|██████████| 98/98 [00:42<00:00,  2.31it/s] 
+Test set: Average loss: 0.0008, Accuracy: 8659/10000 (86.59%)
 
-Test set: Average loss: 0.0009, Accuracy: 8493/10000 (84.93%)
-
-Validation accuracy increased (84.860000 --> 84.930000).  Saving model ...
+Validation accuracy increased (86.580000 --> 86.590000).  Saving model ...
   0%|          | 0/98 [00:00<?, ?it/s]
 EPOCH: 20
-Learning rate = 0.016463157894736846  for epoch:  20
-Loss=0.3162410855293274 Batch_id=97 Accuracy=88.60: 100%|██████████| 98/98 [00:44<00:00,  2.21it/s] 
+Learning rate = 0.015141052631578944  for epoch:  20
+Loss=0.2886563837528229 Batch_id=97 Accuracy=90.16: 100%|██████████| 98/98 [00:42<00:00,  2.32it/s] 
+Test set: Average loss: 0.0007, Accuracy: 8905/10000 (89.05%)
 
-Test set: Average loss: 0.0007, Accuracy: 8816/10000 (88.16%)
-
-Validation accuracy increased (84.930000 --> 88.160000).  Saving model ...
+Validation accuracy increased (86.590000 --> 89.050000).  Saving model ...
   0%|          | 0/98 [00:00<?, ?it/s]
 EPOCH: 21
-Learning rate = 0.013242105263157902  for epoch:  21
-Loss=0.28780344128608704 Batch_id=97 Accuracy=89.61: 100%|██████████| 98/98 [00:42<00:00,  2.30it/s]
+Learning rate = 0.011837368421052624  for epoch:  21
+Loss=0.24585449695587158 Batch_id=97 Accuracy=91.38: 100%|██████████| 98/98 [00:38<00:00,  2.57it/s]
+Test set: Average loss: 0.0006, Accuracy: 9028/10000 (90.28%)
 
-Test set: Average loss: 0.0006, Accuracy: 8926/10000 (89.26%)
-
-Validation accuracy increased (88.160000 --> 89.260000).  Saving model ...
+Validation accuracy increased (89.050000 --> 90.280000).  Saving model ...
   0%|          | 0/98 [00:00<?, ?it/s]
 EPOCH: 22
-Learning rate = 0.010021052631578951  for epoch:  22
-Loss=0.3368803560733795 Batch_id=97 Accuracy=90.66: 100%|██████████| 98/98 [00:43<00:00,  2.27it/s] 
+Learning rate = 0.008533684210526311  for epoch:  22
+Loss=0.26173126697540283 Batch_id=97 Accuracy=92.41: 100%|██████████| 98/98 [00:43<00:00,  2.25it/s]
+Test set: Average loss: 0.0006, Accuracy: 9058/10000 (90.58%)
 
-Test set: Average loss: 0.0006, Accuracy: 9035/10000 (90.35%)
-
-Validation accuracy increased (89.260000 --> 90.350000).  Saving model ...
+Validation accuracy increased (90.280000 --> 90.580000).  Saving model ...
   0%|          | 0/98 [00:00<?, ?it/s]
 EPOCH: 23
-Learning rate = 0.0068000000000000005  for epoch:  23
-Loss=0.19240239262580872 Batch_id=97 Accuracy=92.02: 100%|██████████| 98/98 [00:39<00:00,  2.50it/s]
+Learning rate = 0.0052299999999999985  for epoch:  23
+Loss=0.15184636414051056 Batch_id=97 Accuracy=93.59: 100%|██████████| 98/98 [00:42<00:00,  2.29it/s]
+Test set: Average loss: 0.0005, Accuracy: 9170/10000 (91.70%)
 
-Test set: Average loss: 0.0006, Accuracy: 9045/10000 (90.45%)
-
-Validation accuracy increased (90.350000 --> 90.450000).  Saving model ...
- 
+Validation accuracy increased (90.580000 --> 91.700000).  Saving model ...
