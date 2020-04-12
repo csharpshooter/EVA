@@ -105,7 +105,7 @@ class PlotData:
             axs[1].legend(loc="best", ncol=1, handles=[t, t1])
             axs[1].grid()
             axs[2].plot(lr_data)
-            axs[1].set_xlabel('Epochs')
+            axs[2].set_xlabel('Epochs')
             axs[2].set_ylabel('Learning Rate')
             axs[2].set_title("Learning Rate")
             axs[2].grid()
