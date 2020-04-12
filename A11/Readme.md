@@ -29,6 +29,8 @@ Min LR = Max LR / 15
  7. Added Tensorboard visualization
 
  ![ModelGraph](https://github.com/csharpshooter/EVA/blob/master/A11/images/ModelGraphTensorBoard.png)
+ ![Graphs](https://github.com/csharpshooter/EVA/blob/master/A11/images/TensorBoardGraphs.png)
+ ![Dist](https://github.com/csharpshooter/EVA/blob/master/A11/images/TensorBoardDistribution.png)
     
 ---------------------------------------------------------------------------------------------------------------------------
 
