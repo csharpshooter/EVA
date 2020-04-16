@@ -6,3 +6,5 @@ from .customcifar10 import CustomCifar10
 from .tinyimagenethelper import TinyImagenetHelper
 from .dataloader import Dataloader
 from .tinyimagenetdataset import TinyImagenetDataset
+from .T1 import T1
+

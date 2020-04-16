@@ -8,7 +8,7 @@
 
 import datetime
 
-from src.dataset import TinyImagenetHelper
+from src.dataset import TinyImagenetHelper, T1
 
 print("Model execution started at:" + datetime.datetime.today().ctime())
 
@@ -71,6 +71,15 @@ import torch
 print(torch.__version__)
 
 # In[7]:
+
+# tiny_val = T1('/home/abhijit/EVARepo/EVA/A12/A12-A/data/tiny-imagenet-200', split='val', in_memory=True)
+
+
+
+
+
+
+
 helper = TinyImagenetHelper()
 
 path = helper.download_dataset(folder_path="data")

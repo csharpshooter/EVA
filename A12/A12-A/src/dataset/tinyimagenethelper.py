@@ -39,38 +39,44 @@ class TinyImagenetHelper:
 
     def get_train_test_labels_data(self, id_dict, path, test_split=0.3):
         print('Starting data loading')
+
         train_data, test_data = [], []
         train_labels, test_labels = [], []
         t = time.time()
         total_images = 110000
-        train_image_count = total_images - (total_images * test_split)
+        total_val_images = 10000
+        images_for_class = 500
+        train_image_count = images_for_class - (images_for_class * test_split)
         for key, value in tqdm(id_dict.items()):
-            for i in range(500):
-                if len(train_data) < train_image_count:
-                    # noinspection DuplicatedCode
-                    train_data.append(path + '/train/{}/images/{}_{}.JPEG'.format(key, key, str(i)))
-                    # imread(path + '/train/{}/images/{}_{}.JPEG'.format(key, key, str(i)), pilmode='RGB'))
-                    # train_labels_ = np.array([[0] * 200])
-                    # train_labels_[:, value] = 1
-                    # train_labels += train_labels_.tolist()
-                    train_labels.append(id_dict[key])
+            all_data, all_labels = [], []
+            for i in range(images_for_class):
+                all_data.append(path + '/train/{}/images/{}_{}.JPEG'.format(key, key, str(i)))
+                all_labels.append(id_dict[key])
 
+            for x in range(0, images_for_class):
+                if x < train_image_count:
+                    train_data.append(all_data[x])
+                    train_labels.append(all_labels[x])
                 else:
-                    test_data.append(path + '/train/{}/images/{}_{}.JPEG'.format(key, key, str(i)))
-                    # imread(path + '/train/{}/images/{}_{}.JPEG'.format(key, key, str(i)), pilmode='RGB'))
-                    # test_labels_ = np.array([[0] * 200])
-                    # test_labels_[:, value] = 1
-                    # test_labels += test_labels_.tolist()
-                    test_labels.append(id_dict[key])
+                    test_data.append(all_data[x])
+                    test_labels.append(all_labels[x])
 
+        test_image_count = total_val_images - (total_val_images * test_split)
+        val_count = 0
         for line in tqdm(open(path + '/val/val_annotations.txt')):
             img_name, class_id = line.split('\t')[:2]
-            test_data.append(path + '/val/images/{}'.format(img_name))
-            # test_data.append(imread(path + '/val/images/{}'.format(img_name), pilmode='RGB'))
-            # test_labels_ = np.array([[0] * 200])
-            # test_labels_[0, id_dict[class_id]] = 1
-            # test_labels += test_labels_.tolist()
-            test_labels.append(id_dict[class_id])
+            if val_count < test_image_count:
+                train_data.append(path + '/val/images/{}'.format(img_name))
+                train_labels.append(id_dict[class_id])
+            else:
+                test_data.append(path + '/val/images/{}'.format(img_name))
+                test_labels.append(id_dict[class_id])
+
+            val_count += 1
+            # all_data.append(path + '/val/images/{}'.format(img_name))
+            # all_labels.append(id_dict[class_id])
+            # test_data.append(path + '/val/images/{}'.format(img_name))
+            # test_labels.append(id_dict[class_id])
 
         print('Finished data loading, in {} seconds'.format(time.time() - t))
         return np.array(train_data), train_labels, np.array(test_data), test_labels
