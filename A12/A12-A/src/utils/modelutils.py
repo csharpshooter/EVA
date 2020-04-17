@@ -15,6 +15,9 @@ image_net_std = torch.Tensor([0.229, 0.224, 0.225])
 cifar10_mean = torch.Tensor(cifar_std)
 cifar10_std = torch.Tensor(cifar_std)
 
+tiny_image_net_mean = [0.48043722, 0.44820285, 0.39760238]
+tiny_image_net_std = [0.27698976, 0.26908714, 0.2821603]
+
 import matplotlib.pyplot as plt
 
 

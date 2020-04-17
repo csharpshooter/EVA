@@ -25,7 +25,7 @@ class AlbumentaionsTransforms(object):
                 GridDistortion(p=0.4),
             ], p=0.6),
             HueSaturationValue(hue_shift_limit=20, sat_shift_limit=0.1, val_shift_limit=0.1, p=0.6),
-            Cutout(always_apply=True, num_holes=1, max_h_size=8, max_w_size=16, fill_value=(255 * .6)),
+            Cutout(always_apply=True, num_holes=1, max_h_size=16, max_w_size=16, fill_value=(255 * .6)),
             Normalize(mean=mean, std=std, always_apply=True),
             pytorch.ToTensorV2(always_apply=True),
 

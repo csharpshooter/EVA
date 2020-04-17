@@ -1,5 +1,6 @@
 import torch
 
+
 class GaussianNoise(object):
     def __init__(self, mean=0., std=1.):
         self.std = std

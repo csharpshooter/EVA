@@ -3,11 +3,12 @@ import sys
 import numpy as np
 import torch
 from torch.nn import CrossEntropyLoss
+from torch.optim.lr_scheduler import LambdaLR
 from torchsummary import summary
 from tqdm import tqdm
 
+from src.utils import Utils
 
-# import src.utils.utils as utils
 
 class TrainModel:
 
@@ -44,18 +45,18 @@ class TrainModel:
             # Predict
             y_pred = model(data)
 
-            # Calculate L1 loss
-            l1_crit = torch.nn.L1Loss(size_average=False)
-            reg_loss = 0
-            for param in model.parameters():
-                spare_matrix = torch.randn_like(param) * 0
-                reg_loss += l1_crit(param, spare_matrix)
-
-            self.reg_loss_l1.append(reg_loss)
+            # # Calculate L1 loss
+            # l1_crit = torch.nn.L1Loss(size_average=False)
+            # reg_loss = 0
+            # for param in model.parameters():
+            #     spare_matrix = torch.randn_like(param) * 0
+            #     reg_loss += l1_crit(param, spare_matrix)
+            #
+            # self.reg_loss_l1.append(reg_loss)
 
             # Calculate loss
             loss = self.loss_type(y_pred, target)
-            loss += self.factor * reg_loss
+            # loss += self.factor * reg_loss
             # self.train_losses.append(loss)
 
             # Backpropagation
@@ -196,3 +197,69 @@ class TrainModel:
             print(sys.exc_info()[0])
 
         return classified, misclassified
+
+    def start_training_cyclic_lr(self, epochs, model, device, test_loader, train_loader, min_lr=None, max_lr=None,
+                                 cycles=1, annealing=False):
+        lr_data = []
+        class_correct = list(0. for i in range(10))
+        class_total = list(0. for i in range(10))
+        optimizer = self.get_optimizer(model=model)
+        scheduler = self.get_cyclic_scheduler(optimizer, epochs=epochs, max_lr_epoch=5, min_lr=min_lr, max_lr=max_lr)
+
+        for count in range(0, cycles):
+            print("Starting cycle: {}".format(count + 1))
+            self.start_training(epochs, model, device, test_loader, train_loader, optimizer, scheduler, lr_data,
+                                class_correct, class_total)
+            print("Completed cycle: {}".format(count + 1))
+
+            if annealing and cycles > 1:
+                diff = max_lr - min_lr
+                diff = diff / 2
+                max_lr = diff + min_lr
+                print("New max_lr: {}".format(max_lr))
+                optimizer = self.get_optimizer(model=model)
+                scheduler = self.get_cyclic_scheduler(optimizer, epochs=epochs, max_lr_epoch=5, min_lr=min_lr,
+                                                      max_lr=max_lr)
+
+        return lr_data, class_correct, class_total
+
+    def start_training(self, epochs, model, device, test_loader, train_loader, optimizer, scheduler, lr_data,
+                       class_correct, class_total):
+        for epoch in range(0, epochs):
+            print("EPOCH:", epoch)
+
+            for param_groups in optimizer.param_groups:
+                print("Learning rate =", param_groups['lr'], " for epoch: ", epoch)  # print LR for different epochs
+                lr_data.append(param_groups['lr'])
+
+            self.train(model, device, train_loader, optimizer, epoch)
+            t_acc_epoch = self.test(model=model, device=device, test_loader=test_loader,
+                                    class_correct=class_correct,
+                                    class_total=class_total, epoch=epoch, lr_data=lr_data)
+            scheduler.step()
+
+        print('Saving final model after training cycle completion')
+        self.save_model(model, epochs, optimizer.state_dict, lr_data, class_correct, class_total,
+                        path="savedmodels/finalmodelwithdata.pt")
+
+        return lr_data, class_correct, class_total
+
+    def get_optimizer(self, model, lr=1, momentum=0.9, weight_decay=0):
+        optimizer = Utils.createoptimizer(model, lr=lr, momentum=momentum, weight_decay=weight_decay, nesterov=True)
+        return optimizer
+
+    def get_cyclic_scheduler(self, optimizer, epochs=25, max_lr_epoch=5, min_lr=0.01, max_lr=0.1):
+        from src.train import TrainHelper
+        lambda1 = TrainHelper.cyclical_lr(max_lr_epoch=max_lr_epoch, epochs=epochs, min_lr=min_lr, max_lr=max_lr)
+        scheduler = LambdaLR(optimizer, lr_lambda=[lambda1])
+        return scheduler
+
+    def save_model(self, model, epochs, optimizer_state_dict, lr_data, class_correct, class_total,
+                   path="savedmodels/finalmodelwithdata.pt"):
+        train_losses, train_acc = self.gettraindata()
+        test_losses, test_acc = self.gettestdata()
+        Utils.savemodel(model=model, epoch=epochs, path=path,
+                        optimizer_state_dict=optimizer_state_dict
+                        , train_losses=train_losses, train_acc=train_acc, test_acc=test_acc,
+                        test_losses=test_losses, lr_data=lr_data, class_correct=class_correct,
+                        class_total=class_total)

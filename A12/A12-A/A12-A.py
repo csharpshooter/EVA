@@ -1,83 +1,10 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# # Import Libraries
+from src.imports import *
 
-# In[1]:
-
-
-import datetime
-
-from src.dataset import TinyImagenetHelper, T1
-
-print("Model execution started at:" + datetime.datetime.today().ctime())
-
-# In[2]:
-
-import torchvision
-import src.dataset.dataset as dst
-import src.dataset.dataloader as dl
-import src.utils.utils as utils
-import src.train.train_model as train
-import src.visualization.plotdata as plotdata
-import src.preprocessing.preprochelper as preprochelper
-from src.train.lrfinder.lrfinder import LRFinder
-# from src.dataset.tinyimagenethelper import TinyImagenetHelper
-
-# get_ipython().run_line_magic('config', 'IPCompleter.greedy=True')
-# get_ipython().run_line_magic('reload_ext', 'autoreload')
-#
-#
-# # In[3]:
-#
-#
-# get_ipython().run_line_magic('autoreload', '2  # Autoreload all modules')
-
-
-# In[4]:
-
-
-# def printgpuinfo():
-#     gpu_info = get_ipython().getoutput('nvidia-smi')
-#     gpu_info = '\n'.join(gpu_info)
-#     if gpu_info.find('failed') >= 0:
-#       print('Select the Runtime → "Change runtime type" menu to enable a GPU accelerator, ')
-#       print('and then re-execute this cell.')
-#     else:
-#       print(gpu_info)
-#
-# printgpuinfo()
-
-
-# In[5]:
-
-
-# def showsysteminfo():
-#     from psutil import virtual_memory
-#     ram_gb = virtual_memory().total / 1e9
-#     ram_gb_avail = virtual_memory().available / 1e9
-#     ram_gb_used = virtual_memory().active / 1e9
-#     print('Your runtime has {:.1f} gigabytes of available RAM\n'.format(ram_gb))
-#     print('Your runtime has {:.1f} gigabytes of free RAM\n'.format(ram_gb_avail))
-#     print('Your runtime has {:.1f} gigabytes of used RAM\n'.format(ram_gb_used))
-# showsysteminfo()
-
-
-# In[6]:
-
-
-import torch
-
-print(torch.__version__)
-
-# In[7]:
 
 # tiny_val = T1('/home/abhijit/EVARepo/EVA/A12/A12-A/data/tiny-imagenet-200', split='val', in_memory=True)
-
-
-
-
-
 
 
 helper = TinyImagenetHelper()
@@ -120,7 +47,7 @@ test_loader = dataloader.gettestdataloader()
 # specify the image classes
 # classes = ds.getclassesinCIFAR10dataset()
 data_iterator = iter(train_loader)
-plotdata.PlotData.showImagesfromdataset(data_iterator, classes=classes)
+plotdata.PlotData.showImagesfromdataset(data_iterator, values=classes)
 
 # In[8]:
 use_cuda = torch.cuda.is_available()
@@ -201,8 +128,8 @@ utils.Utils.savemodel(model=cnn_model, epoch=epochs, path="savedmodels/finalmode
 # In[1]:
 
 
-import src.utils.utils as utils
 import src.preprocessing.albumentationstransforms as preprocessing
+import src.utils.utils as utils
 
 preproc = preprocessing.AlbumentaionsTransforms()
 import glob
