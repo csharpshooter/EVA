@@ -212,14 +212,17 @@ class TrainModel:
                                 class_correct, class_total)
             print("Completed cycle: {}".format(count + 1))
 
-            if annealing and cycles > 1:
+            if annealing:
                 diff = max_lr - min_lr
                 diff = diff / 2
                 max_lr = diff + min_lr
                 print("New max_lr: {}".format(max_lr))
+
+            if cycles > 1:
                 optimizer = self.get_optimizer(model=model)
                 scheduler = self.get_cyclic_scheduler(optimizer, epochs=epochs, max_lr_epoch=5, min_lr=min_lr,
                                                       max_lr=max_lr)
+
 
         return lr_data, class_correct, class_total
 

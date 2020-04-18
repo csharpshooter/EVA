@@ -2,7 +2,9 @@
 # coding: utf-8
 
 from src.imports import *
+import torch.optim.lr_scheduler
 
+torch.optim.lr_scheduler.CyclicLR
 
 # tiny_val = T1('/home/abhijit/EVARepo/EVA/A12/A12-A/data/tiny-imagenet-200', split='val', in_memory=True)
 
