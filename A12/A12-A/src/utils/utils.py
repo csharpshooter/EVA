@@ -6,6 +6,7 @@ import numpy as np
 import torch
 import torch.optim as optim
 # from albumentations.pytorch import ToTensor
+from torch.optim.lr_scheduler import LambdaLR
 from torchvision import datasets
 from torchvision.transforms import ToTensor
 import requests
@@ -269,3 +270,6 @@ class Utils:
 
         print('File extraction completed.')
         return output_folder
+
+    def create_scheduler_lambda_lr(lambda_fn, optimizer):
+        return LambdaLR(optimizer, lr_lambda=[lambda_fn])

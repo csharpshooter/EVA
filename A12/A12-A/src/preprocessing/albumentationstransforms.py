@@ -1,6 +1,7 @@
 import cv2
 from albumentations import Compose, Flip, pytorch, Normalize, OneOf, MotionBlur, MedianBlur, Blur, \
-    ShiftScaleRotate, OpticalDistortion, GridDistortion, HueSaturationValue, Cutout, GaussNoise, RandomCrop, PadIfNeeded
+    ShiftScaleRotate, OpticalDistortion, GridDistortion, HueSaturationValue, CoarseDropout, GaussNoise, RandomCrop, \
+    PadIfNeeded
 
 
 class AlbumentaionsTransforms(object):
@@ -10,7 +11,7 @@ class AlbumentaionsTransforms(object):
 
         albumentations_transform = Compose([
             # RandomRotate90(),
-            PadIfNeeded(72, 72, border_mode=cv2.BORDER_CONSTANT, always_apply=True),
+            PadIfNeeded(72, 72, border_mode=cv2.BORDER_REFLECT, always_apply=True),
             RandomCrop(64, 64, True),
             Flip(),
             GaussNoise(p=0.8, mean=mean),
@@ -25,7 +26,8 @@ class AlbumentaionsTransforms(object):
                 GridDistortion(p=0.4),
             ], p=0.6),
             HueSaturationValue(hue_shift_limit=20, sat_shift_limit=0.1, val_shift_limit=0.1, p=0.6),
-            Cutout(always_apply=True, num_holes=1, max_h_size=16, max_w_size=16, fill_value=(255 * .6)),
+            CoarseDropout(always_apply=True, max_holes=1, min_holes=1, max_height=16, max_width=16,
+                          fill_value=(255 * .6), min_height=16, min_width=16),
             Normalize(mean=mean, std=std, always_apply=True),
             pytorch.ToTensorV2(always_apply=True),
 

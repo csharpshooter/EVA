@@ -223,11 +223,10 @@ class TrainModel:
                 scheduler = self.get_cyclic_scheduler(optimizer, epochs=epochs, max_lr_epoch=5, min_lr=min_lr,
                                                       max_lr=max_lr)
 
-
         return lr_data, class_correct, class_total
 
     def start_training(self, epochs, model, device, test_loader, train_loader, optimizer, scheduler, lr_data,
-                       class_correct, class_total):
+                       class_correct, class_total, path=None):
         for epoch in range(0, epochs):
             print("EPOCH:", epoch)
 
@@ -243,7 +242,7 @@ class TrainModel:
 
         print('Saving final model after training cycle completion')
         self.save_model(model, epochs, optimizer.state_dict, lr_data, class_correct, class_total,
-                        path="savedmodels/finalmodelwithdata.pt")
+                        path=path)
 
         return lr_data, class_correct, class_total
 
@@ -266,3 +265,13 @@ class TrainModel:
                         , train_losses=train_losses, train_acc=train_acc, test_acc=test_acc,
                         test_losses=test_losses, lr_data=lr_data, class_correct=class_correct,
                         class_total=class_total)
+
+    def start_training_lr_finder(self, epochs, model, device, test_loader, train_loader, lr, weight_decay, lambda_fn):
+        lr_data = []
+        class_correct = list(0. for i in range(10))
+        class_total = list(0. for i in range(10))
+        optimizer = self.get_optimizer(model=model, lr=lr, weight_decay=weight_decay)
+        scheduler = Utils.create_scheduler_lambda_lr(lambda_fn, optimizer)
+
+        return self.start_training(epochs, model, device, test_loader, train_loader, optimizer, scheduler, lr_data,
+                                   class_correct, class_total,path="savedmodels/lrfinder.pt")
