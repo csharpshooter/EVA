@@ -27,7 +27,7 @@ Max LR = 0.068 ,Min LR = Max LR / 13 = 0.00523
  ![ModelGraph](https://github.com/csharpshooter/EVA/blob/master/A12/A12-A/images/ModelGraphTensorBoard.png)
  ![Graphs](https://github.com/csharpshooter/EVA/blob/master/A12/A12-A/images/TensorBoardGraphs.png)
  ![Dist](https://github.com/csharpshooter/EVA/blob/master/A12/A12-A/images/TensorBoardDistribution.png)
- ![Hist](https://github.com/csharpshooter/EVA/blob/master/A12-A/images/TensorBoardHistogram.png)
+ ![Hist](https://github.com/csharpshooter/EVA/blob/master/A12/A12-A/images/TensorBoardHistogram.png)
     
 ---------------------------------------------------------------------------------------------------------------------------
 
