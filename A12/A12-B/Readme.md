@@ -44,3 +44,12 @@
 6. bbox : [x, y, width, height] of bounding box
 
 7. is_crowd : 0 or 1, explains whether this instance is labeled as coco's crowd region. Is not a crowd (meaning it’s a single object)
+
+## Scatter Plot
+
+![Scatter Plot](https://github.com/csharpshooter/EVA/blob/master/A12/A12-B/Scatter%20Plot%20with%20clusters.png)
+
+## Elbow Plot
+
+![Elbow Plot](https://github.com/csharpshooter/EVA/blob/master/A12/A12-B/Elbow%20Plot.png)
+
