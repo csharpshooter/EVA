@@ -198,35 +198,51 @@ class TrainModel:
 
         return classified, misclassified
 
-    def start_training_cyclic_lr(self, epochs, model, device, test_loader, train_loader, min_lr=None, max_lr=None,
+    def start_training_cyclic_lr(self, epochs, model, device, test_loader, train_loader, max_lr_epoch, weight_decay
+                                 , min_lr=None,
+                                 max_lr=None,
                                  cycles=1, annealing=False):
         lr_data = []
         class_correct = list(0. for i in range(10))
         class_total = list(0. for i in range(10))
-        optimizer = self.get_optimizer(model=model)
-        scheduler = self.get_cyclic_scheduler(optimizer, epochs=epochs, max_lr_epoch=5, min_lr=min_lr, max_lr=max_lr)
+        optimizer = self.get_optimizer(model=model, weight_decay=weight_decay)
 
-        for count in range(0, cycles):
-            print("Starting cycle: {}".format(count + 1))
-            self.start_training(epochs, model, device, test_loader, train_loader, optimizer, scheduler, lr_data,
-                                class_correct, class_total)
-            print("Completed cycle: {}".format(count + 1))
+        scheduler = torch.optim.lr_scheduler.CyclicLR(optimizer=optimizer, base_lr=min_lr, max_lr=max_lr,
+                                                      mode='triangular2',
+                                                      cycle_momentum=True, step_size_up=max_lr_epoch,
+                                                      step_size_down=epochs - max_lr_epoch, )
 
-            if annealing:
-                diff = max_lr - min_lr
-                diff = diff / 2
-                max_lr = diff + min_lr
-                print("New max_lr: {}".format(max_lr))
+        self.start_training(epochs, model, device, test_loader, train_loader, optimizer, scheduler, lr_data,
+                            class_correct, class_total, path="savedmodels/finalmodelwithdata.pt")
 
-            if cycles > 1:
-                optimizer = self.get_optimizer(model=model)
-                scheduler = self.get_cyclic_scheduler(optimizer, epochs=epochs, max_lr_epoch=5, min_lr=min_lr,
-                                                      max_lr=max_lr)
+        # scheduler = self.get_cyclic_scheduler(optimizer, epochs=epochs, max_lr_epoch=max_lr_epoch, min_lr=min_lr,
+        #                                       max_lr=max_lr)
+        #
+        # optimizer_state_dict = optimizer.state_dict()
+        # scheduler_state_dict = scheduler.state_dict()
+
+        # for count in range(0, cycles):
+        #     print("Starting cycle: {}".format(count + 1))
+        #     self.start_training(epochs, model, device, test_loader, train_loader, optimizer, scheduler, lr_data,
+        #                         class_correct, class_total, path="savedmodels/finalmodelwithdata.pt")
+        #     print("Completed cycle: {}".format(count + 1))
+        #
+        #     if annealing:
+        #         diff = max_lr - min_lr
+        #         diff = diff / 2
+        #         max_lr = diff + min_lr
+        #         print("New max_lr: {}".format(max_lr))
+        #
+        #         min_lr += ((max_lr - min_lr) / max_lr_epoch)
+        #
+        #     if cycles > 1:
+        #         optimizer.load_state_dict(optimizer_state_dict)
+        #         scheduler.load_state_dict(scheduler_state_dict)
 
         return lr_data, class_correct, class_total
 
     def start_training(self, epochs, model, device, test_loader, train_loader, optimizer, scheduler, lr_data,
-                       class_correct, class_total, path=None):
+                       class_correct, class_total, path):
         for epoch in range(0, epochs):
             print("EPOCH:", epoch)
 
@@ -274,4 +290,4 @@ class TrainModel:
         scheduler = Utils.create_scheduler_lambda_lr(lambda_fn, optimizer)
 
         return self.start_training(epochs, model, device, test_loader, train_loader, optimizer, scheduler, lr_data,
-                                   class_correct, class_total,path="savedmodels/lrfinder.pt")
+                                   class_correct, class_total, path="savedmodels/lrfinder.pt")

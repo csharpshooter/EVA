@@ -79,15 +79,28 @@ class TinyImagenetHelper:
     def get_classes(self, path):
         id_dict = self.get_id_dictionary(path=path)
         values, class_labels = self.get_class_to_id_dict(id_dict=id_dict, path=path)
-        return class_labels, id_dict
+        return values, id_dict
 
     def get_tiny_image_net_test_train_loader(self, id_dict, path, batch_size):
         train_data, train_label, test_data, test_label = self.get_train_test_labels_data(id_dict, path)
 
-        from src.utils import tiny_image_net_mean
-        from src.utils import tiny_image_net_std
-        compose_train, compose_test = PreprocHelper.getalbumentationstraintesttransforms(
-            tiny_image_net_mean, tiny_image_net_std)
+        # from src.utils import tiny_image_net_mean
+        # from src.utils import tiny_image_net_std
+        # compose_train, compose_test = PreprocHelper.getalbumentationstraintesttransforms(
+        #     tiny_image_net_mean, tiny_image_net_std)
+
+        # from src.utils import tiny_image_net_mean
+        # from src.utils import tiny_image_net_std
+        # compose_train, compose_test = PreprocHelper.getpytorchtransforms(
+        #     tiny_image_net_mean, tiny_image_net_std)
+
+        mean = (0.4914, 0.4822, 0.4465)
+        std = (0.2023, 0.1994, 0.2010)
+
+        from src.utils import image_net_mean
+        from src.utils import image_net_std
+        compose_train, compose_test = PreprocHelper.getpytorchtransforms(
+            mean, std)
 
         from src.dataset import Dataset
         ds = Dataset()

@@ -23,10 +23,10 @@ class PlotData:
                 ax.set_title(classes[labels[idx]].strip())
             else:
                 class_name = ''
-                if "," in values[labels[idx]]:
-                    class_name = values[labels[idx]].split(',')[0]
+                if "," in values[labels[idx].data.tolist()][1]:
+                    class_name = values[labels[idx].data.tolist()][1].split(',')[0]
                 else:
-                    class_name = values[labels[idx]]
+                    class_name = values[labels[idx].data.tolist()][1]
                 ax.set_title(class_name.strip())
             utils.Utils.imshow(images[idx])
 
