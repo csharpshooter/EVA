@@ -8,21 +8,25 @@
 
 ![triangleplot](https://github.com/csharpshooter/EVA/blob/master/A12/A12-A/images/TrianglePlot.png)
 
-2. Ran model for 20 epochs for lr range test. LR range tested from 0.01 to 0.1. Found optimal Lr between 0.04935 to 0.0038.
+2. Read images from train and val folder folders after extracting and did 70-30 train-val split in memory. Parsed train and test data by returning image path and labels from dataset files. Stored image paths and loaded image from disk in tinyimagenet dataset in __getitem__ method. Loaded class labels from words.txt and loaded class id's from wnids.txt
+
+![Imgfromdataset](https://github.com/csharpshooter/EVA/blob/master/A12/A12-A/images/imagesfromdataset.png)
+
+3. Ran model for 20 epochs for lr range test. LR range tested from 0.01 to 0.1. Found optimal Lr between 0.04935 to 0.0038.
 Max LR = 0.068 ,Min LR = Max LR / 13 = 0.00523
 
 ![lrrangefinder](https://github.com/csharpshooter/EVA/blob/master/A12/A12-A/images/lrrangetestgraph.png)
 
-3. Max train accuracy =  78.63, max test accuracy = 54.42. Tried different training method this time. Cloned git repo to colab and then trained from colab
+4. Max train accuracy =  78.63, max test accuracy = 54.42. Tried different training method this time. Cloned git repo to colab and then trained from colab
 
-4. Used following pytorch transforms for augmentation:
+5. Used following pytorch transforms for augmentation:
   *  RandomRotate(20),
   *  RandomHorizontalFlip,
   *  RandomCrop(size=(64, 64), padding=4),
   *  RandomErasing(scale=(0.10, 0.10), ratio=(1, 1)), 
 
  
- 5. Added Tensorboard visualization
+ 6. Added Tensorboard visualization
 
  ![ModelGraph](https://github.com/csharpshooter/EVA/blob/master/A12/A12-A/images/ModelGraphTensorBoard.png)
  ![Graphs](https://github.com/csharpshooter/EVA/blob/master/A12/A12-A/images/TensorBoardGraphs.png)
