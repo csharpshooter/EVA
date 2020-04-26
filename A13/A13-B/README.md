@@ -1,10 +1,13 @@
-## EVA Assignment 13
+## EVA Assignment 13-B
 ----------------------
 ## Name : Abhijit Mali
 ----------------------
 ## Notes 
 ---------------------------------------------------------------------------------------------------------------------------
-1. Trained for 300 epochs as well as 1000 epochs. After training for 1000 epochs found that the small discrepancies were gone and objects were being detetcted correctly. Did not know that if we were supposed to train for 100 epochs so have added outputs for 300 epochs training. Following are the graphs for both.
+1. Chose 'drone' as an object for detection as it is not present in the COCO dataset. This model will work for most of the drones in the market as I have collected image dataset for all kinds of drones.
+#### Images : https://github.com/csharpshooter/EVA/tree/master/A13/A13-B/data/customdata/images
+
+2. Trained for 300 epochs as well as 1000 epochs. After training for 1000 epochs found that the small discrepancies were gone and objects were being detetcted correctly. Did not know that if we were supposed to train for 1000 epochs so have added outputs for 300 epochs training. Following are the graphs for both.
 
 ## 300 epochs Graphs
 ![300epochs](https://github.com/csharpshooter/EVA/blob/master/A13/A13-B/images/300%20epochs%20tgraphs.png)
@@ -12,7 +15,7 @@
 ## 1000 epochs Graphs
 ![1000epochs](https://github.com/csharpshooter/EVA/blob/master/A13/A13-B/images/1000%20epochs%20tboard%20graphs.png)
 
-2. Collected 563 files for dataset from different websites like unsplash, shutterstock, depositphotos for all types of drones and trained on them
+3. Collected 563 files for dataset from different websites like unsplash, shutterstock, depositphotos for all types of drones and trained on them.
 
 ## Train 
 ![TrainImgfromdataset](https://github.com/csharpshooter/EVA/blob/master/A13/A13-B/images/trainsample.png)
@@ -20,9 +23,10 @@
 ## Test 
 ![TestImgfromdataset](https://github.com/csharpshooter/EVA/blob/master/A13/A13-B/images/test%20sample.png)
 
-3. Youtube Video Link: https://www.youtube.com/watch?v=E4iT1pVvpJQ
+4. For inference I have targeted three DJI Inc. drones 'DJI Spark', 'Phantom' and 'Mavic'  videos and combined their clips and uploaded to youtube. I did not create 3 different classes for them as I thought they come under the same drone generic class. 
+#### Youtube Video Link: https://www.youtube.com/watch?v=E4iT1pVvpJQ
 
-4. Link to 1000 epochs trained notebok file: https://github.com/csharpshooter/EVA/blob/master/A13/A13-B/A13-B-1000-Epochs.ipynb
+5. Link to 1000 epochs trained notebok file: https://github.com/csharpshooter/EVA/blob/master/A13/A13-B/A13-B-1000-Epochs.ipynb
 ---------------------------------------------------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------------------------------------------------
