@@ -1,4 +1,4 @@
-## EVA Assignment 15-A Dataset creation for monoocular depth and mask estimation using CNN for single image
+## EVA Assignment 15-A Dataset creation
 ------------------------------------------------------------------------------------------------------------
 ## Name : Abhijit Mali
 
