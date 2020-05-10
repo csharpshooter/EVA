@@ -27,7 +27,9 @@ As this was group assignment worked with following group members.
 fg :- Different Man, Woman, kids, group of person(for background transparency we have taken png images) bg :- We restricted background to library images(for restricting size of image we have taken jpg images) fg_bg :- bg superposed over fg (for restricting size of images we have taken jpg images) masks :- masks extracted from fg images(we have taken grayscale images)(.jpg) depth :- We have extracted depth images from fg_bg using nyu model(for restricing size of images we have taken grayscale images extracted from colormap)(.jpg)
 
 ### Total images of each kind
-fg :- 200(flip + no flip) bg :- 100 fg_bg :- 392783 masks :- 392469 depth :- 394673
+fg :- 200(flip + no flip), bg :- 100, fg_bg :- 392783, masks :- 392469, depth :- 394673 
+
+### Note : We have all generated 400k images of each fg_bg, masks, depth. The above number reflects images which have been merged to common folder which is currently in progress but generation is completed.
 
 ##### fg_bg : 160x160x3
 ##### fg :  80 max size and min size is resized based on aspect ratio
