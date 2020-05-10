@@ -16,6 +16,10 @@ As this was group assignment worked with following group members.
 
 ### Create this dataset and share a link to GDrive (publicly available to anyone) in this readme file. https://drive.google.com/drive/folders/1MST5DUffe3h9Q4B-x7tpNxXl4q4_E8ah
 
+![f](https://github.com/csharpshooter/EVA/blob/master/A15-PartA/Images/FolderStructure1.JPG)
+![f](https://github.com/csharpshooter/EVA/blob/master/A15-PartA/Images/FolderStructure2.JPG)
+![f](https://github.com/csharpshooter/EVA/blob/master/A15-PartA/Images/FolderStructure3.JPG)
+
 ### Add your dataset statistics:
 
 ### Kinds of images (fg, bg, fg_bg, masks, depth)
