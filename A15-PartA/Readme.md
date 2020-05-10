@@ -27,7 +27,8 @@ fg :- 200(flip + no flip) bg :- 100 fg_bg :- 392783 masks :- 392469 depth :- 394
 
 ##### fg_bg : 160x160x3
 ##### fg :  80 max size and min size is resized based on aspect ratio
-##### mask: 160x160depth images: 160x160
+##### mask: 160x160
+##### depth images: 160x160
 
 
 ### The total size of the dataset :-
