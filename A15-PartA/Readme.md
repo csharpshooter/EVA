@@ -18,7 +18,7 @@ As this was group assignment worked with following group members.
 
 ### Add your dataset statistics:
 
-### 1 . Kinds of images (fg, bg, fg_bg, masks, depth)
+### Kinds of images (fg, bg, fg_bg, masks, depth)
 
 fg :- Different Man, Woman, kids, group of person(for background transparency we have taken png images) bg :- We restricted background to library images(for restricting size of image we have taken jpg images) fg_bg :- bg superposed over fg (for restricting size of images we have taken jpg images) masks :- masks extracted from fg images(we have taken grayscale images)(.jpg) depth :- We have extracted depth images from fg_bg using nyu model(for restricing size of images we have taken grayscale images extracted from colormap)(.jpg)
 
