@@ -29,30 +29,30 @@ fg :- 200(flip + no flip) bg :- 100 fg_bg :- 392783 masks :- 392469 depth :- 394
 9182546 Output/ 6446124 Output/OverlayedImages/ 1119541 Output/OverlayedMasks/ 1616796 Output/DepthImage/
 
 ### Mean/STD values for your fg_bg, masks and depth images
-fg_bg :- (BGR format) Mean: - [0.3234962448835791, 0.3776562499540454, 0.4548452917585805] stdDev: - [0.22465676724491895, 0.2299902629415973, 0.23860387182601098]
+#### fg_bg :- (BGR format) Mean: - [0.3234962448835791, 0.3776562499540454, 0.4548452917585805] stdDev: - [0.22465676724491895, 0.2299902629415973, 0.23860387182601098]
 
-masks :- (BGR format) Mean: - [0.07863663756127236, 0.07863663756127236, 0.07863663756127236] stdDev: - [0.2541994994472449, 0.2541994994472449, 0.2541994994472449]
+#### masks :- (BGR format) Mean: - [0.07863663756127236, 0.07863663756127236, 0.07863663756127236] stdDev: - [0.2541994994472449, 0.2541994994472449, 0.2541994994472449]
 
-depth :- (BGR format) Mean: - [0.2943823440611593, 0.2943823440611593, 0.2943823440611593] stdDev: - [0.15619204938398595, 0.15619204938398595, 0.15619204938398595]
+#### depth :- (BGR format) Mean: - [0.2943823440611593, 0.2943823440611593, 0.2943823440611593] stdDev: - [0.15619204938398595, 0.15619204938398595, 0.15619204938398595]
 
 ### Show your dataset the way I have shown above in this readme
 
-Background Images 
+##### Background Images 
 ![bg](https://github.com/gdeotale/EVA4/raw/master/Week14/Images/background.png)
 
-Foreground Images 
+##### Foreground Images 
 ![fg](https://github.com/gdeotale/EVA4/raw/master/Week14/Images/foreground.png)
 
-Foreground Masks 
+##### Foreground Masks 
 ![fm](https://github.com/gdeotale/EVA4/raw/master/Week14/Images/Masks.png)
 
-Foreground+Background 
+##### Foreground+Background 
 ![fg+bg](https://github.com/gdeotale/EVA4/raw/master/Week14/Images/OverlayedImages.png)
 
-Foreground+Background Mask 
+##### Foreground+Background Mask 
 ![fg+bg mas](https://github.com/gdeotale/EVA4/raw/master/Week14/Images/OverlayedDepthMask.png)
 
-DepthMap 
+##### DepthMap 
 ![dm](https://github.com/gdeotale/EVA4/raw/master/Week14/Images/Overlayed.png)
 
 ### Explain how you created your dataset
