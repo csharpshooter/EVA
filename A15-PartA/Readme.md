@@ -25,6 +25,11 @@ fg :- Different Man, Woman, kids, group of person(for background transparency we
 ### Total images of each kind
 fg :- 200(flip + no flip) bg :- 100 fg_bg :- 392783 masks :- 392469 depth :- 394673
 
+##### fg_bg : 160x160x3
+##### fg :  80 max size and min size is resized based on aspect ratio
+##### mask: 160x160depth images: 160x160
+
+
 ### The total size of the dataset :-
 9182546 Output/ 6446124 Output/OverlayedImages/ 1119541 Output/OverlayedMasks/ 1616796 Output/DepthImage/
 
