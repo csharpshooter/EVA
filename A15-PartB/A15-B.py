@@ -49,6 +49,16 @@ test_loader = dataloader.gettestdataloader()
 
 cnn_model, device = utils.Utils.createMonocularModel()
 
+
+last_epoch = 1
+
+import os
+if os.path.exists("savedmodels/checkpoint1.pt"):
+    checkpoint, epoch, model_state_dict, optimizer_state_dict, train_losses, train_acc, test_losses, test_acc \
+        , test_losses, lr_data, class_correct, class_total = utils.Utils.loadmodel("savedmodels/checkpoint1.pt")
+    cnn_model.load_state_dict(model_state_dict)
+    last_epoch = last_epoch + checkpoint['epoch']
+
 sample = next(iter(train_loader))
 
 imgs = sample[0][0]
@@ -71,20 +81,9 @@ epochs = 5
 for epoch in range(1, epochs + 1):
     print("EPOCH:", epoch)
 
-    if epoch == 0:
-        warmup_factor = 1. / 1000
-        warmup_iters = min(1000, len(train_loader) - 1)
-
-        lr_scheduler = warmup_lr_scheduler(optimizer, warmup_iters, warmup_factor)
-
     train_model.train_Monocular(cnn_model, device, train_loader, optimizer, 1)
-    # train_one_epoch(cnn_model, optimizer, train_loader, device, epoch, print_freq=10)
-    # t_acc_epoch = train_model.test(model=cnn_model, device=device, test_loader=test_loader,
-    # class_correct=class_correct, class_total=class_total, epoch=epoch, lr_data=lr_data)
+    train_model.test_Monocular(cnn_model, device, test_loader, class_correct, class_total, epoch, lr_data)
     scheduler.step()
-    # for param_groups in optimizer.param_groups:
-    # print("Learning rate =", param_groups['lr'], " for epoch: ", epoch + 1)  # print LR for different epochs
-    # lr_data.append(param_groups['lr'])
 
 train_losses, train_acc = train_model.gettraindata()
 test_losses, test_acc = train_model.gettestdata()

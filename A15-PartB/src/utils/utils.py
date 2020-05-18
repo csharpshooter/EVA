@@ -332,3 +332,16 @@ class Utils:
         tensors = (tensors * std[None, :, None, None]) + mean[None, :, None, None]
         from src.utils import Utils
         Utils.show(tensors, *args, **kwargs)
+
+    import subprocess
+
+    proc = subprocess.Popen(["ssh", "-i .ssh/id_rsa", "user@host"],
+                           stdin=subprocess.PIPE,
+                           stdout=subprocess.PIPE,
+                           stderr=subprocess.PIPE,
+                           universal_newlines=True,
+                           bufsize=0)
+
+      # Fetch output
+    for line in proc.stdout:
+        print(line.strip())
