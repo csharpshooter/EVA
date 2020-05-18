@@ -2,7 +2,7 @@ import sys
 
 import numpy as np
 import torch
-from torch.nn import CrossEntropyLoss, BCEWithLogitsLoss
+from torch.nn import CrossEntropyLoss, BCEWithLogitsLoss, MSELoss
 from torch.optim.lr_scheduler import LambdaLR
 from torchsummary import summary
 from tqdm import tqdm
@@ -125,7 +125,7 @@ class TrainModel:
         return CrossEntropyLoss()
 
     def get_loss_function_monocular(self):
-        return BCEWithLogitsLoss()
+        return MSELoss()
 
     def gettraindata(self):
         return self.train_losses, self.train_acc
@@ -308,6 +308,7 @@ class TrainModel:
             data[0] = data[0].to(device)
             data[1] = data[1].to(device)
             data[2] = data[2].to(device)
+            data[3] = data[3].to(device)
 
             # Init
             optimizer.zero_grad()
@@ -329,10 +330,14 @@ class TrainModel:
                 print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
                     epoch, batch_idx * len(data), len(train_loader.dataset), (100. * batch_idx / len(train_loader)),
                     loss.item()))
+                print('IOU : {}'.format(
+                    self.calculate_iou(data[2].detach().cpu().numpy(), y_pred.detach().cpu().numpy())))
 
             if batch_idx % 100 == 0:
                 from src.utils.utils import Utils
                 Utils.show(y_pred.detach().cpu(), nrow=4)
+                print('IOU : {}'.format(
+                    self.calculate_iou(data[2].detach().cpu().numpy(), y_pred.detach().cpu().numpy())))
 
     def test_Monocular(self, model, device, test_loader, class_correct, class_total, epoch, lr_data):
         model.eval()
@@ -363,3 +368,9 @@ class TrainModel:
                             , train_losses=self.train_losses, test_acc=self.test_acc,
                             test_losses=self.test_losses, lr_data=lr_data, class_correct=class_correct,
                             class_total=class_total)
+
+    def calculate_iou(self, target, prediction):
+        intersection = np.logical_and(target, prediction)
+        union = np.logical_or(target, prediction)
+        iou_score = np.sum(intersection) / np.sum(union)
+        return iou_score

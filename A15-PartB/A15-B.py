@@ -15,10 +15,15 @@ helper = MonocularHelper()
 # TODO
 # values, classes = helper.get_class_to_id_dict(id_dict=dict, path=path)
 
-final_output = r'/media/abhijit/DATA/Development/TSAI/EVA/MaskRCNN Dataset/OverLayedImages'
-final_output_mask = r'/media/abhijit/DATA/Development/TSAI/EVA/MaskRCNN Dataset/OverLayedMask'
-final_output_dm = r'/media/abhijit/DATA/Development/TSAI/EVA/MaskRCNN Dataset/OverLayedDepthMasks'
-bg_path = r'/media/abhijit/DATA/Development/TSAI/EVA/MaskRCNN Dataset/Background'
+# final_output = r'/media/abhijit/DATA/Development/TSAI/EVA/MaskRCNN Dataset/OverLayedImages'
+# final_output_mask = r'/media/abhijit/DATA/Development/TSAI/EVA/MaskRCNN Dataset/OverLayedMask'
+# final_output_dm = r'/media/abhijit/DATA/Development/TSAI/EVA/MaskRCNN Dataset/OverLayedDepthMasks'
+# bg_path = r'/media/abhijit/DATA/Development/TSAI/EVA/MaskRCNN Dataset/Background'
+
+final_output = r'/home/abhijit/EVARepo/MonocularDS/OverLayedImages'
+final_output_mask = r'/home/abhijit/EVARepo/MonocularDS/OverLayedMask'
+final_output_dm = r'/home/abhijit/EVARepo/MonocularDS/OverLayedDepthMasks'
+bg_path = r'/home/abhijit/EVARepo/MonocularDS/Background'
 
 train_data, train_label, test_data, test_label = helper.get_train_test_data(masks_folder=final_output_mask,
                                                                             images_folder=final_output,
@@ -30,7 +35,7 @@ train_data, train_label, test_data, test_label = helper.get_train_test_data(mask
 print(len(train_label))
 print(len(test_label))
 
-batch_size = 2
+batch_size = 16
 
 train_transforms, test_transforms = preprochelper.PreprocHelper.getpytorchtransforms(image_net_mean, image_net_std)
 ds = dst.Dataset()
@@ -52,12 +57,12 @@ cnn_model, device = utils.Utils.createMonocularModel()
 
 last_epoch = 1
 
-import os
-if os.path.exists("savedmodels/checkpoint1.pt"):
-    checkpoint, epoch, model_state_dict, optimizer_state_dict, train_losses, train_acc, test_losses, test_acc \
-        , test_losses, lr_data, class_correct, class_total = utils.Utils.loadmodel("savedmodels/checkpoint1.pt")
-    cnn_model.load_state_dict(model_state_dict)
-    last_epoch = last_epoch + checkpoint['epoch']
+# import os
+# if os.path.exists("savedmodels/checkpoint1.pt"):
+#     checkpoint, epoch, model_state_dict, optimizer_state_dict, train_losses, train_acc, test_losses, test_acc \
+#         , test_losses, lr_data, class_correct, class_total = utils.Utils.loadmodel("savedmodels/checkpoint1.pt")
+#     cnn_model.load_state_dict(model_state_dict)
+#     last_epoch = last_epoch + checkpoint['epoch']
 
 sample = next(iter(train_loader))
 
