@@ -341,7 +341,7 @@ class TrainModel:
 
             self.test_losses.append(test_loss)
 
-            model_save_path = "savedmodels/checkpoint-{}.pt".format(epoch)
+            model_save_path = "checkpoint-{}.pt".format(epoch)
 
             Utils.savemodel(model=model, epoch=epoch, path=model_save_path,
                             optimizer_state_dict=self.optimizer.state_dict()
