@@ -218,30 +218,6 @@ class TrainModel:
         self.start_training(epochs, model, device, test_loader, train_loader, optimizer, scheduler, lr_data,
                             class_correct, class_total, path="savedmodels/finalmodelwithdata.pt")
 
-        # scheduler = self.get_cyclic_scheduler(optimizer, epochs=epochs, max_lr_epoch=max_lr_epoch, min_lr=min_lr,
-        #                                       max_lr=max_lr)
-        #
-        # optimizer_state_dict = optimizer.state_dict()
-        # scheduler_state_dict = scheduler.state_dict()
-
-        # for count in range(0, cycles):
-        #     print("Starting cycle: {}".format(count + 1))
-        #     self.start_training(epochs, model, device, test_loader, train_loader, optimizer, scheduler, lr_data,
-        #                         class_correct, class_total, path="savedmodels/finalmodelwithdata.pt")
-        #     print("Completed cycle: {}".format(count + 1))
-        #
-        #     if annealing:
-        #         diff = max_lr - min_lr
-        #         diff = diff / 2
-        #         max_lr = diff + min_lr
-        #         print("New max_lr: {}".format(max_lr))
-        #
-        #         min_lr += ((max_lr - min_lr) / max_lr_epoch)
-        #
-        #     if cycles > 1:
-        #         optimizer.load_state_dict(optimizer_state_dict)
-        #         scheduler.load_state_dict(scheduler_state_dict)
-
         return lr_data, class_correct, class_total
 
     def start_training(self, epochs, model, device, test_loader, train_loader, optimizer, scheduler, lr_data,
@@ -301,6 +277,7 @@ class TrainModel:
         correct = 0
         processed = 0
         self.optimizer = optimizer
+        y_pred = None
         for batch_idx, (data, target) in enumerate(pbar):
             # get samples
             # data, target = data.to(device), target.to(device)
@@ -334,15 +311,18 @@ class TrainModel:
                     self.calculate_iou(data[2].detach().cpu().numpy(), y_pred.detach().cpu().numpy())))
 
             if batch_idx % 100 == 0:
-                from src.utils.utils import Utils
-                Utils.show(y_pred.detach().cpu(), nrow=4)
+                # from src.utils.utils import Utils
+                # Utils.show(y_pred.detach().cpu(), nrow=4)
                 print('IOU : {}'.format(
                     self.calculate_iou(data[2].detach().cpu().numpy(), y_pred.detach().cpu().numpy())))
+
+        return y_pred
 
     def test_Monocular(self, model, device, test_loader, class_correct, class_total, epoch, lr_data):
         model.eval()
         test_loss = 0
         correct = 0
+        output = None
         with torch.no_grad():
             for batch_idx, (data, target) in enumerate(test_loader):
                 data[0] = data[0].to(device)
@@ -368,6 +348,8 @@ class TrainModel:
                             , train_losses=self.train_losses, test_acc=self.test_acc,
                             test_losses=self.test_losses, lr_data=lr_data, class_correct=class_correct,
                             class_total=class_total)
+
+        return output
 
     def calculate_iou(self, target, prediction):
         intersection = np.logical_and(target, prediction)

@@ -2,7 +2,14 @@ from src.dataset.monocularhelper import MonocularHelper
 from src.imports import *
 import torch.optim.lr_scheduler
 
-from src.train.torchvision import collate_fn, train_one_epoch, warmup_lr_scheduler
+# from src.train.torchvision import collate_fn, train_one_epoch, warmup_lr_scheduler
+
+# def run():
+#     torch.multiprocessing.freeze_support()
+#     print('loop')
+#
+# if __name__ == '__main__' or __name__ == '__mp_main__':
+#     run()
 
 helper = MonocularHelper()
 
@@ -20,10 +27,15 @@ helper = MonocularHelper()
 # final_output_dm = r'/media/abhijit/DATA/Development/TSAI/EVA/MaskRCNN Dataset/OverLayedDepthMasks'
 # bg_path = r'/media/abhijit/DATA/Development/TSAI/EVA/MaskRCNN Dataset/Background'
 
-final_output = r'/home/abhijit/EVARepo/MonocularDS/OverLayedImages'
-final_output_mask = r'/home/abhijit/EVARepo/MonocularDS/OverLayedMask'
-final_output_dm = r'/home/abhijit/EVARepo/MonocularDS/OverLayedDepthMasks'
-bg_path = r'/home/abhijit/EVARepo/MonocularDS/Background'
+# final_output = r'/home/abhijit/EVARepo/MonocularDS/OverLayedImages'
+# final_output_mask = r'/home/abhijit/EVARepo/MonocularDS/OverLayedMask'
+# final_output_dm = r'/home/abhijit/EVARepo/MonocularDS/OverLayedDepthMasks'
+# bg_path = r'/home/abhijit/EVARepo/MonocularDS/Background'
+
+final_output = r'D:\Development\TSAI\EVA\MaskRCNN Dataset\OverLayedImages'
+final_output_mask = r'D:\Development\TSAI\EVA\MaskRCNN Dataset\OverLayedMask'
+final_output_dm = r'D:\Development\TSAI\EVA\MaskRCNN Dataset\OverLayedDepthMasks'
+bg_path = r'/D:\Development\TSAI\EVA\MaskRCNN Dataset\Background'
 
 train_data, train_label, test_data, test_label = helper.get_train_test_data(masks_folder=final_output_mask,
                                                                             images_folder=final_output,
@@ -64,6 +76,7 @@ last_epoch = 1
 #     cnn_model.load_state_dict(model_state_dict)
 #     last_epoch = last_epoch + checkpoint['epoch']
 
+# torch.multiprocessing.freeze_support()
 sample = next(iter(train_loader))
 
 imgs = sample[0][0]
@@ -82,12 +95,18 @@ scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=0.01)
 lr_data = []
 class_correct = list(0. for i in range(10))
 class_total = list(0. for i in range(10))
-epochs = 5
+epochs = 20
 for epoch in range(1, epochs + 1):
     print("EPOCH:", epoch)
 
-    train_model.train_Monocular(cnn_model, device, train_loader, optimizer, 1)
-    train_model.test_Monocular(cnn_model, device, test_loader, class_correct, class_total, epoch, lr_data)
+    tr_out = train_model.train_Monocular(cnn_model, device, train_loader, optimizer, 1)
+    ts_out = train_model.test_Monocular(cnn_model, device, test_loader, class_correct, class_total, epoch, lr_data)
+
+    from src.utils.utils import Utils
+
+    Utils.show(tr_out.detach().cpu(), nrow=4)
+    Utils.show(ts_out.detach().cpu(), nrow=4)
+
     scheduler.step()
 
 train_losses, train_acc = train_model.gettraindata()
