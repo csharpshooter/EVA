@@ -297,7 +297,7 @@ class TrainModel:
             y_pred = model(data)
 
             # Calculate loss
-            loss = self.loss_type(y_pred, data[2])
+            loss = self.loss_type(y_pred, data[3])
 
             # Backpropagation
             loss.backward()
@@ -308,13 +308,13 @@ class TrainModel:
                     epoch, batch_idx * len(data), len(train_loader.dataset), (100. * batch_idx / len(train_loader)),
                     loss.item()))
                 print('IOU : {}'.format(
-                    self.calculate_iou(data[2].detach().cpu().numpy(), y_pred.detach().cpu().numpy())))
+                    self.calculate_iou(data[3].detach().cpu().numpy(), y_pred.detach().cpu().numpy())))
 
             if batch_idx % 100 == 0:
                 # from src.utils.utils import Utils
                 # Utils.show(y_pred.detach().cpu(), nrow=4)
                 print('IOU : {}'.format(
-                    self.calculate_iou(data[2].detach().cpu().numpy(), y_pred.detach().cpu().numpy())))
+                    self.calculate_iou(data[3].detach().cpu().numpy(), y_pred.detach().cpu().numpy())))
 
         return y_pred
 
@@ -331,7 +331,7 @@ class TrainModel:
                 data[3] = data[3].to(device)
                 output = model(data)
 
-                test_loss += self.loss_type(output, data[2]).item()
+                test_loss += self.loss_type(output, data[3]).item()
                 pred = output.argmax(dim=1, keepdim=True)
                 # correct += pred.eq(data[2].view_as(pred)).sum().item()
 
