@@ -2,7 +2,7 @@ import sys
 
 import numpy as np
 import torch
-from torch.nn import CrossEntropyLoss, BCEWithLogitsLoss, MSELoss
+from torch.nn import CrossEntropyLoss, MSELoss
 from torch.optim.lr_scheduler import LambdaLR
 from torchsummary import summary
 from tqdm import tqdm
@@ -322,32 +322,41 @@ class TrainModel:
         model.eval()
         test_loss = 0
         correct = 0
+        pbar = tqdm(test_loader)
         output = None
         with torch.no_grad():
-            for batch_idx, (data, target) in enumerate(test_loader):
+            for batch_idx, (data, target) in enumerate(pbar):
                 data[0] = data[0].to(device)
                 data[1] = data[1].to(device)
                 data[2] = data[2].to(device)
                 data[3] = data[3].to(device)
                 output = model(data)
 
-                test_loss += self.loss_type(output, data[3]).item()
+                loss = self.loss_type(output, data[3]).item()
+                test_loss += loss
                 pred = output.argmax(dim=1, keepdim=True)
                 # correct += pred.eq(data[2].view_as(pred)).sum().item()
 
-                Utils.show(output.cpu(), nrow=2)
+                if batch_idx % 100 == 0:
+                    print('Test Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
+                        epoch, batch_idx * len(data), len(test_loader.dataset), (100. * batch_idx / len(test_loader)),
+                        loss))
+                    print('IOU : {}'.format(
+                        self.calculate_iou(data[3].detach().cpu().numpy(), output.detach().cpu().numpy())))
 
-            test_loss /= len(test_loader.dataset)
+                # Utils.show(output.cpu(), nrow=2)
 
-            self.test_losses.append(test_loss)
+        test_loss /= len(test_loader.dataset)
 
-            model_save_path = "checkpoint-{}.pt".format(epoch)
+        self.test_losses.append(test_loss)
 
-            Utils.savemodel(model=model, epoch=epoch, path=model_save_path,
-                            optimizer_state_dict=self.optimizer.state_dict()
-                            , train_losses=self.train_losses, test_acc=self.test_acc,
-                            test_losses=self.test_losses, lr_data=lr_data, class_correct=class_correct,
-                            class_total=class_total)
+        model_save_path = "checkpoint-{}.pt".format(epoch)
+
+        Utils.savemodel(model=model, epoch=epoch, path=model_save_path,
+                        optimizer_state_dict=self.optimizer.state_dict()
+                        , train_losses=self.train_losses, test_acc=self.test_acc,
+                        test_losses=self.test_losses, lr_data=lr_data, class_correct=class_correct,
+                        class_total=class_total)
 
         return output
 

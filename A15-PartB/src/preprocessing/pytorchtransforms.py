@@ -6,7 +6,7 @@ class PytorchTransforms(object):
     def gettraintransforms(self, mean, std):
         # Train Phase transformations
         return transforms.Compose([
-            # transforms.Resize(128),
+            # transforms.Resize(64),
             # transforms.Pad(padding=1, padding_mode="edge"),
             # transforms.RandomHorizontalFlip(p=1),  # randomly flip and rotate
             # transforms.RandomRotation(20),
