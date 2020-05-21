@@ -1,6 +1,7 @@
+import torch.optim.lr_scheduler
+
 from src.dataset.monocularhelper import MonocularHelper
 from src.imports import *
-import torch.optim.lr_scheduler
 
 # from src.train.torchvision import collate_fn, train_one_epoch, warmup_lr_scheduler
 
@@ -32,10 +33,10 @@ helper = MonocularHelper()
 # final_output_dm = r'/home/abhijit/EVARepo/MonocularDS/OverLayedDepthMasks'
 # bg_path = r'/home/abhijit/EVARepo/MonocularDS/Background'
 
-final_output = r'D:\Development\TSAI\EVA\MaskRCNN Dataset\OverLayedImages'
-final_output_mask = r'D:\Development\TSAI\EVA\MaskRCNN Dataset\OverLayedMask'
-final_output_dm = r'D:\Development\TSAI\EVA\MaskRCNN Dataset\OverLayedDepthMasks'
-bg_path = r'/D:\Development\TSAI\EVA\MaskRCNN Dataset\Background'
+final_output = r'C:\MonocularDS\OverLayedImages'
+final_output_mask = r'C:\MonocularDS\OverLayedMask'
+final_output_dm = r'C:\MonocularDS\OverLayedDepthMasks'
+bg_path = r'C:\MonocularDS\Background'
 
 train_data, train_label, test_data, test_label = helper.get_train_test_data(masks_folder=final_output_mask,
                                                                             images_folder=final_output,
@@ -49,7 +50,7 @@ print(len(test_label))
 
 batch_size = 16
 
-train_transforms, test_transforms = preprochelper.PreprocHelper.getpytorchtransforms(image_net_mean, image_net_std)
+train_transforms, test_transforms = preprochelper.PreprocHelper.getpytorchtransforms(image_net_mean, image_net_std, 224)
 ds = dst.Dataset()
 
 train_dataset = ds.get_monocular_train_dataset(train_image_data=train_data, train_image_labels=train_label,
@@ -65,7 +66,8 @@ train_loader = dataloader.gettraindataloader()
 test_loader = dataloader.gettestdataloader()
 
 cnn_model, device = utils.Utils.createMonocularModel()
-
+train_model = train.TrainModel()
+# train_model.showmodelsummary(cnn_model)
 
 last_epoch = 1
 
@@ -85,8 +87,6 @@ imgs = sample[0][0]
 # grid_image = grid_tensor.permute(1, 2, 0)
 
 utils.Utils.show(imgs, nrow=4)
-
-train_model = train.TrainModel()
 
 optimizer = utils.Utils.createoptimizer(cnn_model, lr=0.01, momentum=0.9, weight_decay=1e-5)
 

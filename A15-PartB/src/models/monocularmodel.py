@@ -1,91 +1,116 @@
-import torch.nn as nn
 import torch
+import torch.nn as nn
 import torch.nn.functional as F
+
 from .depthwise_seperable_conv2d import DepthwiseSeparableConv2d
 
 
-class MonocularModel(nn.Module):
+class BasicBlock(nn.Module):
+    expansion = 1
 
-    def __init__(self):
-        super(MonocularModel, self).__init__()
+    def __init__(self, in_planes, planes, stride=1):
+        super(BasicBlock, self).__init__()
+        self.conv1 = DepthwiseSeparableConv2d(input=in_planes, output=planes, stride=stride, padding=1, bias=False)
+        self.bn1 = nn.BatchNorm2d(planes)
+        self.conv2 = DepthwiseSeparableConv2d(input=planes, output=planes, stride=1, padding=1, bias=False)
+        self.bn2 = nn.BatchNorm2d(planes)
 
-        self.inputblock = nn.Sequential(
+        self.shortcut = nn.Sequential()
+        if stride != 1 or in_planes != self.expansion * planes:
+            self.shortcut = nn.Sequential(
+                nn.Conv2d(in_planes, self.expansion * planes, kernel_size=1, stride=stride, bias=False),
+                nn.BatchNorm2d(self.expansion * planes)
+            )
+
+    def forward(self, x):
+        out = F.relu(self.bn1(self.conv1(x)))
+        out = self.bn2(self.conv2(out))
+        out += self.shortcut(x)
+        out = F.relu(out)
+        return out
+
+
+class ResNet(nn.Module):
+    def __init__(self, block, num_blocks, num_classes=10):
+        super(ResNet, self).__init__()
+        self.in_planes = 64
+
+        self.prep = self.make_convblock_depthwise_conv(kernel_size=3, in_channels=3, out_channels=32, stride=1,
+                                                       padding=1,
+                                                       doMaxPool=False)
+        self.cb1 = self.make_convblock_depthwise_conv(kernel_size=3, in_channels=32, out_channels=64, stride=1,
+                                                      padding=1)
+        self.res1 = self._make_layer(block, 64, num_blocks[0], stride=1)
+        self.cb2 = self.make_convblock_depthwise_conv(kernel_size=3, in_channels=64, out_channels=128, stride=1,
+                                                      padding=1)
+        self.cb3 = self.make_convblock_depthwise_conv(kernel_size=3, in_channels=128, out_channels=256, stride=1,
+                                                      padding=1)
+        self.in_planes = 256
+        self.res2 = self._make_layer(block, 256, num_blocks[1], stride=1)
+        self.convblockfinal = nn.Sequential(
             # Defining a 2D convolution layer
-            nn.Conv2d(in_channels=3, out_channels=8, kernel_size=3, stride=1, bias=False, padding=1),
-            # RF = 3
-            nn.BatchNorm2d(8),
-            nn.ReLU(),
+            nn.Conv2d(128, 3, 3, stride=1, bias=False, padding=1),
         )
 
-        self.convblock2 = nn.Sequential(
-            # Defining a 2D convolution layer
-            nn.Conv2d(8, 8, 3, stride=1, bias=False, padding=1, groups=8),
-            nn.Conv2d(8, 16, 1, stride=1, bias=False, padding=0),
-            nn.BatchNorm2d(16),
-            nn.ReLU(),
-        )
+    def _make_layer(self, block, planes, num_blocks, stride):
+        strides = [stride] + [1] * (num_blocks - 1)
+        layers = []
+        for stride in strides:
+            layers.append(block(self.in_planes, planes, stride))
+            self.in_planes = planes * block.expansion
+        return nn.Sequential(*layers)
 
-        self.convblock3 = nn.Sequential(
-            # Defining a 2D convolution layer
-            nn.Conv2d(32, 64, kernel_size=3, stride=1, bias=False, padding=1, groups=16),
-            nn.BatchNorm2d(64),
-            nn.ReLU(),
-        )
+    # DepthwiseSeparableConv2d(32, 32, 1)
 
-        self.convblock4 = nn.Sequential(
-            # Defining a 2D convolution layer
-            nn.Conv2d(64, 3, 3, stride=1, bias=False, padding=1),
-        )
+    def make_convblock_depthwise_conv(self, kernel_size, in_channels, out_channels, stride, padding, doMaxPool=True):
+        seq = nn.Sequential()
+        seq.add_module("DepthwiseConv2d",
+                       DepthwiseSeparableConv2d(input=in_channels, output=out_channels, padding=padding, stride=stride))
 
-    def forward(self, data):
-        x1 = self.convblock2(self.inputblock(data[0]))
-        x2 = self.convblock2(self.inputblock(data[1]))
+        # if doMaxPool:
+        #     seq.add_module("MaxPool2d", nn.MaxPool2d(kernel_size=2, stride=2))
 
-        final_x = torch.cat([x1, x2], 1)
+        seq.add_module("BatchNorm", nn.BatchNorm2d(out_channels))
+        seq.add_module("Relu", nn.ReLU())
+        return seq
 
-        final_x = self.convblock4(self.convblock3(final_x))
+    def make_convblock(self, kernel_size, in_channels, out_channels, stride, padding, doMaxPool=True):
+        seq = nn.Sequential()
+        seq.add_module("Conv2d", nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size,
+                                           stride=stride,
+                                           padding=padding, bias=False))
 
-        return final_x
+        # if doMaxPool:
+        #     seq.add_module("MaxPool2d", nn.MaxPool2d(kernel_size=2, stride=2))
+
+        seq.add_module("BatchNorm", nn.BatchNorm2d(out_channels))
+        seq.add_module("Relu", nn.ReLU())
+        return seq
+
+    def doforward(self, x):
+        x = self.prep(x)  # input layer 3-> 64
+        l1 = self.cb1(x)  # Layer 1 X 64 -> 128
+        r1 = self.res1(l1)  # Resblock 1 128 -> 128
+        x = l1 + r1
+        # l2 = self.cb2(x)  # Layer 2 128 -> 256
+        # l3 = self.cb3(l2)  # Layer 3 X 256 -> 512
+        # r2 = self.res2(l3)  # Resblock 2 512 -> 512
+        # # x = l3 + r2
+        return x
+
+    def forward(self, x):
+        x1 = x[0]
+        x2 = x[1]
+
+        x1 = self.doforward(x1)
+        x2 = self.doforward(x2)
+
+        x = torch.cat([x1, x2], 1)
+
+        x = self.convblockfinal(x)
+
+        return x
 
 
-
-    # def __init__(self):
-    #     super(MonocularModel, self).__init__()
-    #
-    #     self.inputblock = nn.Sequential(
-    #         # Defining a 2D convolution layer
-    #         nn.Conv2d(in_channels=3, out_channels=16, kernel_size=3, stride=1, bias=False, padding=1),
-    #         # RF = 3
-    #         nn.BatchNorm2d(16),
-    #         nn.ReLU(),
-    #     )
-    #
-    #     self.convblock2 = nn.Sequential(
-    #         # Defining a 2D convolution layer
-    #         nn.Conv2d(16, 32, 3, stride=1, bias=False, padding=1, groups=16),
-    #         nn.Conv2d(32, 64, 1, stride=1, bias=False, padding=0),
-    #         nn.BatchNorm2d(64),
-    #         nn.ReLU(),
-    #     )
-    #
-    #     self.convblock3 = nn.Sequential(
-    #         # Defining a 2D convolution layer
-    #         nn.Conv2d(128, 512, kernel_size=3, stride=1, bias=False, padding=1, groups=32),
-    #         nn.BatchNorm2d(512),
-    #         nn.ReLU(),
-    #     )
-    #
-    #     self.convblock4 = nn.Sequential(
-    #         # Defining a 2D convolution layer
-    #         nn.Conv2d(512, 3, 3, stride=1, bias=False, padding=1),
-    #     )
-    #
-    # def forward(self, data):
-    #     x1 = self.convblock2(self.inputblock(data[0]))
-    #     x2 = self.convblock2(self.inputblock(data[1]))
-    #
-    #     final_x = torch.cat([x1, x2], 1)
-    #
-    #     final_x = self.convblock4(self.convblock3(final_x))
-    #
-    #     return final_x
+def MonocularModel():
+    return ResNet(BasicBlock, [1, 1])

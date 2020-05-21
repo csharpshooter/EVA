@@ -13,9 +13,9 @@ class PreprocHelper:
         compose_test = customcompose.CustomCompose(test_transforms)
         return compose_train, compose_test
 
-    def getpytorchtransforms(mean, std):
+    def getpytorchtransforms(mean, std, size=224):
         preproc = preprocessing.PytorchTransforms()
-        train_transforms = preproc.gettraintransforms(mean, std)
+        train_transforms = preproc.gettraintransforms(mean, std, size)
         test_transforms = preproc.gettesttransforms(mean, std)
         return train_transforms, test_transforms
 

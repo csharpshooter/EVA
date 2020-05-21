@@ -2,7 +2,7 @@ import sys
 
 import numpy as np
 import torch
-from torch.nn import CrossEntropyLoss, MSELoss
+from torch.nn import CrossEntropyLoss, BCEWithLogitsLoss
 from torch.optim.lr_scheduler import LambdaLR
 from torchsummary import summary
 from tqdm import tqdm
@@ -125,7 +125,8 @@ class TrainModel:
         return CrossEntropyLoss()
 
     def get_loss_function_monocular(self):
-        return MSELoss()
+        return BCEWithLogitsLoss()
+        # return MSELoss()
 
     def gettraindata(self):
         return self.train_losses, self.train_acc
@@ -271,12 +272,13 @@ class TrainModel:
         return self.start_training(epochs, model, device, test_loader, train_loader, optimizer, scheduler, lr_data,
                                    class_correct, class_total, path="savedmodels/lrfinder.pt")
 
-    def train_Monocular(self, model, device, train_loader, optimizer, epoch):
+    def train_Monocular(self, model, device, train_loader, optimizer, epoch, loss_fn, show_output=False, infer_index=2):
         model.train()
         pbar = tqdm(train_loader)
         correct = 0
         processed = 0
         self.optimizer = optimizer
+        iou = 0
         y_pred = None
         for batch_idx, (data, target) in enumerate(pbar):
             # get samples
@@ -297,8 +299,8 @@ class TrainModel:
             y_pred = model(data)
 
             # Calculate loss
-            loss = self.loss_type(y_pred, data[3])
-
+            loss = loss_fn(y_pred, data[infer_index])
+            iou = self.calculate_iou(data[infer_index].detach().cpu().numpy(), y_pred.detach().cpu().numpy())
             # Backpropagation
             loss.backward()
             optimizer.step()
@@ -307,18 +309,18 @@ class TrainModel:
                 print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
                     epoch, batch_idx * len(data), len(train_loader.dataset), (100. * batch_idx / len(train_loader)),
                     loss.item()))
-                print('IOU : {}'.format(
-                    self.calculate_iou(data[3].detach().cpu().numpy(), y_pred.detach().cpu().numpy())))
+                print('IOU : {}'.format(iou))
 
             if batch_idx % 100 == 0:
-                # from src.utils.utils import Utils
-                # Utils.show(y_pred.detach().cpu(), nrow=4)
-                print('IOU : {}'.format(
-                    self.calculate_iou(data[3].detach().cpu().numpy(), y_pred.detach().cpu().numpy())))
+                if show_output == True:
+                    from src.utils.utils import Utils
+                    Utils.show(y_pred.detach().cpu(), nrow=4)
+                # print('IOU : {}'.format(iou))
 
         return y_pred
 
-    def test_Monocular(self, model, device, test_loader, class_correct, class_total, epoch, lr_data):
+    def test_Monocular(self, model, device, test_loader, class_correct, class_total, epoch, lr_data, loss_fn,
+                       show_output=False, infer_index=2):
         model.eval()
         test_loss = 0
         correct = 0
@@ -332,19 +334,21 @@ class TrainModel:
                 data[3] = data[3].to(device)
                 output = model(data)
 
-                loss = self.loss_type(output, data[3]).item()
+                loss = loss_fn(output, data[infer_index]).item()
                 test_loss += loss
                 pred = output.argmax(dim=1, keepdim=True)
                 # correct += pred.eq(data[2].view_as(pred)).sum().item()
+
+                iou = self.calculate_iou(data[infer_index].detach().cpu().numpy(), output.detach().cpu().numpy())
 
                 if batch_idx % 100 == 0:
                     print('Test Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
                         epoch, batch_idx * len(data), len(test_loader.dataset), (100. * batch_idx / len(test_loader)),
                         loss))
-                    print('IOU : {}'.format(
-                        self.calculate_iou(data[3].detach().cpu().numpy(), output.detach().cpu().numpy())))
+                    print('IOU : {}'.format(iou))
 
-                # Utils.show(output.cpu(), nrow=2)
+                if batch_idx % 50 == 0 and show_output == True:
+                    Utils.show(output.cpu(), nrow=2)
 
         test_loss /= len(test_loader.dataset)
 
