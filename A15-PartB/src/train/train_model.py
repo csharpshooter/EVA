@@ -315,6 +315,10 @@ class TrainModel:
             if batch_idx % 1000 == 0:
                 if show_output == True:
                     Utils.show(y_pred.detach().cpu(), nrow=4)
+
+                print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
+                    epoch, batch_idx * len(data), len(train_loader.dataset), (100. * batch_idx / len(train_loader)),
+                    loss.item()))
                 print('IOU : {}'.format(iou))
 
         return y_pred
