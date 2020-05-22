@@ -1,6 +1,4 @@
-import cv2
 import numpy as np
-import torch
 import torch.utils.data
 from PIL import Image
 
@@ -40,14 +38,12 @@ class MonocularDataset(torch.utils.data.Dataset):
         if self.transforms is not None:
             dm = self.transforms(dm)
 
-        images.append(np.array(bg_fg))
-        images.append(np.array(bg))
-        images.append(np.array(mask))
-        images.append(np.array(dm))
+        images.append(np.array(bg_fg, np.float32))
+        images.append(np.array(bg, np.float32))
+        images.append(np.array(mask, np.float32))
+        images.append(np.array(dm, np.float32))
 
         return images, labels
 
     def __len__(self):
         return len(self.images)
-
-

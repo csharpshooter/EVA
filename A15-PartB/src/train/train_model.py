@@ -1,3 +1,4 @@
+import os
 import sys
 
 import numpy as np
@@ -23,8 +24,8 @@ class TrainModel:
         self.t_acc_max = 0  # track change in validation loss
         self.optimizer = None
 
-    def showmodelsummary(self, model):
-        summary(model, input_size=(3, 32, 32), device="cuda")
+    def showmodelsummary(self, model, input_size=(3, 32, 32)):
+        summary(model, input_size=input_size, device="cuda")
 
     def train(self, model, device, train_loader, optimizer, epoch):
         model.train()
@@ -305,27 +306,28 @@ class TrainModel:
             loss.backward()
             optimizer.step()
 
-            if batch_idx % 50 == 0:
-                print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
-                    epoch, batch_idx * len(data), len(train_loader.dataset), (100. * batch_idx / len(train_loader)),
-                    loss.item()))
-                print('IOU : {}'.format(iou))
+            # if batch_idx % 50 == 0:
+            #     print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
+            #         epoch, batch_idx * len(data), len(train_loader.dataset), (100. * batch_idx / len(train_loader)),
+            #         loss.item()))
+            #     print('IOU : {}'.format(iou))
 
-            if batch_idx % 100 == 0:
+            if batch_idx % 1000 == 0:
                 if show_output == True:
-                    from src.utils.utils import Utils
                     Utils.show(y_pred.detach().cpu(), nrow=4)
-                # print('IOU : {}'.format(iou))
+                print('IOU : {}'.format(iou))
 
         return y_pred
 
     def test_Monocular(self, model, device, test_loader, class_correct, class_total, epoch, lr_data, loss_fn,
                        show_output=False, infer_index=2):
+
         model.eval()
         test_loss = 0
         correct = 0
         pbar = tqdm(test_loader)
         output = None
+        dice_coeff = 0
         with torch.no_grad():
             for batch_idx, (data, target) in enumerate(pbar):
                 data[0] = data[0].to(device)
@@ -340,21 +342,23 @@ class TrainModel:
                 # correct += pred.eq(data[2].view_as(pred)).sum().item()
 
                 iou = self.calculate_iou(data[infer_index].detach().cpu().numpy(), output.detach().cpu().numpy())
+                dice_coeff += dice_coeff(data[infer_index], output).item()
 
-                if batch_idx % 100 == 0:
+                if batch_idx % 1000 == 0:
+                    if show_output == True:
+                        Utils.show(output.cpu(), nrow=4)
+
                     print('Test Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
                         epoch, batch_idx * len(data), len(test_loader.dataset), (100. * batch_idx / len(test_loader)),
                         loss))
                     print('IOU : {}'.format(iou))
 
-                if batch_idx % 50 == 0 and show_output == True:
-                    Utils.show(output.cpu(), nrow=2)
-
         test_loss /= len(test_loader.dataset)
+        dice_coeff /= len(test_loader)
 
         self.test_losses.append(test_loss)
 
-        model_save_path = "checkpoint-{}.pt".format(epoch)
+        model_save_path = "savedmodels" + os.path.sep + "checkpoint-{}.pt".format(epoch)
 
         Utils.savemodel(model=model, epoch=epoch, path=model_save_path,
                         optimizer_state_dict=self.optimizer.state_dict()
@@ -362,10 +366,25 @@ class TrainModel:
                         test_losses=self.test_losses, lr_data=lr_data, class_correct=class_correct,
                         class_total=class_total)
 
-        return output
+        return output, dice_coeff
 
-    def calculate_iou(self, target, prediction):
-        intersection = np.logical_and(target, prediction)
-        union = np.logical_or(target, prediction)
+    # def calculate_iou(self, target, prediction):
+    #     intersection = np.logical_and(target, prediction)
+    #     union = np.logical_or(target, prediction)
+    #     iou_score = np.sum(intersection) / np.sum(union)
+    #     return iou_score
+
+    def calculate_iou(self, target, prediction, thresh=0.5):
+        intersection = np.logical_and(np.greater(target, thresh), np.greater(prediction, thresh))
+        union = np.logical_or(np.greater(target, thresh), np.greater(prediction, thresh))
         iou_score = np.sum(intersection) / np.sum(union)
         return iou_score
+
+    # def dice_loss(self, pred, target):
+    #     smooth = 1.
+    #     iflat = pred.contiguous().view(-1)
+    #     tflat = target.contiguous().view(-1)
+    #     intersection = (iflat * tflat).sum()
+    #     A_sum = torch.sum(iflat * iflat)
+    #     B_sum = torch.sum(tflat * tflat)
+    #     return 1 - ((2. * intersection + smooth) / (A_sum + B_sum + smooth))
