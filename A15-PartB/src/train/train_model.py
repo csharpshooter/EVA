@@ -8,6 +8,7 @@ from torch.optim.lr_scheduler import LambdaLR
 from torchsummary import summary
 from tqdm import tqdm
 
+from src.train.customlossfunction.dicecoeff import dice_coeff
 from src.utils import Utils
 
 
@@ -331,7 +332,7 @@ class TrainModel:
         correct = 0
         pbar = tqdm(test_loader)
         output = None
-        dice_coeff = 0
+        dice_coeff_var = 0
         with torch.no_grad():
             for batch_idx, (data, target) in enumerate(pbar):
                 data[0] = data[0].to(device)
@@ -346,7 +347,7 @@ class TrainModel:
                 # correct += pred.eq(data[2].view_as(pred)).sum().item()
 
                 iou = self.calculate_iou(data[infer_index].detach().cpu().numpy(), output.detach().cpu().numpy())
-                dice_coeff += dice_coeff(data[infer_index], output).item()
+                dice_coeff_var += dice_coeff(data[infer_index], output).item()
 
                 if batch_idx % 1000 == 0:
                     if show_output == True:
@@ -358,7 +359,7 @@ class TrainModel:
                     print('IOU : {}'.format(iou))
 
         test_loss /= len(test_loader.dataset)
-        dice_coeff /= len(test_loader)
+        dice_coeff_var /= len(test_loader)
 
         self.test_losses.append(test_loss)
 
@@ -370,7 +371,7 @@ class TrainModel:
                         test_losses=self.test_losses, lr_data=lr_data, class_correct=class_correct,
                         class_total=class_total)
 
-        return output, dice_coeff
+        return output, dice_coeff_var
 
     # def calculate_iou(self, target, prediction):
     #     intersection = np.logical_and(target, prediction)
