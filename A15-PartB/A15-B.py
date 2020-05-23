@@ -1,16 +1,24 @@
-import torch.optim.lr_scheduler
+from src.imports import *
+import numpy as np
+from PIL import Image
+
+from src.imports import *
+
+# i_path = r'D:\Development\TSAI\EVA\MaskRCNN Dataset\OverLayedImages\batch_1'
+# paths = utils.Utils.get_all_file_paths(i_path)
+# images = []
+# for path in paths[0]:
+#     images.append(np.array(Image.open(path)))
+#
+# images = np.array(images)
+# mean, std = utils.Utils.calculate_mean_std_deviation(images)
+
+# [0.4222796, 0.44544333, 0.44153902]
+# [0.28497052, 0.24810323, 0.2657039]
+# Monocular Std and Mean
 
 from src.dataset.monocularhelper import MonocularHelper
 from src.imports import *
-
-# from src.train.torchvision import collate_fn, train_one_epoch, warmup_lr_scheduler
-
-# def run():
-#     torch.multiprocessing.freeze_support()
-#     print('loop')
-#
-# if __name__ == '__main__' or __name__ == '__mp_main__':
-#     run()
 
 helper = MonocularHelper()
 
@@ -50,7 +58,10 @@ print(len(test_label))
 
 batch_size = 16
 
-train_transforms, test_transforms = preprochelper.PreprocHelper.getpytorchtransforms(image_net_mean, image_net_std, 224)
+mean = [0.4222796, 0.44544333, 0.44153902]
+std = [0.28497052, 0.24810323, 0.2657039]
+
+train_transforms, test_transforms = preprochelper.PreprocHelper.getpytorchtransforms(mean, std, 224)
 ds = dst.Dataset()
 
 train_dataset = ds.get_monocular_train_dataset(train_image_data=train_data, train_image_labels=train_label,

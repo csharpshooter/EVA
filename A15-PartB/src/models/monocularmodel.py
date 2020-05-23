@@ -24,12 +24,12 @@ class BasicBlock(nn.Module):
             )
 
     def forward(self, x):
-        # out = F.relu(self.bn1(self.conv1(x)))
-        # out = self.bn2(self.conv2(out))
-        # out = F.relu((self.conv1(x)))
-        # out = (self.conv2(out))
-        # out += self.shortcut(x)
-        out = self.shortcut(x)
+        out = F.relu(self.bn1(self.conv1(x)))
+        out = self.bn2(self.conv2(out))
+        out = F.relu((self.conv1(out)))
+        out = (self.conv2(out))
+        out += self.shortcut(x)
+        # out = self.shortcut(x)
         out = F.relu(out)
         return out
 
@@ -117,4 +117,4 @@ class ResNet(nn.Module):
 
 
 def MonocularModel():
-    return ResNet(BasicBlock, [2, 2])
+    return ResNet(BasicBlock, [1, 1])

@@ -277,11 +277,11 @@ class TrainModel:
     def train_Monocular(self, model, device, train_loader, optimizer, epoch, loss_fn, show_output=False, infer_index=2):
         model.train()
         pbar = tqdm(train_loader)
-        correct = 0
-        processed = 0
         self.optimizer = optimizer
         iou = 0
         y_pred = None
+        total_iou = 0
+        train_loss = 0
         for batch_idx, (data, target) in enumerate(pbar):
             # get samples
             # data, target = data.to(device), target.to(device)
@@ -303,6 +303,8 @@ class TrainModel:
             # Calculate loss
             loss = loss_fn(y_pred, data[infer_index])
             iou = self.calculate_iou(data[infer_index].detach().cpu().numpy(), y_pred.detach().cpu().numpy())
+            total_iou += iou
+            train_loss += loss.item()
             # Backpropagation
             loss.backward()
             optimizer.step()
@@ -313,7 +315,7 @@ class TrainModel:
             #         loss.item()))
             #     print('IOU : {}'.format(iou))
 
-            if batch_idx % 1000 == 0:
+            if batch_idx % 500 == 0:
                 if show_output == True:
                     Utils.show(y_pred.detach().cpu(), nrow=4)
 
@@ -321,6 +323,12 @@ class TrainModel:
                     epoch, batch_idx * len(data), len(train_loader.dataset), (100. * batch_idx / len(train_loader)),
                     loss.item()))
                 print('IOU : {}'.format(iou))
+
+        train_loss /= len(train_loader)
+        total_iou /= len(total_iou)
+        print('Batch IOU = {}'.format(total_iou))
+        self.train_losses.append(train_loss)
+        self.train_acc.append(total_iou)
 
         return y_pred
 
@@ -332,7 +340,8 @@ class TrainModel:
         correct = 0
         pbar = tqdm(test_loader)
         output = None
-        dice_coeff_var = 0
+        # dice_coeff_var = 0
+        total_iou = 0
         with torch.no_grad():
             for batch_idx, (data, target) in enumerate(pbar):
                 data[0] = data[0].to(device)
@@ -347,9 +356,10 @@ class TrainModel:
                 # correct += pred.eq(data[2].view_as(pred)).sum().item()
 
                 iou = self.calculate_iou(data[infer_index].detach().cpu().numpy(), output.detach().cpu().numpy())
-                dice_coeff_var += dice_coeff(data[infer_index], output).item()
+                total_iou += iou
+                # dice_coeff_var += dice_coeff(data[1], data[infer_index]).item()
 
-                if batch_idx % 1000 == 0:
+                if batch_idx % 500 == 0:
                     if show_output == True:
                         Utils.show(output.cpu(), nrow=4)
 
@@ -359,9 +369,12 @@ class TrainModel:
                     print('IOU : {}'.format(iou))
 
         test_loss /= len(test_loader.dataset)
-        dice_coeff_var /= len(test_loader)
+        total_iou /= len(test_loader)
+
+        print('Batch IOU = {}'.format(total_iou))
 
         self.test_losses.append(test_loss)
+        self.test_acc.append(total_iou)
 
         model_save_path = "savedmodels" + os.path.sep + "checkpoint-{}.pt".format(epoch)
 
@@ -371,25 +384,10 @@ class TrainModel:
                         test_losses=self.test_losses, lr_data=lr_data, class_correct=class_correct,
                         class_total=class_total)
 
-        return output, dice_coeff_var
-
-    # def calculate_iou(self, target, prediction):
-    #     intersection = np.logical_and(target, prediction)
-    #     union = np.logical_or(target, prediction)
-    #     iou_score = np.sum(intersection) / np.sum(union)
-    #     return iou_score
+        return output, total_iou
 
     def calculate_iou(self, target, prediction, thresh=0.5):
         intersection = np.logical_and(np.greater(target, thresh), np.greater(prediction, thresh))
         union = np.logical_or(np.greater(target, thresh), np.greater(prediction, thresh))
         iou_score = np.sum(intersection) / np.sum(union)
         return iou_score
-
-    # def dice_loss(self, pred, target):
-    #     smooth = 1.
-    #     iflat = pred.contiguous().view(-1)
-    #     tflat = target.contiguous().view(-1)
-    #     intersection = (iflat * tflat).sum()
-    #     A_sum = torch.sum(iflat * iflat)
-    #     B_sum = torch.sum(tflat * tflat)
-    #     return 1 - ((2. * intersection + smooth) / (A_sum + B_sum + smooth))

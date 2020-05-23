@@ -1,8 +1,12 @@
 import datetime
+import os.path
+from os import path
+from zipfile import ZipFile
 
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
+import requests
 import torch
 import torch.optim as optim
 # from albumentations.pytorch import ToTensor
@@ -11,11 +15,7 @@ from PIL import Image
 from torch.optim.lr_scheduler import LambdaLR
 from torchvision import datasets
 from torchvision.transforms import ToTensor
-import requests
 from tqdm import tqdm
-from zipfile import ZipFile
-import os.path
-from os import path
 
 import src.dataset.dataset as dst
 from src.models import CNN_Model, ResNet18, A11CustomResnetModel, MonocularModel
@@ -174,6 +174,20 @@ class Utils:
 
         return [means[0], means[1], means[2]], [stdevs[0], stdevs[1], stdevs[2]]
 
+    def calculate_mean_std_deviation(data):
+
+        data = data.astype(np.float32) / 255.
+
+        means = []
+        stdevs = []
+
+        for i in range(3):  # 3 channels
+            pixels = data[:, :, :, i].ravel()
+            means.append(np.mean(pixels))
+            stdevs.append(np.std(pixels))
+
+        return [means[0], means[1], means[2]], [stdevs[0], stdevs[1], stdevs[2]]
+
     def showaccuracyacrossclasses(class_correct, class_total):
         classes = dst.Dataset.getclassesinCIFAR10dataset()
         for i in range(10):
@@ -314,7 +328,7 @@ class Utils:
 
         return np.array(final_list)
 
-    def show(tensors, figsize=(10, 10), *args, **kwargs):
+    def show(tensors, figsize=(7, 7), *args, **kwargs):
         try:
             tensors = tensors.detach().cpu()
         except:
@@ -336,12 +350,12 @@ class Utils:
     import subprocess
 
     proc = subprocess.Popen(["ssh", "-i .ssh/id_rsa", "user@host"],
-                           stdin=subprocess.PIPE,
-                           stdout=subprocess.PIPE,
-                           stderr=subprocess.PIPE,
-                           universal_newlines=True,
-                           bufsize=0)
+                            stdin=subprocess.PIPE,
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE,
+                            universal_newlines=True,
+                            bufsize=0)
 
-      # Fetch output
+    # Fetch output
     for line in proc.stdout:
         print(line.strip())
