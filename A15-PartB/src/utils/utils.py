@@ -19,6 +19,7 @@ from tqdm import tqdm
 
 import src.dataset.dataset as dst
 from src.models import CNN_Model, ResNet18, A11CustomResnetModel, MonocularModel, DepthModel
+from src.models.MaskAndDepthModel import MaskAndDepthModel
 
 
 class Utils:
@@ -126,6 +127,17 @@ class Utils:
         device = torch.device("cuda" if use_cuda else "cpu")
         print(device)
         model = DepthModel().to(device)
+
+        if model_state_dict != None:
+            model.load_state_dict(state_dict=model_state_dict)
+
+        return model, device
+
+    def createMaskAndDepthModel(model_state_dict=None):
+        use_cuda = torch.cuda.is_available()
+        device = torch.device("cuda" if use_cuda else "cpu")
+        print(device)
+        model = MaskAndDepthModel().to(device)
 
         if model_state_dict != None:
             model.load_state_dict(state_dict=model_state_dict)
@@ -339,7 +351,7 @@ class Utils:
 
         return np.array(final_list)
 
-    def show(tensors, figsize=(7, 7), *args, **kwargs):
+    def show(tensors, figsize=(10, 10), *args, **kwargs):
         try:
             tensors = tensors.detach().cpu()
         except:

@@ -91,7 +91,17 @@ class ResNet(nn.Module):
         seq.add_module("Relu", nn.ReLU())
         return seq
 
-    def doforward(self, x):
+    def upconv(self, in_planes, out_planes):
+        return nn.Sequential(
+            nn.ConvTranspose2d(in_planes, out_planes, kernel_size=3, stride=2, padding=1, output_padding=1),
+            nn.ReLU(inplace=True)
+        )
+
+    def crop_like(self, input, ref):
+        assert (input.size(2) >= ref.size(2) and input.size(3) >= ref.size(3))
+        return input[:, :, :ref.size(2), :ref.size(3)]
+
+    def dodown(self, x):
         x = self.prep(x)  # input layer 3-> 64
         l1 = self.cb1(x)  # Layer 1 X 64 -> 128
         r1 = self.res1(l1)  # Resblock 1 128 -> 128
@@ -102,19 +112,21 @@ class ResNet(nn.Module):
         x = l3 + r2
         return x
 
+
     def forward(self, x):
         x1 = x[0]
         x2 = x[1]
 
-        x1 = self.doforward(x1)
-        x2 = self.doforward(x2)
+        x1 = self.dodown(x1)
+        x2 = self.dodown(x2)
 
         x = torch.cat([x1, x2], 1)
 
-        x = self.convblockfinal(x)
+        mask = self.convblockfinal(x)
 
         return x
 
 
-def MonocularModel():
+def MaskAndDepthModel():
     return ResNet(BasicBlock, [1, 1])
+

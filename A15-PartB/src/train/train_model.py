@@ -23,6 +23,16 @@ class TrainModel:
         self.loss_type = self.get_loss_function_monocular()
         self.t_acc_max = 0  # track change in validation loss
         self.optimizer = None
+        self.optimizer_mask = None
+        self.optimizer_depthmask = None
+        self.train_losses_mask = []
+        self.test_losses_mask = []
+        self.train_acc_mask = []
+        self.test_acc_mask = []
+        self.train_losses_depthmask = []
+        self.test_losses_depthmask = []
+        self.train_acc_depthmask = []
+        self.test_acc_depthmask = []
 
     def showmodelsummary(self, model, input_size=(3, 32, 32)):
         summary(model, input_size=input_size, device="cuda")
@@ -392,3 +402,191 @@ class TrainModel:
         union = np.logical_or(np.greater(target, thresh), np.greater(prediction, thresh))
         iou_score = np.sum(intersection) / np.sum(union)
         return iou_score
+
+    def train_DualLoss(self, model_mask, model_depthmask, device, train_loader, optimizer_mask, optimer_depthmask,
+                       epoch, loss_fn_mask,
+                       loss_fn_depthmask,
+                       show_output=False):
+        model_mask.train()
+        model_depthmask.train()
+        pbar = tqdm(train_loader)
+        self.optimizer_mask = optimizer_mask
+        self.optimer_depthmask = optimer_depthmask
+        iou_mask = 0
+        iou_depthmask = 0
+        y_pred_mask = None
+        y_pred_depthmask = None
+        total_iou_mask = 0
+        total_iou_depthmask = 0
+        train_loss_mask = 0
+        train_loss_depthmask = 0
+        for batch_idx, (data, target) in enumerate(pbar):
+            # get samples
+            # data, target = data.to(device), target.to(device)
+
+            data[0] = data[0].to(device)
+            data[1] = data[1].to(device)
+            data[2] = data[2].to(device)
+            data[3] = data[3].to(device)
+
+            # Init
+            optimizer_mask.zero_grad()
+            optimer_depthmask.zero_grad()
+            # In PyTorch, we need to set the gradients to zero before starting to do backpropragation because PyTorch
+            # accumulates the gradients on subsequent backward passes. Because of this, when you start your training
+            # loop, ideally you should zero out the gradients so that you do the parameter update correctly.
+
+            # Predict
+            y_pred_mask = model_mask(data)
+            y_pred_depthmask = model_depthmask(data)
+
+            # Calculate loss
+            loss_mask = loss_fn_mask(y_pred_mask, data[2])
+            loss_depthmask = loss_fn_depthmask(y_pred_depthmask, data[3])
+
+            iou_mask = self.calculate_iou(data[2].detach().cpu().numpy(), y_pred_mask.detach().cpu().numpy())
+            iou_depthmask = self.calculate_iou(data[3].detach().cpu().numpy(), y_pred_depthmask.detach().cpu().numpy())
+
+            total_iou_mask += iou_mask
+            total_iou_depthmask += iou_depthmask
+            train_loss_mask += loss_mask.item()
+            train_loss_depthmask += loss_depthmask.item()
+
+            # Backpropagation
+            loss_mask.backward()
+            loss_depthmask.backward()
+
+            optimizer_mask.step()
+            optimer_depthmask.step()
+
+            # if batch_idx % 50 == 0:
+            #     print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
+            #         epoch, batch_idx * len(data), len(train_loader.dataset), (100. * batch_idx / len(train_loader)),
+            #         loss.item()))
+            #     print('IOU : {}'.format(iou))
+
+            if batch_idx % 500 == 0:
+                if show_output == True:
+                    Utils.show(y_pred_mask.detach().cpu(), nrow=8)
+                    Utils.show(data[2].cpu(), nrow=8)
+                    Utils.show(y_pred_depthmask.detach().cpu(), nrow=8)
+                    Utils.show(data[3].cpu(), nrow=8)
+
+                print('Train Epoch: {} [{}/{} ({:.0f}%)]\tMask Loss: {:.6f}'.format(
+                    epoch, batch_idx * len(data), len(train_loader.dataset), (100. * batch_idx / len(train_loader)),
+                    loss_mask.item()))
+                print('Mask IOU : {}'.format(iou_mask))
+
+                print('Train Epoch: {} [{}/{} ({:.0f}%)]\tDepth Mask Loss: {:.6f}'.format(
+                    epoch, batch_idx * len(data), len(train_loader.dataset), (100. * batch_idx / len(train_loader)),
+                    loss_depthmask.item()))
+                print('Depth Mask IOU : {}'.format(iou_depthmask))
+
+        train_loss_mask /= len(train_loader.dataset)
+        train_loss_depthmask /= len(train_loader.dataset)
+        total_iou_mask /= len(train_loader.dataset)
+        total_iou_depthmask /= len(train_loader.dataset)
+
+        print('Batch Mask IOU = {}'.format(total_iou_mask))
+        print('Batch DepthMask IOU = {}'.format(total_iou_depthmask))
+
+        self.train_losses_mask.append(train_loss_mask)
+        self.train_acc_mask.append(total_iou_mask)
+        self.train_losses_depthmask.append(train_loss_depthmask)
+        self.train_acc_depthmask.append(total_iou_depthmask)
+
+        return y_pred_mask, y_pred_depthmask
+
+    def test_DualLoss(self, model_mask, model_depthmask, device, test_loader, class_correct, class_total, epoch,
+                      lr_data, loss_fn_mask,
+                      loss_fn_depthmask,
+                      show_output=False, ):
+
+        model_mask.eval()
+        model_depthmask.eval()
+        test_loss_mask = 0
+        test_loss_depthmask = 0
+        correct = 0
+        pbar = tqdm(test_loader)
+        output_mask = None
+        output_depthmask = None
+
+        total_iou_mask = 0
+        total_iou_depthmask = 0
+        with torch.no_grad():
+            for batch_idx, (data, target) in enumerate(pbar):
+                data[0] = data[0].to(device)
+                data[1] = data[1].to(device)
+                data[2] = data[2].to(device)
+                data[3] = data[3].to(device)
+
+                output_mask = model_mask(data)
+                output_depthmask = model_depthmask(data)
+
+                loss_mask = loss_fn_mask(output_mask, data[2]).item()
+                loss_depthmask = loss_fn_depthmask(output_depthmask, data[3]).item()
+                test_loss_mask += loss_mask
+                test_loss_depthmask += loss_depthmask
+
+                pred_mask = output_mask.argmax(dim=1, keepdim=True)
+                pred_depthmask = output_depthmask.argmax(dim=1, keepdim=True)
+                # correct += pred.eq(data[2].view_as(pred)).sum().item()
+
+                iou_mask = self.calculate_iou(data[2].detach().cpu().numpy(), output.detach().cpu().numpy())
+                iou_depthmask = self.calculate_iou(data[3].detach().cpu().numpy(), output.detach().cpu().numpy())
+
+                total_iou_mask += iou_mask
+                total_iou_depthmask += iou_depthmask
+                # dice_coeff_var += dice_coeff(data[1], data[infer_index]).item()
+
+                if batch_idx % 500 == 0:
+                    if show_output == True:
+                        Utils.show(output_mask.cpu(), nrow=8)
+                        Utils.show(data[2].cpu(), nrow=8)
+                        Utils.show(output_depthmask.cpu(), nrow=8)
+                        Utils.show(data[3].cpu(), nrow=8)
+
+                    print('Test Epoch: {} [{}/{} ({:.0f}%)]\tMask Loss: {:.6f}'.format(
+                        epoch, batch_idx * len(data), len(test_loader.dataset), (100. * batch_idx / len(test_loader)),
+                        loss_mask))
+                    print('Mask IOU : {}'.format(iou_mask))
+
+                    print('Test Epoch: {} [{}/{} ({:.0f}%)]\tDepth Mask Loss: {:.6f}'.format(
+                        epoch, batch_idx * len(data), len(test_loader.dataset), (100. * batch_idx / len(test_loader)),
+                        loss_depthmask))
+                    print('Depth Mask IOU : {}'.format(iou_depthmask))
+
+        test_loss_mask /= len(test_loader.dataset)
+        test_loss_depthmask /= len(test_loader.dataset)
+
+        total_iou_mask /= len(test_loader.dataset)
+        total_iou_depthmask /= len(test_loader.dataset)
+
+        print('Mask Batch IOU = {}'.format(total_iou_mask))
+        print('Depth Mask Batch IOU = {}'.format(total_iou_depthmask))
+
+        self.test_losses_mask.append(test_loss_mask)
+        self.test_acc_mask.append(total_iou_mask)
+        self.test_losses_depthmask.append(test_loss_depthmask)
+        self.test_acc_depthmask.append(total_iou_depthmask)
+
+        model_save_path_mask = "savedmodels" + os.path.sep + "checkpoint-mask-{}.pt".format(epoch)
+        model_save_path_depthmask = "savedmodels" + os.path.sep + "checkpoint-depthmask-{}.pt".format(epoch)
+
+        Utils.savemodel(model=model_mask, epoch=epoch, path=model_save_path_mask,
+                        train_acc=self.train_acc_mask, optimizer_state_dict=self.optimizer_mask.state_dict()
+                        , train_losses=self.train_losses_mask, test_acc=self.test_acc_mask,
+                        test_losses=self.test_losses_mask, lr_data=lr_data, class_correct=class_correct,
+                        class_total=class_total)
+
+        Utils.savemodel(model=model_depthmask, epoch=epoch, path=model_save_path_depthmask,
+                        train_acc=self.train_acc_depthmask, optimizer_state_dict=self.optimizer_depthmask.state_dict()
+                        , train_losses=self.train_losses_depthmask, test_acc=self.test_acc_depthmask,
+                        test_losses=self.test_losses_depthmask, lr_data=lr_data, class_correct=class_correct,
+                        class_total=class_total)
+
+        return output_mask, output_depthmask, total_iou_mask, total_iou_depthmask
+
+    def gettraintestdatafordualmodels(self):
+        return self.train_losses_mask, self.train_acc_mask, self.test_losses_mask, self.test_acc_mask \
+            , self.train_losses_depthmask, self.train_acc_depthmask, self.test_losses_depthmask, self.test_acc_depthmask
