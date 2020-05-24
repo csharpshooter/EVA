@@ -8,7 +8,6 @@ from torch.optim.lr_scheduler import LambdaLR
 from torchsummary import summary
 from tqdm import tqdm
 
-from src.train.customlossfunction.dicecoeff import dice_coeff
 from src.utils import Utils
 
 
@@ -317,15 +316,16 @@ class TrainModel:
 
             if batch_idx % 500 == 0:
                 if show_output == True:
-                    Utils.show(y_pred.detach().cpu(), nrow=4)
+                    Utils.show(y_pred.detach().cpu(), nrow=8)
+                    Utils.show(data[infer_index].cpu(), nrow=8)
 
                 print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
                     epoch, batch_idx * len(data), len(train_loader.dataset), (100. * batch_idx / len(train_loader)),
                     loss.item()))
                 print('IOU : {}'.format(iou))
 
-        train_loss /= len(train_loader)
-        total_iou /= len(total_iou)
+        train_loss /= len(train_loader.dataset)
+        total_iou /= len(train_loader.dataset)
         print('Batch IOU = {}'.format(total_iou))
         self.train_losses.append(train_loss)
         self.train_acc.append(total_iou)
@@ -361,7 +361,8 @@ class TrainModel:
 
                 if batch_idx % 500 == 0:
                     if show_output == True:
-                        Utils.show(output.cpu(), nrow=4)
+                        Utils.show(output.cpu(), nrow=8)
+                        Utils.show(data[infer_index].cpu(), nrow=8)
 
                     print('Test Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
                         epoch, batch_idx * len(data), len(test_loader.dataset), (100. * batch_idx / len(test_loader)),
@@ -369,7 +370,7 @@ class TrainModel:
                     print('IOU : {}'.format(iou))
 
         test_loss /= len(test_loader.dataset)
-        total_iou /= len(test_loader)
+        total_iou /= len(test_loader.dataset)
 
         print('Batch IOU = {}'.format(total_iou))
 

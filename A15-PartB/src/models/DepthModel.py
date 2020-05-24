@@ -1,49 +1,96 @@
 import torch
 import torch.nn as nn
 
-# class DepthModel(nn.Module):
-#
-#     def __init__(self):
-#         super(DepthModel, self).__init__()
-#
-#         self.inputblock = nn.Sequential(
-#             nn.Conv2d(in_channels=3, out_channels=16, kernel_size=3, stride=1, bias=False, padding=1),
-#             nn.BatchNorm2d(16),
-#             nn.ReLU(),
-#         )
-#
-#         self.convblock2 = nn.Sequential(
-#             # Defining a 2D convolution layer
-#             nn.Conv2d(16, 32, 3, stride=1, bias=False, padding=1),
-#             nn.BatchNorm2d(32),
-#             nn.ReLU(),
-#         )
-#
-#         self.convblock3 = nn.Sequential(
-#             # Defining a 2D convolution layer
-#             nn.Conv2d(32, 64, kernel_size=3, stride=1, bias=False, padding=1),
-#             nn.BatchNorm2d(64),
-#             nn.ReLU(),
-#         )
-#
-#         self.convblock4 = nn.Sequential(
-#             # Defining a 2D convolution layer
-#             nn.Conv2d(64, 128, kernel_size=3, stride=1, bias=False, padding=1),
-#             nn.BatchNorm2d(128),
-#             nn.ReLU(),
-#         )
-#
-#         self.convblockfinal = nn.Sequential(
-#             # Defining a 2D convolution layer
-#             nn.Conv2d(512, 3, 3, stride=1, bias=False, padding=1),
-#         )
-#
-#     def forward(self, data):
-#         x1 = self.convblock2(self.inputblock(data[0]))
-#         x2 = self.convblock2(self.inputblock(data[1]))
-#
-#         final_x = torch.cat([x1, x2], 1)
-#
-#         final_x = self.convblock4(self.convblock3(final_x))
-#
-#         return final_x
+
+class DepthModel(nn.Module):
+
+    def __init__(self):
+        super(DepthModel, self).__init__()
+
+        self.d1 = self.downsample_conv(16, 16)
+
+        self.d2 = self.downsample_conv(16, 32)
+
+        self.d3 = self.downsample_conv(32, 64)
+
+        self.d4 = self.downsample_conv(64, 128)
+
+        # self.u1 = self.upconv(128, 128)
+
+        self.u2 = self.upconv(128, 64)
+
+        self.u3 = self.upconv(64, 32)
+
+        self.u4 = self.upconv(32, 16)
+
+        self.final = nn.Sequential(
+            # Defining a 2D convolution layer
+            nn.Conv2d(16, 3, 3, stride=1, bias=False, padding=1),
+        )
+
+        self.prep = DoubleConv(6, 16)
+
+    def downsample_conv(self, in_planes, out_planes, kernel_size=3):
+        return nn.Sequential(
+            nn.Conv2d(in_planes, out_planes, kernel_size=kernel_size, stride=2, padding=(kernel_size - 1) // 2),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(out_planes, out_planes, kernel_size=kernel_size, padding=(kernel_size - 1) // 2),
+            nn.ReLU(inplace=True)
+        )
+
+    def upconv(self, in_planes, out_planes):
+        return nn.Sequential(
+            nn.ConvTranspose2d(in_planes, out_planes, kernel_size=3, stride=2, padding=1, output_padding=1),
+            nn.ReLU(inplace=True)
+        )
+
+    def crop_like(self, input, ref):
+        assert (input.size(2) >= ref.size(2) and input.size(3) >= ref.size(3))
+        return input[:, :, :ref.size(2), :ref.size(3)]
+
+    def forward(self, data):
+        x = torch.cat((data[0], data[1]), 1)
+        x = self.prep(x)
+        d1 = self.d1(x)
+        d2 = self.d2(d1)
+        d3 = self.d3(d2)
+        d4 = self.d4(d3)
+
+        # up_input0 = self.crop_like(self.u1(d4), d3)
+        # up_input0 = torch.cat((up_input0, d3), 1)
+        # u0 = self.u1(up_input0)
+
+        up_input1 = self.crop_like(self.u2(d4), d3)
+        up_input1 = torch.cat((up_input1, d3), 1)
+        u1 = self.u2(up_input1)
+
+        up_input2 = self.crop_like(self.u3(u1), d2)
+        up_input2 = torch.cat((up_input2, d2), 1)
+        u2 = self.u3(up_input2)
+
+        up_input2 = self.crop_like(self.u4(u2), d1)
+        up_input3 = torch.cat((up_input2, d1), 1)
+        u3 = self.u4(up_input3)
+
+        final_x = self.final(u3)
+        return final_x
+
+
+class DoubleConv(nn.Module):
+    """(convolution => [BN] => ReLU) * 2"""
+
+    def __init__(self, in_channels, out_channels, mid_channels=None):
+        super().__init__()
+        if not mid_channels:
+            mid_channels = out_channels
+        self.double_conv = nn.Sequential(
+            nn.Conv2d(in_channels, mid_channels, kernel_size=3, padding=1),
+            nn.BatchNorm2d(mid_channels),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(mid_channels, out_channels, kernel_size=3, padding=1),
+            nn.BatchNorm2d(out_channels),
+            nn.ReLU(inplace=True)
+        )
+
+    def forward(self, x):
+        return self.double_conv(x)

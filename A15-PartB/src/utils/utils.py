@@ -18,7 +18,7 @@ from torchvision.transforms import ToTensor
 from tqdm import tqdm
 
 import src.dataset.dataset as dst
-from src.models import CNN_Model, ResNet18, A11CustomResnetModel, MonocularModel
+from src.models import CNN_Model, ResNet18, A11CustomResnetModel, MonocularModel, DepthModel
 
 
 class Utils:
@@ -115,6 +115,17 @@ class Utils:
         device = torch.device("cuda" if use_cuda else "cpu")
         print(device)
         model = MonocularModel().to(device)
+
+        if model_state_dict != None:
+            model.load_state_dict(state_dict=model_state_dict)
+
+        return model, device
+
+    def createDepthModel(model_state_dict=None):
+        use_cuda = torch.cuda.is_available()
+        device = torch.device("cuda" if use_cuda else "cpu")
+        print(device)
+        model = DepthModel().to(device)
 
         if model_state_dict != None:
             model.load_state_dict(state_dict=model_state_dict)

@@ -6,3 +6,4 @@ from .quizdnn import QuizDNN
 from .resnet import ResNet18
 from .modelhelper import *
 from .monocularmodel import MonocularModel
+from .DepthModel import DepthModel
