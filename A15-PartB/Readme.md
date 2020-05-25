@@ -22,6 +22,9 @@ I was able to train for all three size for depth map but was able to train only 
 
 I trained Depth Map model for for 12 epochs 4*64, 6*128, 224*2 and Mask model for 7 epochs 4*64, 128*3
 
+I have saved model data and checkpoints on below location:
+https://github.com/csharpshooter/EVA/tree/master/A15-PartB/savedmodels
+
 I tried different losses for Mask prediction such as BCEWithLogits, MSELoss and SmoothL1Loss I found SmoothL1Loss gave me good output so used that.
 
 For Depth Map prediction I tried DiceLoss, SSIM (Kornia) and SmoothL1 loss. Here Dice Loss gave me good output so used that
@@ -41,6 +44,12 @@ I created zip file of images and then unzipped them on colab for training my mod
 
     
 ---------------------------------------------------------------------------------------------------------------------------
+## Tensorboard Graphs
+----------------------
+Used the following notebook to generate plots and create tensorboard graphs
+https://github.com/csharpshooter/EVA/blob/master/A15-PartB/A15-B__Plots_Tensorboard.ipynb
+
+![TB](https://github.com/csharpshooter/EVA/blob/master/A15-PartB/images/TensorboardLossAccuracyLRGraphs.png)
 
 ---------------------------------------------------------------------------------------------------------------------------
 ## Sample Outputs
