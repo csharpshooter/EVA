@@ -1,6 +1,8 @@
 import torch
 import torch.nn as nn
 
+from src.models import DepthwiseSeparableConv2d
+
 
 class DepthModel(nn.Module):
 
@@ -23,24 +25,23 @@ class DepthModel(nn.Module):
 
         self.u4 = self.upconv(32, 16)
 
-        self.final = nn.Sequential(
-            # Defining a 2D convolution layer
-            nn.Conv2d(16, 3, 3, stride=1, bias=False, padding=1),
-        )
+        self.final = DoubleConv(16, 3)
 
         self.prep = DoubleConv(6, 16)
 
     def downsample_conv(self, in_planes, out_planes, kernel_size=3):
         return nn.Sequential(
-            nn.Conv2d(in_planes, out_planes, kernel_size=kernel_size, stride=2, padding=(kernel_size - 1) // 2),
+            nn.Conv2d(in_planes, out_planes, kernel_size=kernel_size, stride=1, padding=(kernel_size - 1) // 2),
+            # DepthwiseSeparableConv2d(input=in_planes, output=out_planes, padding=1, bias=False, stride=1),
             nn.ReLU(inplace=True),
             nn.Conv2d(out_planes, out_planes, kernel_size=kernel_size, padding=(kernel_size - 1) // 2),
+            # DepthwiseSeparableConv2d(input=out_planes, output=out_planes, padding=1),
             nn.ReLU(inplace=True)
         )
 
     def upconv(self, in_planes, out_planes):
         return nn.Sequential(
-            nn.ConvTranspose2d(in_planes, out_planes, kernel_size=3, stride=2, padding=1, output_padding=1),
+            nn.ConvTranspose2d(in_planes, out_planes, kernel_size=3, stride=1, padding=1, output_padding=0),
             nn.ReLU(inplace=True)
         )
 

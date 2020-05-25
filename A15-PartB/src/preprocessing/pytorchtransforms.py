@@ -10,7 +10,7 @@ class PytorchTransforms(object):
             # transforms.Pad(padding=1, padding_mode="edge"),
             # transforms.RandomHorizontalFlip(p=1),  # randomly flip and rotate
             # transforms.RandomRotation(20),
-            transforms.ColorJitter(saturation=0.1, hue=0.1),
+            transforms.ColorJitter(saturation=0.2, hue=0.2),
             # transforms.RandomCrop(size=(64, 64), padding=4),
             transforms.ToTensor(),
             # transforms.Normalize(mean, std),

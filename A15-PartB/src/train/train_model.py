@@ -358,11 +358,12 @@ class TrainModel:
                 data[1] = data[1].to(device)
                 data[2] = data[2].to(device)
                 data[3] = data[3].to(device)
+
                 output = model(data)
 
                 loss = loss_fn(output, data[infer_index]).item()
                 test_loss += loss
-                pred = output.argmax(dim=1, keepdim=True)
+                # pred = output.argmax(dim=1, keepdim=True)
                 # correct += pred.eq(data[2].view_as(pred)).sum().item()
 
                 iou = self.calculate_iou(data[infer_index].detach().cpu().numpy(), output.detach().cpu().numpy())
@@ -528,8 +529,8 @@ class TrainModel:
                 test_loss_mask += loss_mask
                 test_loss_depthmask += loss_depthmask
 
-                pred_mask = output_mask.argmax(dim=1, keepdim=True)
-                pred_depthmask = output_depthmask.argmax(dim=1, keepdim=True)
+                # pred_mask = output_mask.argmax(dim=1, keepdim=True)
+                # pred_depthmask = output_depthmask.argmax(dim=1, keepdim=True)
                 # correct += pred.eq(data[2].view_as(pred)).sum().item()
 
                 iou_mask = self.calculate_iou(data[2].detach().cpu().numpy(), output.detach().cpu().numpy())
