@@ -47,10 +47,10 @@ I created zip file of images and then unzipped them on colab for training my mod
 --------------------
 Order
 1. FG+BG
-2. Mask - Grountruth
+2. Mask - Groundtruth
 3. Mask predicted
-4 Depth mask ground truth
-5. depth mask predicted
+4. Depth mask ground truth
+5. Depth mask predicted
 
 ![O1](https://github.com/csharpshooter/EVA/blob/master/A15-PartB/images/SampleOutput.JPG)
 ![O2](https://github.com/csharpshooter/EVA/blob/master/A15-PartB/images/SampleOutput1.JPG)
