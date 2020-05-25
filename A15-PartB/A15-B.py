@@ -79,11 +79,11 @@ def main():
     # use_cuda = torch.cuda.is_available()
     # device = torch.device("cuda" if use_cuda else "cpu")
 
-    cnn_model, device = utils.Utils.createDepthModel()
-    optimizer = utils.Utils.createoptimizer(cnn_model, lr=0.5, momentum=0.9, weight_decay=1e-5)  # 1e-5
+    # cnn_model, device = utils.Utils.createDepthModel()
+    # optimizer = utils.Utils.createoptimizer(cnn_model, lr=0.5, momentum=0.9, weight_decay=1e-5)  # 1e-5
 
-    # cnn_model, device = utils.Utils.createMonocularModel()
-    # optimizer = utils.Utils.createoptimizer(cnn_model, lr=0.01, momentum=0.9, weight_decay=1e-5)  # 1e-5
+    cnn_model, device = utils.Utils.createMonocularModel()
+    optimizer = utils.Utils.createoptimizer(cnn_model, lr=0.01, momentum=0.9, weight_decay=1e-5)  # 1e-5
 
     for name, param in cnn_model.named_parameters():
         #     print(name)
@@ -113,7 +113,7 @@ def main():
     lr_data = []
     class_correct = list(0. for i in range(10))
     class_total = list(0. for i in range(10))
-    epochs = 20
+    epochs = 5
 
     def count_parameters(model):
         return sum(p.numel() for p in model.parameters() if p.requires_grad)
@@ -126,13 +126,13 @@ def main():
     # loss_fn = SSIM(window_size=3, reduction='mean')
     from torch.nn import BCEWithLogitsLoss, SmoothL1Loss, MSELoss, BCELoss
     # loss_fn = BCEWithLogitsLoss()
-    loss_fn = SmoothL1Loss()
+    # loss_fn = SmoothL1Loss()
     # loss_fn = MSELoss()
     from src.train.customlossfunction import DiceLoss
-    # loss_fn = DiceLoss()
+    loss_fn = DiceLoss()
     # loss_fn = BCELoss(reduction='mean')
-    show_output = True
-    infer_index = 3
+    show_output = False
+    infer_index = 2
     for epoch in range(1, epochs):
         print("EPOCH:", epoch)
 

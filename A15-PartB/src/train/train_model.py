@@ -10,8 +10,16 @@ from tqdm import tqdm
 
 from src.utils import Utils
 
+'''
+Class used for training the model. 
+This class consists of all different training  methods for model training
+'''
+
 
 class TrainModel:
+    '''
+     init method of class used for initlizing local varirables
+    '''
 
     def __init__(self):
         self.train_losses = []
@@ -35,9 +43,22 @@ class TrainModel:
         self.test_acc_depthmask = []
 
     def showmodelsummary(self, model, input_size=(3, 32, 32)):
+        ''' Uses torchsummary to display model layer details and parameters in the model per layer
+        :param model: CNN Model
+        :param input_size: size of imput to model
+        :return: None
+        '''
         summary(model, input_size=input_size, device="cuda")
 
     def train(self, model, device, train_loader, optimizer, epoch):
+        ''' Basic train method to train a model with single input image
+        :param model:  CNN Model
+        :param device: device object w.r.t cuda or non-cuda
+        :param train_loader: data loader to load data from dataset while training
+        :param optimizer: optimizer to be used while training
+        :param epoch: epoch fo which training is done on
+        :return: None
+        '''
         model.train()
         pbar = tqdm(train_loader)
         correct = 0
@@ -85,6 +106,16 @@ class TrainModel:
         self.train_losses.append(loss)
 
     def test(self, model, device, test_loader, class_correct, class_total, epoch, lr_data):
+        '''  Basic test method to train a model with single input image
+        :param model: CNN Model
+        :param device: device object w.r.t cuda or non-cuda
+        :param test_loader: data loader to load data from dataset while training
+        :param class_correct: list to store correct predictions for the epoch
+        :param class_total: list to store total correct predictions for the epoch
+        :param epoch: epoch fo which training is done on
+        :param lr_data: learning rate list to be saved while saving model
+        :return: test accuracy
+        '''
         model.eval()
         test_loss = 0
         correct = 0
@@ -133,19 +164,41 @@ class TrainModel:
         return t_acc
 
     def getlossfunction(self):
+        '''
+        returns loss function for model training
+        :return: cross entropy loss function
+        '''
         return CrossEntropyLoss()
 
     def get_loss_function_monocular(self):
+        '''
+        returns loss function for monocular depth estimation model training
+        :return: BCEWithLogitsLoss loss
+        '''
         return BCEWithLogitsLoss()
         # return MSELoss()
 
     def gettraindata(self):
+        '''
+        :return: train accuracy and loss values
+        '''
         return self.train_losses, self.train_acc
 
     def gettestdata(self):
+        '''
+        :return: test accuracy and loss values
+        '''
         return self.test_losses, self.test_acc
 
     def getinferredimagesfromdataset(dataiterator, model, classes, batch_size, number=25):
+        '''
+        return classified and misclassified inferred images from dataset
+        :param model: CNN Model
+        :param classes: No of classes in dataset
+        :param batch_size: batchsize used while inferencing the model
+        :param number: number of images to display
+        :return: classified and missclassified images as per 'number' specified
+        '''
 
         try:
             misclassifiedcount = 0
@@ -217,6 +270,22 @@ class TrainModel:
                                  , min_lr=None,
                                  max_lr=None,
                                  cycles=1, annealing=False):
+        '''
+        start training using pytorch inbuilt cyclic LR method
+        :param epochs: epochs to train
+        :param model: CNN model
+        :param device: device cuda or not cuda
+        :param test_loader: test image loader
+        :param train_loader: train image loader
+        :param max_lr_epoch: epoch in which which max lr is achieved
+        :param weight_decay: weight decay or l2 regularization value
+        :param min_lr: minimum lr value to reach
+        :param max_lr: maximum lr value to reach
+        :param cycles: no of cycles for cyclic lr
+        :param annealing: if true does annealing for the max lr after every cycle
+        :return:
+        '''
+
         lr_data = []
         class_correct = list(0. for i in range(10))
         class_total = list(0. for i in range(10))
@@ -234,6 +303,21 @@ class TrainModel:
 
     def start_training(self, epochs, model, device, test_loader, train_loader, optimizer, scheduler, lr_data,
                        class_correct, class_total, path):
+        '''
+
+        :param epochs: epochs to train
+        :param model: CNN model
+        :param device: device cuda or not cuda
+        :param test_loader: test image loader
+        :param train_loader: train image loader
+        :param optimizer: optimizer to used for training
+        :param scheduler: scheduler to used for training
+        :param lr_data: learning rate list to be saved while saving model
+        :param class_correct: list to store correct predictions for the epoch
+        :param class_total: list to store total correct predictions for the epoch
+        :param path: path for model checkpoint to be saved
+        :return:lr_data, class_correct, class_total
+        '''
         for epoch in range(0, epochs):
             print("EPOCH:", epoch)
 
@@ -254,10 +338,27 @@ class TrainModel:
         return lr_data, class_correct, class_total
 
     def get_optimizer(self, model, lr=1, momentum=0.9, weight_decay=0):
+        '''
+        :param model: CNN model
+        :param lr: learning rate
+        :param momentum: momentum mostly used value is 0.9
+        :param weight_decay: weight decay or also known as l2 regulrization
+        :return: optimizer object
+        '''
+
         optimizer = Utils.createoptimizer(model, lr=lr, momentum=momentum, weight_decay=weight_decay, nesterov=True)
         return optimizer
 
     def get_cyclic_scheduler(self, optimizer, epochs=25, max_lr_epoch=5, min_lr=0.01, max_lr=0.1):
+        '''
+        Custom cyclic lr logic written by me
+        :param optimizer: optimizer to be used
+        :param epochs: epochs to train
+        :param max_lr_epoch: epoch in which which max lr is achieved
+        :param min_lr: minimum lr value to reach
+        :param max_lr: maximum lr value to reach
+        :return: scheduler with lambda function for desired cyclic lr parmeters
+        '''
         from src.train import TrainHelper
         lambda1 = TrainHelper.cyclical_lr(max_lr_epoch=max_lr_epoch, epochs=epochs, min_lr=min_lr, max_lr=max_lr)
         scheduler = LambdaLR(optimizer, lr_lambda=[lambda1])
@@ -265,6 +366,17 @@ class TrainModel:
 
     def save_model(self, model, epochs, optimizer_state_dict, lr_data, class_correct, class_total,
                    path="savedmodels/finalmodelwithdata.pt"):
+        '''
+
+        :param model: model whose data wi;; be saved
+        :param epochs: no of epochs model was trained for
+        :param optimizer_state_dict: optimizer state dict to be saved
+        :param lr_data: lr data to be saved
+        :param class_correct: class_correct to be saved
+        :param class_total: class_total to be saved
+        :param path: path where model is to be saved
+        :return: None
+        '''
         train_losses, train_acc = self.gettraindata()
         test_losses, test_acc = self.gettestdata()
         Utils.savemodel(model=model, epoch=epochs, path=path,
@@ -274,6 +386,18 @@ class TrainModel:
                         class_total=class_total)
 
     def start_training_lr_finder(self, epochs, model, device, test_loader, train_loader, lr, weight_decay, lambda_fn):
+        '''
+
+        :param epochs: epochs to train
+        :param model: CNN model
+        :param device: device cuda or not cuda
+        :param test_loader: test image loader
+        :param train_loader: train image loader
+        :param lr: start learning rate value
+        :param weight_decay: weight decay or l2 regularization value
+        :param lambda_fn: lambda function be used for scheduler
+        :return: lr_data, class_correct, class_total
+        '''
         lr_data = []
         class_correct = list(0. for i in range(10))
         class_total = list(0. for i in range(10))
@@ -284,6 +408,18 @@ class TrainModel:
                                    class_correct, class_total, path="savedmodels/lrfinder.pt")
 
     def train_Monocular(self, model, device, train_loader, optimizer, epoch, loss_fn, show_output=False, infer_index=2):
+        '''
+        Used for training multiple input image inferencing
+        :param model: CNN model
+        :param device: device cuda or not cuda
+        :param train_loader: train image loader
+        :param optimizer: optimizer to e used for training
+        :param epoch: current epoch
+        :param loss_fn: loss fn to be used while training
+        :param show_output: if true displays output tensors of actual and predicted value
+        :param infer_index: index of ground truth in the data
+        :return: output tensor of loast batch of epoch
+        '''
         model.train()
         pbar = tqdm(train_loader)
         self.optimizer = optimizer
@@ -344,7 +480,20 @@ class TrainModel:
 
     def test_Monocular(self, model, device, test_loader, class_correct, class_total, epoch, lr_data, loss_fn,
                        show_output=False, infer_index=2):
+        '''
 
+        :param model: CNN model
+        :param device: device cuda or not cuda
+        :param test_loader: test image loader
+        :param class_correct: class_correct to be saved
+        :param class_total: class_total to be saved
+        :param epoch: current epoch
+        :param lr_data: lr data to be saved
+        :param loss_fn: loss function to be used for inferencing
+        :param infer_index: index of ground truth in the data
+        :return: output tensor of loast batch of epoch
+        :return: test accuracy and output of last batch of test
+        '''
         model.eval()
         test_loss = 0
         correct = 0
@@ -399,6 +548,13 @@ class TrainModel:
         return output, total_iou
 
     def calculate_iou(self, target, prediction, thresh=0.5):
+        '''
+        Calculate intersection over union value
+        :param target: ground truth
+        :param prediction: output predicted by model
+        :param thresh: threshold
+        :return: iou value
+        '''
         intersection = np.logical_and(np.greater(target, thresh), np.greater(prediction, thresh))
         union = np.logical_or(np.greater(target, thresh), np.greater(prediction, thresh))
         iou_score = np.sum(intersection) / np.sum(union)
@@ -408,6 +564,20 @@ class TrainModel:
                        epoch, loss_fn_mask,
                        loss_fn_depthmask,
                        show_output=False):
+        '''
+        train method for monocular depth estimate train 2 models in one epoch
+        :param model_mask: mask model
+        :param model_depthmask: depth mask model
+        :param device: device cuda or not cuda
+        :param train_loader:  data loader for train images
+        :param optimizer_mask: optimizer for mask model
+        :param optimer_depthmask: optimizer for dept mask model
+        :param epoch: current epoch
+        :param loss_fn_mask: loss for mask model
+        :param loss_fn_depthmask: loss for depth mask model
+        :param show_output: if true displays output tensors of actual and predicted value
+        :return: preidiction of last batch of epoch for both models
+        '''
         model_mask.train()
         model_depthmask.train()
         pbar = tqdm(train_loader)
@@ -502,7 +672,18 @@ class TrainModel:
                       lr_data, loss_fn_mask,
                       loss_fn_depthmask,
                       show_output=False, ):
-
+        '''
+        test method for monocular depth estimate train 2 models in one epoch
+        :param model_mask: mask model
+        :param model_depthmask: depth mask model
+        :param device: device cuda or not cuda
+        :param test_loader: data loader for test images
+        :param epoch: current epoch
+        :param loss_fn_mask: loss for mask model
+        :param loss_fn_depthmask: loss for depth mask model
+        :param show_output: if true displays output tensors of actual and predicted value
+        :return: preidiction of last batch of epoch for both models
+        '''
         model_mask.eval()
         model_depthmask.eval()
         test_loss_mask = 0
@@ -589,5 +770,8 @@ class TrainModel:
         return output_mask, output_depthmask, total_iou_mask, total_iou_depthmask
 
     def gettraintestdatafordualmodels(self):
+        '''
+        :return: accuracy and loss for train and test for monocular depth estimation models
+        '''
         return self.train_losses_mask, self.train_acc_mask, self.test_losses_mask, self.test_acc_mask \
             , self.train_losses_depthmask, self.train_acc_depthmask, self.test_losses_depthmask, self.test_acc_depthmask
