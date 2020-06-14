@@ -17,6 +17,8 @@ class MonocularDataset(torch.utils.data.Dataset):
         labels = []
         # load images and masks
 
+        print(len(self.cache))
+
         if self.cache.__len__() > idx:
             images = self.cache[idx]
         else:
