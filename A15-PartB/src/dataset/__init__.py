@@ -8,4 +8,5 @@ from .dataloader import Dataloader
 from .tinyimagenetdataset import TinyImagenetDataset
 from .T1 import T1
 from .monoculardataset import MonocularDataset
+from .data_prefetcher import DataPrefetcher
 

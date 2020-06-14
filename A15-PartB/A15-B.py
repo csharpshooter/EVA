@@ -17,6 +17,9 @@ from src.dataset.monocularhelper import MonocularHelper
 from src.imports import *
 
 
+# import apex
+
+
 def main():
     helper = MonocularHelper()
 
@@ -39,11 +42,17 @@ def main():
     # final_output_dm = r'/home/abhijit/EVARepo/MonocularDS/OverLayedDepthMasks'
     # bg_path = r'/home/abhijit/EVARepo/MonocularDS/Background'
 
-    final_output = r'C:\MonocularDS\OverLayedImages'
-    final_output_mask = r'C:\MonocularDS\OverLayedMask'
-    final_output_dm = r'C:\MonocularDS\OverLayedDepthMasks'
-    bg_path = r'C:\MonocularDS\Background'
-    # torch.backends.cudnn.benchmark = True
+    # final_output = r'C:\MonocularDS\OverLayedImages'
+    # final_output_mask = r'C:\MonocularDS\OverLayedMask'
+    # final_output_dm = r'C:\MonocularDS\OverLayedDepthMasks'
+    # bg_path = r'C:\MonocularDS\Background'
+
+    final_output = r'D:\Development\TSAI\EVA\MaskRCNN Dataset\OverLayedImages'
+    final_output_mask = r'D:\Development\TSAI\EVA\MaskRCNN Dataset\OverLayedMask'
+    final_output_dm = r'D:\Development\TSAI\EVA\MaskRCNN Dataset\OverLayedDepthMasks'
+    bg_path = r'D:\Development\TSAI\EVA\MaskRCNN Dataset\Background'
+
+    torch.backends.cudnn.benchmark = True
 
     train_data, train_label, test_data, test_label = helper.get_train_test_data(masks_folder=final_output_mask,
                                                                                 images_folder=final_output,
@@ -55,12 +64,13 @@ def main():
     print(len(train_label))
     print(len(test_label))
 
-    batch_size = 16
+    batch_size = 8
+    size = 32
 
     mean = [0.4222796, 0.44544333, 0.44153902]
     std = [0.28497052, 0.24810323, 0.2657039]
 
-    train_transforms, test_transforms = preprochelper.PreprocHelper.getpytorchtransforms(mean, std, 64)
+    train_transforms, test_transforms = preprochelper.PreprocHelper.getpytorchtransforms(mean, std, size)
     ds = dst.Dataset()
 
     train_dataset = ds.get_monocular_train_dataset(train_image_data=train_data, train_image_labels=train_label,
@@ -75,6 +85,12 @@ def main():
     train_loader = dataloader.gettraindataloader()
     test_loader = dataloader.gettestdataloader()
 
+    lr = 0.01
+    opt_level = 'O0'
+    keep_batchnorm_fp32 = None
+    loss_scale = None
+    local_rank = 0
+
     import torch.nn as nn
     # use_cuda = torch.cuda.is_available()
     # device = torch.device("cuda" if use_cuda else "cpu")
@@ -83,7 +99,18 @@ def main():
     # optimizer = utils.Utils.createoptimizer(cnn_model, lr=0.5, momentum=0.9, weight_decay=1e-5)  # 1e-5
 
     cnn_model, device = utils.Utils.createMonocularModel()
-    optimizer = utils.Utils.createoptimizer(cnn_model, lr=0.01, momentum=0.9, weight_decay=1e-5)  # 1e-5
+    optimizer = utils.Utils.createoptimizer(cnn_model, lr=lr, momentum=0.9, weight_decay=1e-5)  # 1e-5
+
+    # model, optimizer = amp.initialize(
+    #     cnn_model, optimizer,
+    #     # enabled=False,
+    #     opt_level=opt_level,
+    #     keep_batchnorm_fp32=keep_batchnorm_fp32,
+    #     loss_scale=loss_scale
+    # )
+
+    # print("using apex synced BN")
+    # cnn_model = apex.parallel.convert_syncbn_model(cnn_model)
 
     for name, param in cnn_model.named_parameters():
         #     print(name)
@@ -103,6 +130,8 @@ def main():
     utils.Utils.show(imgs, nrow=4)
 
     train_model = train.TrainModel()
+    # train_poc = src.train.TrainPOC(batch_size=batch_size, print_freq=1, use_benchmark=True, is_distributed=False,
+    #                                prof=-1)
 
     train_model.showmodelsummary(model=cnn_model, input_size=[(4, 3, 64, 64)])
 
@@ -120,24 +149,32 @@ def main():
 
     print(count_parameters(cnn_model))
 
+    print("\nCUDNN VERSION: {}\n".format(torch.backends.cudnn.version()))
+
     # In[ ]:
 
     # from kornia.losses import SSIM
     # loss_fn = SSIM(window_size=3, reduction='mean')
     from torch.nn import BCEWithLogitsLoss, SmoothL1Loss, MSELoss, BCELoss
     # loss_fn = BCEWithLogitsLoss()
-    # loss_fn = SmoothL1Loss()
+    loss_fn = SmoothL1Loss()
     # loss_fn = MSELoss()
     from src.train.customlossfunction import DiceLoss
-    loss_fn = DiceLoss()
+    # loss_fn = DiceLoss()
     # loss_fn = BCELoss(reduction='mean')
-    show_output = False
+    show_output = True
     infer_index = 2
+    best_prec1 = 0
     for epoch in range(1, epochs):
         print("EPOCH:", epoch)
 
         tr_out = train_model.train_Monocular(cnn_model, device, train_loader, optimizer, epoch, loss_fn, show_output,
                                              infer_index)
+
+        # tr_acc = train_poc.train(train_loader, cnn_model, loss_fn, optimizer, epoch, lr, infer_index)
+        #
+        # prec1 = train_poc.validate(test_loader, cnn_model, loss_fn, infer_index)
+
         ts_out, dice_loss = train_model.test_Monocular(cnn_model, device, test_loader, class_correct, class_total,
                                                        epoch, lr_data, loss_fn,
                                                        show_output, infer_index)
@@ -147,7 +184,18 @@ def main():
         Utils.show(tr_out.detach().cpu(), nrow=4)
         Utils.show(ts_out.detach().cpu(), nrow=4)
 
-        scheduler.step(dice_loss)
+        scheduler.step(tr_out)
+
+        # if local_rank == 0:
+        #     is_best = prec1 > best_prec1
+        #     best_prec1 = max(prec1, best_prec1)
+        #     train_poc.save_checkpoint({
+        #         'epoch': epoch + 1,
+        #         'arch': "Monocular",
+        #         'state_dict': model.state_dict(),
+        #         'best_prec1': best_prec1,
+        #         'optimizer': optimizer.state_dict(),
+        #     }, is_best)
 
     # train_losses, train_acc = train_model.gettraindata()
     # test_losses, test_acc = train_model.gettestdata()
