@@ -7,9 +7,7 @@ from torch.nn import CrossEntropyLoss, BCEWithLogitsLoss
 from torch.optim.lr_scheduler import LambdaLR
 from torchsummary import summary
 from tqdm import tqdm
-from torch.cuda.amp.grad_scaler import GradScaler
 
-from src.dataset import DataPrefetcher
 from src.utils import Utils
 
 '''
@@ -306,7 +304,6 @@ class TrainModel:
     def start_training(self, epochs, model, device, test_loader, train_loader, optimizer, scheduler, lr_data,
                        class_correct, class_total, path):
         '''
-
         :param epochs: epochs to train
         :param model: CNN model
         :param device: device cuda or not cuda
@@ -369,7 +366,6 @@ class TrainModel:
     def save_model(self, model, epochs, optimizer_state_dict, lr_data, class_correct, class_total,
                    path="savedmodels/finalmodelwithdata.pt"):
         '''
-
         :param model: model whose data wi;; be saved
         :param epochs: no of epochs model was trained for
         :param optimizer_state_dict: optimizer state dict to be saved
@@ -389,7 +385,6 @@ class TrainModel:
 
     def start_training_lr_finder(self, epochs, model, device, test_loader, train_loader, lr, weight_decay, lambda_fn):
         '''
-
         :param epochs: epochs to train
         :param model: CNN model
         :param device: device cuda or not cuda
@@ -422,7 +417,6 @@ class TrainModel:
         :param infer_index: index of ground truth in the data
         :return: output tensor of loast batch of epoch
         '''
-        scaler = GradScaler()
         model.train()
         pbar = tqdm(train_loader)
         self.optimizer = optimizer
@@ -430,18 +424,14 @@ class TrainModel:
         y_pred = None
         total_iou = 0
         train_loss = 0
-        prefetcher = DataPrefetcher(train_loader)
-        data, target = prefetcher.next()
-        batch_idx = 0
-        while data is not None:
-            # for batch_idx, (data, target) in enumerate(pbar):
+        for batch_idx, (data, target) in enumerate(pbar):
             # get samples
             # data, target = data.to(device), target.to(device)
 
-            # data[0] = data[0].to(device)
-            # data[1] = data[1].to(device)
-            # data[2] = data[2].to(device)
-            # data[3] = data[3].to(device)
+            data[0] = data[0].to(device)
+            data[1] = data[1].to(device)
+            data[2] = data[2].to(device)
+            data[3] = data[3].to(device)
 
             # Init
             optimizer.zero_grad()
@@ -457,31 +447,9 @@ class TrainModel:
             iou = self.calculate_iou(data[infer_index].detach().cpu().numpy(), y_pred.detach().cpu().numpy())
             total_iou += iou
             train_loss += loss.item()
-
-            scaled_grad_params = torch.autograd.grad(scaler.scale(loss), model.parameters(), create_graph=True)
-
-            # Unscales grad_params before computing the penalty.  grad_params are not owned
-            # by any optimizer, so ordinary division is used instead of scaler.unscale_:
-            inv_scale = 1. / scaler.get_scale()
-            grad_params = [p * inv_scale for p in scaled_grad_params]
-
-            # Computes the penalty term and adds it to the loss
-            # grad_norm = 0
-            # for grad in grad_params:
-            #     grad_norm += grad.pow(2).sum()
-            # grad_norm = grad_norm.sqrt()
-            # loss = loss + grad_norm
-
-            # Applies scaling to the backward call as usual.  Accumulates leaf gradients that are correctly scaled.
-            scaler.scale(loss).backward()
-
-            # step() and update() proceed as usual.
-            scaler.step(optimizer)
-            scaler.update()
-
-            # # Backpropagation
-            # loss.backward()
-            # optimizer.step()
+            # Backpropagation
+            loss.backward()
+            optimizer.step()
 
             # if batch_idx % 50 == 0:
             #     print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
@@ -489,7 +457,7 @@ class TrainModel:
             #         loss.item()))
             #     print('IOU : {}'.format(iou))
 
-            if batch_idx % 50 == 0:
+            if batch_idx % 500 == 0:
                 if show_output == True:
                     Utils.show(y_pred.detach().cpu(), nrow=8)
                     Utils.show(data[infer_index].cpu(), nrow=8)
@@ -498,8 +466,6 @@ class TrainModel:
                     epoch, batch_idx * len(data), len(train_loader.dataset), (100. * batch_idx / len(train_loader)),
                     loss.item()))
                 print('IOU : {}'.format(iou))
-            batch_idx += 1
-            data, target = prefetcher.next()
 
         train_loss /= len(train_loader.dataset)
         total_iou /= len(train_loader.dataset)
@@ -512,7 +478,6 @@ class TrainModel:
     def test_Monocular(self, model, device, test_loader, class_correct, class_total, epoch, lr_data, loss_fn,
                        show_output=False, infer_index=2):
         '''
-
         :param model: CNN model
         :param device: device cuda or not cuda
         :param test_loader: test image loader
