@@ -466,11 +466,11 @@ class TrainModel:
             grad_params = [p * inv_scale for p in scaled_grad_params]
 
             # Computes the penalty term and adds it to the loss
-            grad_norm = 0
-            for grad in grad_params:
-                grad_norm += grad.pow(2).sum()
-            grad_norm = grad_norm.sqrt()
-            loss = loss + grad_norm
+            # grad_norm = 0
+            # for grad in grad_params:
+            #     grad_norm += grad.pow(2).sum()
+            # grad_norm = grad_norm.sqrt()
+            # loss = loss + grad_norm
 
             # Applies scaling to the backward call as usual.  Accumulates leaf gradients that are correctly scaled.
             scaler.scale(loss).backward()
