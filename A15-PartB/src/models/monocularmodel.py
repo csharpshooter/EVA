@@ -49,11 +49,11 @@ class ResNet(nn.Module):
                                                       padding=1)
         self.cb3 = self.make_convblock_depthwise_conv(kernel_size=3, in_channels=64, out_channels=32, stride=1,
                                                       padding=1)
-        self.in_planes = 32
-        self.res2 = self._make_layer(block, 32, num_blocks[1], stride=1)
+        self.in_planes = 256
+        self.res2 = self._make_layer(block, 256, num_blocks[1], stride=1)
         self.convblockfinal = nn.Sequential(
             # Defining a 2D convolution layer
-            nn.Conv2d(64, 3, 3, stride=1, bias=False, padding=1),
+            nn.Conv2d(256, 3, 3, stride=1, bias=False, padding=1),
         )
 
     def _make_layer(self, block, planes, num_blocks, stride):
@@ -96,10 +96,10 @@ class ResNet(nn.Module):
         l1 = self.cb1(x)  # Layer 1 X 64 -> 128
         r1 = self.res1(l1)  # Resblock 1 128 -> 128
         x = l1 + r1
-        l2 = self.cb2(x)  # Layer 2 128 -> 64
-        l3 = self.cb3(l2)  # Layer 3 X 64 -> 32
-        r2 = self.res2(l3)  # Resblock 2 32 -> 32
-        x = l3 + r2
+        # l2 = self.cb2(x)  # Layer 2 128 -> 64
+        # l3 = self.cb3(l2)  # Layer 3 X 64 -> 32
+        # r2 = self.res2(l3)  # Resblock 2 32 -> 32
+        # x = l3 + r2
         return x
 
     def forward(self, x):
