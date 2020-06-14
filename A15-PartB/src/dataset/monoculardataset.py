@@ -17,9 +17,9 @@ class MonocularDataset(torch.utils.data.Dataset):
         labels = []
         # load images and masks
 
-        print(len(self.cache))
+        # print(len(self.cache))
 
-        if self.cache.__len__() > idx:
+        if len(self.cache) > idx:
             images = self.cache[idx]
         else:
             bg_fg = Image.open(self.images[idx])  # .convert("RGB")
