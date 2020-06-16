@@ -82,25 +82,30 @@ class MonocularDataset(torch.utils.data.Dataset):
         print("Preloading bg_fg from dataset...")
         async for idx in AsyncIterator(tqdm(self.images)):
             bg_fg = Image.open(idx)  # .convert("RGB")
-            self.cache_bg_fg.append(bg_fg)
+            self.cache_bg_fg.append(bg_fg.copy())
+            bg_fg.close()
 
     async def preload_mask(self):
         print("Preloading masks from dataset...")
         async for idx in AsyncIterator(tqdm(self.labels)):
             mask = Image.open(idx["masks"]) #.convert("RGB")
-            self.cache_mask.append(mask)
+            self.cache_mask.append(mask.copy())
+            mask.close()
+
 
     async def preload_dm(self):
         print("Preloading depth maps from dataset...")
         async for idx in AsyncIterator(tqdm(self.labels)):
             dm = Image.open(idx["depth_mask"])
-            self.cache_dm.append(dm)
+            self.cache_dm.append(dm.copy())
+            dm.close()
 
     async def preload_bg(self):
         print("Preloading bg from dataset...")
         async for idx in AsyncIterator(tqdm(self.labels)):
             bg = Image.open(idx["bg_path"])  # .convert("RGB")
-            self.cache_bg.append(bg)
+            self.cache_bg.append(bg.copy())
+            bg.close()
 
 
 class AsyncIterator:
