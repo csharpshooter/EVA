@@ -6,7 +6,7 @@ import asyncio
 
 
 class MonocularDataset(torch.utils.data.Dataset):
-    def __init__(self, images, labels, transforms=None, preload=False):
+    def __init__(self, images, labels, ds_type, transforms=None, preload=False):
         self.transforms = transforms
         # load all image files, sorting them to
         # ensure that they are aligned
@@ -17,6 +17,7 @@ class MonocularDataset(torch.utils.data.Dataset):
         self.cache_dm = []
         self.cache_bg = []
         self.preload = preload
+        self.ds_type = ds_type
 
         if self.preload:
             loop = asyncio.new_event_loop()
@@ -81,31 +82,26 @@ class MonocularDataset(torch.utils.data.Dataset):
     async def preload_bg_fg(self):
         print("Preloading bg_fg from dataset...")
         async for idx in AsyncIterator(tqdm(self.images)):
-            bg_fg = Image.open(idx)  # .convert("RGB")
-            self.cache_bg_fg.append(bg_fg.copy())
-            bg_fg.close()
+            with Image.open(idx) as bg_fg:
+                self.cache_bg_fg.append(bg_fg)
 
     async def preload_mask(self):
         print("Preloading masks from dataset...")
         async for idx in AsyncIterator(tqdm(self.labels)):
-            mask = Image.open(idx["masks"]) #.convert("RGB")
-            self.cache_mask.append(mask.copy())
-            mask.close()
-
+            with Image.open(idx["masks"]) as mask:
+                self.cache_mask.append(mask)
 
     async def preload_dm(self):
         print("Preloading depth maps from dataset...")
         async for idx in AsyncIterator(tqdm(self.labels)):
-            dm = Image.open(idx["depth_mask"])
-            self.cache_dm.append(dm.copy())
-            dm.close()
+            with Image.open(idx["depth_mask"]) as dm:  # .convert("RGB")
+                self.cache_dm.append(dm)
 
     async def preload_bg(self):
         print("Preloading bg from dataset...")
         async for idx in AsyncIterator(tqdm(self.labels)):
-            bg = Image.open(idx["bg_path"])  # .convert("RGB")
-            self.cache_bg.append(bg.copy())
-            bg.close()
+            with Image.open(idx["bg_path"]) as bg:
+                self.cache_bg.append(bg)
 
 
 class AsyncIterator:
