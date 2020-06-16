@@ -23,9 +23,9 @@ class MonocularDataset(torch.utils.data.Dataset):
             loop = asyncio.new_event_loop()
             preload_bg_fg = loop.create_task(self.preload_bg_fg())
             preload_mask = loop.create_task(self.preload_mask())
-            preload_dm = loop.create_task(self.preload_dm())
+            # preload_dm = loop.create_task(self.preload_dm())
             preload_bg = loop.create_task(self.preload_bg())
-            loop.run_until_complete(asyncio.wait([preload_bg_fg, preload_mask, preload_dm, preload_bg]))
+            loop.run_until_complete(asyncio.wait([preload_bg_fg, preload_mask, preload_bg]))
             loop.close()
 
         # (self.preload_dataset())
@@ -45,12 +45,12 @@ class MonocularDataset(torch.utils.data.Dataset):
             bg_fg = self.cache_bg_fg[idx]  # .convert("RGB")
             bg = self.cache_bg[idx]  # .convert("RGB")
             mask = self.cache_mask[idx]
-            dm = self.cache_dm[idx]
+            # dm = self.cache_dm[idx]
         else:
             bg_fg = Image.open(self.images[idx])  # .convert("RGB")
             bg = Image.open(self.labels[idx]["bg_path"])  # .convert("RGB")
             mask = Image.open(self.labels[idx]["masks"]).convert("RGB")
-            dm = Image.open(self.labels[idx]["depth_mask"])
+            # dm = Image.open(self.labels[idx]["depth_mask"])
 
         if self.transforms is not None:
             bg_fg = self.transforms(bg_fg)
@@ -61,18 +61,18 @@ class MonocularDataset(torch.utils.data.Dataset):
         if self.transforms is not None:
             mask = self.transforms(mask)
 
-        if self.transforms is not None:
-            dm = self.transforms(dm)
+        # if self.transforms is not None:
+        #     dm = self.transforms(dm)
 
         images.append(np.array(bg_fg, np.float32))
         images.append(np.array(bg, np.float32))
         images.append(np.array(mask, np.float32))
-        images.append(np.array(dm, np.float32))
+        # images.append(np.array(dm, np.float32))
 
         labels.append(self.images[idx])
         labels.append(self.labels[idx]["bg_path"])
         labels.append(self.labels[idx]["masks"])
-        labels.append(self.labels[idx]["depth_mask"])
+        # labels.append(self.labels[idx]["depth_mask"])
 
         return images, labels
 
@@ -80,25 +80,25 @@ class MonocularDataset(torch.utils.data.Dataset):
         return len(self.images)
 
     async def preload_bg_fg(self):
-        print("Preloading bg_fg from dataset...")
+        print("\nPreloading bg_fg from " + self.ds_type + " dataset...")
         async for idx in AsyncIterator(tqdm(self.images)):
             with Image.open(idx) as bg_fg:
                 self.cache_bg_fg.append(bg_fg)
 
     async def preload_mask(self):
-        print("Preloading masks from dataset...")
+        print("\nPreloading masks from " + self.ds_type + " dataset...")
         async for idx in AsyncIterator(tqdm(self.labels)):
             with Image.open(idx["masks"]) as mask:
                 self.cache_mask.append(mask)
 
     async def preload_dm(self):
-        print("Preloading depth maps from dataset...")
+        print("\nPreloading depth maps from " + self.ds_type + " dataset...")
         async for idx in AsyncIterator(tqdm(self.labels)):
             with Image.open(idx["depth_mask"]) as dm:  # .convert("RGB")
                 self.cache_dm.append(dm)
 
     async def preload_bg(self):
-        print("Preloading bg from dataset...")
+        print("\nPreloading bg from " + self.ds_type + " dataset...")
         async for idx in AsyncIterator(tqdm(self.labels)):
             with Image.open(idx["bg_path"]) as bg:
                 self.cache_bg.append(bg)
