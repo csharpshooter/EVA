@@ -87,19 +87,19 @@ class MonocularDataset(torch.utils.data.Dataset):
     async def preload_mask(self):
         print("Preloading masks from dataset...")
         async for idx in AsyncIterator(tqdm(self.labels)):
-            mask = Image.open(self.labels[idx]["masks"]).convert("RGB")
+            mask = Image.open(idx["masks"]).convert("RGB")
             self.cache_mask.append(mask)
 
     async def preload_dm(self):
         print("Preloading depth maps from dataset...")
         async for idx in AsyncIterator(tqdm(self.labels)):
-            dm = Image.open(self.labels[idx]["depth_mask"])
+            dm = Image.open(idx["depth_mask"])
             self.cache_dm.append(dm)
 
     async def preload_bg(self):
         print("Preloading bg from dataset...")
         async for idx in AsyncIterator(tqdm(self.labels)):
-            bg = Image.open(self.labels[idx]["bg_path"])  # .convert("RGB")
+            bg = Image.open(idx["bg_path"])  # .convert("RGB")
             self.cache_bg.append(bg)
 
 
