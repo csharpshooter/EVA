@@ -31,10 +31,10 @@ class Dataset(object):
 
     def get_monocular_train_dataset(self, train_transforms, train_image_data, train_image_labels):
         from src.dataset import MonocularDataset
-        return MonocularDataset(images=train_image_data, labels=train_image_labels,
+        return MonocularDataset(images=train_image_data, labels=train_image_labels, ds_type="train",
                                 transforms=train_transforms, preload=True)
 
     def get_monocular_test_dataset(self, test_transforms, test_image_data, test_image_labels):
         from src.dataset import MonocularDataset
-        return MonocularDataset(images=test_image_data, labels=test_image_labels,
+        return MonocularDataset(images=test_image_data, labels=test_image_labels, ds_type="test",
                                 transforms=test_transforms, preload=True)
