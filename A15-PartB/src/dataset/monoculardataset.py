@@ -3,7 +3,7 @@ import torch.utils.data
 from PIL import Image
 from tqdm import trange, tqdm
 import asyncio
-import opencv as cv2
+import cv2
 
 
 class MonocularDataset(torch.utils.data.Dataset):
