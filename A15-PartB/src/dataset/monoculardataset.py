@@ -6,8 +6,7 @@ import asyncio
 
 
 class MonocularDataset(torch.utils.data.Dataset):
-    def __init__(self, images, labels, ds_type, transforms=None, preload=False):
-        self.transforms = transforms
+    def __init__(self, images, labels, ds_type, preload=False):
         # load all image files, sorting them to
         # ensure that they are aligned
         self.images = images
@@ -102,6 +101,11 @@ class MonocularDataset(torch.utils.data.Dataset):
         async for idx in AsyncIterator(tqdm(self.labels)):
             with Image.open(idx["bg_path"]) as bg:
                 self.cache_bg.append(bg)
+
+    def set_transforms(self, transforms=None):
+        self.transforms = transforms
+
+
 
 
 class AsyncIterator:
