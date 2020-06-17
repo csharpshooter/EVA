@@ -61,29 +61,33 @@ def main():
                                                                                 total_images_count=400000,
                                                                                 bg_folder=bg_path)
 
+    from src.dataset import MonocularDataset
+
     print(len(train_label))
     print(len(test_label))
+    torch.backends.cudnn.benchmark = True
 
-    batch_size = 8
-    size = 32
+    batch_size = 16
 
-    mean = [0.4222796, 0.44544333, 0.44153902]
-    std = [0.28497052, 0.24810323, 0.2657039]
+    monocular_ds = MonocularDataset(images=train_data, labels=train_label, ds_type="train", preload=True)
+    image_size = 32
+    train_transforms, test_transforms = preprochelper.PreprocHelper.getpytorchtransforms(image_net_mean, image_net_std,
+                                                                                         image_size)
+    monocular_ds.set_transforms(train_transforms)
 
-    train_transforms, test_transforms = preprochelper.PreprocHelper.getpytorchtransforms(mean, std, size)
-    ds = dst.Dataset()
+    # ds = dst.Dataset()
 
-    train_dataset = ds.get_monocular_train_dataset(train_image_data=train_data, train_image_labels=train_label,
-                                                   train_transforms=train_transforms)
+    # train_dataset = ds.get_monocular_train_dataset(train_image_data=train_data, train_image_labels=train_label,
+    #                                                train_transforms=train_transforms)
 
-    test_dataset = ds.get_monocular_test_dataset(test_image_labels=test_label, test_image_data=test_data,
-                                                 test_transforms=test_transforms)
+    # test_dataset = ds.get_monocular_test_dataset(test_image_labels=test_label, test_image_data=test_data,
+    #                                              test_transforms=test_transforms)
 
     torch.manual_seed(1)
 
-    dataloader = dl.Dataloader(traindataset=train_dataset, testdataset=test_dataset, batch_size=batch_size)
+    dataloader = dl.Dataloader(traindataset=monocular_ds, testdataset=torch.utils.data.Dataset(), batch_size=batch_size)
     train_loader = dataloader.gettraindataloader()
-    test_loader = dataloader.gettestdataloader()
+    # test_loader = dataloader.gettestdataloader()
 
     lr = 0.01
     opt_level = 'O0'
@@ -175,14 +179,14 @@ def main():
         #
         # prec1 = train_poc.validate(test_loader, cnn_model, loss_fn, infer_index)
 
-        ts_out, dice_loss = train_model.test_Monocular(cnn_model, device, test_loader, class_correct, class_total,
-                                                       epoch, lr_data, loss_fn,
-                                                       show_output, infer_index)
+        # ts_out, dice_loss = train_model.test_Monocular(cnn_model, device, test_loader, class_correct, class_total,
+        #                                                epoch, lr_data, loss_fn,
+        #                                                show_output, infer_index)
 
         from src.utils.utils import Utils
 
         Utils.show(tr_out.detach().cpu(), nrow=4)
-        Utils.show(ts_out.detach().cpu(), nrow=4)
+        # Utils.show(ts_out.detach().cpu(), nrow=4)
 
         scheduler.step(tr_out)
 
