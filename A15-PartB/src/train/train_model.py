@@ -475,7 +475,7 @@ class TrainModel:
         self.train_losses.append(train_loss)
         self.train_acc.append(total_iou)
 
-        return y_pred
+        return y_pred, train_loss, total_iou
 
     def test_Monocular(self, model, device, test_loader, class_correct, class_total, epoch, lr_data, loss_fn,
                        show_output=False, infer_index=2):
