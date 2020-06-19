@@ -430,9 +430,9 @@ class TrainModel:
 
             data[0] = data[0].to(device)
             data[1] = data[1].to(device)
-            if len(data) > 3:
+            if len(data) > 2:
                 data[2] = data[2].to(device)
-            if len(data) > 4:
+            if len(data) > 3:
                 data[3] = data[3].to(device)
 
             # Init

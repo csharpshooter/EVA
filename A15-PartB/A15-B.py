@@ -32,10 +32,10 @@ def main():
     # TODO
     # values, classes = helper.get_class_to_id_dict(id_dict=dict, path=path)
 
-    # final_output = r'/media/abhijit/DATA/Development/TSAI/EVA/MaskRCNN Dataset/OverLayedImages'
-    # final_output_mask = r'/media/abhijit/DATA/Development/TSAI/EVA/MaskRCNN Dataset/OverLayedMask'
-    # final_output_dm = r'/media/abhijit/DATA/Development/TSAI/EVA/MaskRCNN Dataset/OverLayedDepthMasks'
-    # bg_path = r'/media/abhijit/DATA/Development/TSAI/EVA/MaskRCNN Dataset/Background'
+    final_output = r'/media/abhijit/DATA/Development/TSAI/EVA/MaskRCNN Dataset/OverLayedImages'
+    final_output_mask = r'/media/abhijit/DATA/Development/TSAI/EVA/MaskRCNN Dataset/OverLayedMask'
+    final_output_dm = r'/media/abhijit/DATA/Development/TSAI/EVA/MaskRCNN Dataset/OverLayedDepthMasks'
+    bg_path = r'/media/abhijit/DATA/Development/TSAI/EVA/MaskRCNN Dataset/Background'
 
     # final_output = r'/home/abhijit/EVARepo/MonocularDS/OverLayedImages'
     # final_output_mask = r'/home/abhijit/EVARepo/MonocularDS/OverLayedMask'
@@ -47,10 +47,10 @@ def main():
     # final_output_dm = r'C:\MonocularDS\OverLayedDepthMasks'
     # bg_path = r'C:\MonocularDS\Background'
 
-    final_output = r'D:\Development\TSAI\EVA\MaskRCNN Dataset\OverLayedImages'
-    final_output_mask = r'D:\Development\TSAI\EVA\MaskRCNN Dataset\OverLayedMask'
-    final_output_dm = r'D:\Development\TSAI\EVA\MaskRCNN Dataset\OverLayedDepthMasks'
-    bg_path = r'D:\Development\TSAI\EVA\MaskRCNN Dataset\Background'
+    # final_output = r'D:\Development\TSAI\EVA\MaskRCNN Dataset\OverLayedImages'
+    # final_output_mask = r'D:\Development\TSAI\EVA\MaskRCNN Dataset\OverLayedMask'
+    # final_output_dm = r'D:\Development\TSAI\EVA\MaskRCNN Dataset\OverLayedDepthMasks'
+    # bg_path = r'D:\Development\TSAI\EVA\MaskRCNN Dataset\Background'
 
     torch.backends.cudnn.benchmark = True
 
@@ -69,7 +69,7 @@ def main():
 
     batch_size = 16
 
-    monocular_ds = MonocularDataset(images=train_data, labels=train_label, ds_type="train", preload=True)
+    monocular_ds = MonocularDataset(images=train_data, labels=train_label, ds_type="train", preload=False)
     image_size = 32
     train_transforms, test_transforms = preprochelper.PreprocHelper.getpytorchtransforms(image_net_mean, image_net_std,
                                                                                          image_size)
@@ -161,10 +161,10 @@ def main():
     # loss_fn = SSIM(window_size=3, reduction='mean')
     from torch.nn import BCEWithLogitsLoss, SmoothL1Loss, MSELoss, BCELoss
     # loss_fn = BCEWithLogitsLoss()
-    loss_fn = SmoothL1Loss()
+    # loss_fn = SmoothL1Loss()
     # loss_fn = MSELoss()
     from src.train.customlossfunction import DiceLoss
-    # loss_fn = DiceLoss()
+    loss_fn = DiceLoss()
     # loss_fn = BCELoss(reduction='mean')
     show_output = True
     infer_index = 2
