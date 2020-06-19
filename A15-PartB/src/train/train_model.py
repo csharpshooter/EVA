@@ -430,8 +430,10 @@ class TrainModel:
 
             data[0] = data[0].to(device)
             data[1] = data[1].to(device)
-            data[2] = data[2].to(device)
-            data[3] = data[3].to(device)
+            if len(data) > 3:
+                data[2] = data[2].to(device)
+            if len(data) > 4:
+                data[3] = data[3].to(device)
 
             # Init
             optimizer.zero_grad()
@@ -501,8 +503,10 @@ class TrainModel:
             for batch_idx, (data, target) in enumerate(pbar):
                 data[0] = data[0].to(device)
                 data[1] = data[1].to(device)
-                data[2] = data[2].to(device)
-                data[3] = data[3].to(device)
+                if len(data) > 3:
+                    data[2] = data[2].to(device)
+                if len(data) > 4:
+                    data[3] = data[3].to(device)
 
                 output = model(data)
 
