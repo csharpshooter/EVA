@@ -3,7 +3,6 @@ import torch.utils.data
 from PIL import Image
 from tqdm import trange, tqdm
 import asyncio
-import cv2
 
 
 class MonocularDataset(torch.utils.data.Dataset):
@@ -64,14 +63,10 @@ class MonocularDataset(torch.utils.data.Dataset):
         # if self.transforms is not None:
         #     dm = self.transforms(dm)
 
-        # images.append(np.array(bg_fg, np.float32))
-        # images.append(np.array(bg, np.float32))
-        # images.append(np.array(mask, np.float32))
+        images.append(np.array(bg_fg, np.float32))
+        images.append(np.array(bg, np.float32))
+        images.append(np.array(mask, np.float32))
         # images.append(np.array(dm, np.float32))
-
-        images.append(bg_fg)
-        images.append(bg)
-        images.append(mask)
 
         labels.append(self.images[idx])
         labels.append(self.labels[idx]["bg_path"])
@@ -86,26 +81,34 @@ class MonocularDataset(torch.utils.data.Dataset):
     async def preload_bg_fg(self):
         print("\nPreloading bg_fg from " + self.ds_type + " dataset...")
         async for idx in AsyncIterator(tqdm(self.images)):
-            bg_fg = cv2.imread(idx, cv2.IMREAD_UNCHANGED)
+            bg_fg = Image.open(idx)
             self.cache_bg_fg.append(bg_fg)
+            # if len(self.cache_bg_fg) > 16:
+            #     return
 
     async def preload_mask(self):
         print("\nPreloading masks from " + self.ds_type + " dataset...")
         async for idx in AsyncIterator(tqdm(self.labels)):
-            mask = cv2.imread(idx["masks"], cv2.IMREAD_UNCHANGED)
+            mask = Image.open(idx["masks"])
             self.cache_mask.append(mask)
+            # if len(self.cache_mask) > 16:
+            #     return
 
     async def preload_dm(self):
         print("\nPreloading depth maps from " + self.ds_type + " dataset...")
         async for idx in AsyncIterator(tqdm(self.labels)):
-            dm = cv2.imread(idx["depth_mask"], cv2.IMREAD_UNCHANGED)  # .convert("RGB")
+            dm = Image.open(idx["depth_mask"])  # .convert("RGB")
             self.cache_dm.append(dm)
+            # if len(self.cache_dm) > 16:
+            #     return
 
     async def preload_bg(self):
         print("\nPreloading bg from " + self.ds_type + " dataset...")
         async for idx in AsyncIterator(tqdm(self.labels)):
-            bg = cv2.imread(idx["bg_path"], cv2.IMREAD_UNCHANGED)
+            bg = Image.open(idx["bg_path"])
             self.cache_bg.append(bg)
+            # if len(self.cache_bg) > 16:
+            #     return
 
     def set_transforms(self, transforms=None):
         self.transforms = transforms
