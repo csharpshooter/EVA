@@ -13,11 +13,13 @@
 
 from multiprocessing import freeze_support
 
+from apex import amp
+
 from src.dataset.monocularhelper import MonocularHelper
 from src.imports import *
 
 
-# import apex
+import apex
 
 
 def main():
@@ -67,7 +69,7 @@ def main():
     print(len(test_label))
     torch.backends.cudnn.benchmark = True
 
-    batch_size = 16
+    batch_size = 512
 
     monocular_ds = MonocularDataset(images=train_data, labels=train_label, ds_type="train", preload=False)
     image_size = 32
@@ -90,10 +92,6 @@ def main():
     # test_loader = dataloader.gettestdataloader()
 
     lr = 0.01
-    opt_level = 'O0'
-    keep_batchnorm_fp32 = None
-    loss_scale = None
-    local_rank = 0
 
     import torch.nn as nn
     # use_cuda = torch.cuda.is_available()
@@ -104,14 +102,6 @@ def main():
 
     cnn_model, device = utils.Utils.createMonocularModel()
     optimizer = utils.Utils.createoptimizer(cnn_model, lr=lr, momentum=0.9, weight_decay=1e-5)  # 1e-5
-
-    # model, optimizer = amp.initialize(
-    #     cnn_model, optimizer,
-    #     # enabled=False,
-    #     opt_level=opt_level,
-    #     keep_batchnorm_fp32=keep_batchnorm_fp32,
-    #     loss_scale=loss_scale
-    # )
 
     # print("using apex synced BN")
     # cnn_model = apex.parallel.convert_syncbn_model(cnn_model)
@@ -138,6 +128,8 @@ def main():
     #                                prof=-1)
 
     train_model.showmodelsummary(model=cnn_model, input_size=[(4, 3, 64, 64)])
+
+    cnn_model, optimizer = amp.initialize(cnn_model, optimizer, opt_level="O3")
 
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='max', factor=0.05, patience=1,
                                                            verbose=True, threshold=0.01, threshold_mode='rel',

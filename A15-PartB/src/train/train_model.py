@@ -3,6 +3,7 @@ import sys
 
 import numpy as np
 import torch
+from apex import amp
 from torch.nn import CrossEntropyLoss, BCEWithLogitsLoss
 from torch.optim.lr_scheduler import LambdaLR
 from torchsummary import summary
@@ -450,7 +451,9 @@ class TrainModel:
             total_iou += iou
             train_loss += loss.item()
             # Backpropagation
-            loss.backward()
+            with amp.scale_loss(loss, optimizer) as scaled_loss:
+                scaled_loss.backward()
+
             optimizer.step()
 
             # if batch_idx % 50 == 0:
