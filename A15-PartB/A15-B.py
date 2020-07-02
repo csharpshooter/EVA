@@ -54,7 +54,7 @@ def main():
     # final_output_dm = r'D:\Development\TSAI\EVA\MaskRCNN Dataset\OverLayedDepthMasks'
     # bg_path = r'D:\Development\TSAI\EVA\MaskRCNN Dataset\Background'
 
-    torch.backends.cudnn.benchmark = True
+    # torch.backends.cudnn.benchmark = True
 
     train_data, train_label, test_data, test_label = helper.get_train_test_data(masks_folder=final_output_mask,
                                                                                 images_folder=final_output,
@@ -69,9 +69,13 @@ def main():
     print(len(test_label))
     torch.backends.cudnn.benchmark = True
 
-    batch_size = 512
+    import asyncio
+    import nest_asyncio
+    nest_asyncio.apply()
 
-    monocular_ds = MonocularDataset(images=train_data, labels=train_label, ds_type="train", preload=False)
+    batch_size = 8
+
+    monocular_ds = MonocularDataset(images=train_data, labels=train_label, ds_type="train", preload=True)
     image_size = 32
     train_transforms, test_transforms = preprochelper.PreprocHelper.getpytorchtransforms(image_net_mean, image_net_std,
                                                                                          image_size)
@@ -129,7 +133,7 @@ def main():
 
     train_model.showmodelsummary(model=cnn_model, input_size=[(4, 3, 64, 64)])
 
-    cnn_model, optimizer = amp.initialize(cnn_model, optimizer, opt_level="O3")
+    cnn_model, optimizer = amp.initialize(cnn_model, optimizer, opt_level="O2")
 
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='max', factor=0.05, patience=1,
                                                            verbose=True, threshold=0.01, threshold_mode='rel',
@@ -153,13 +157,13 @@ def main():
     # loss_fn = SSIM(window_size=3, reduction='mean')
     from torch.nn import BCEWithLogitsLoss, SmoothL1Loss, MSELoss, BCELoss
     # loss_fn = BCEWithLogitsLoss()
-    # loss_fn = SmoothL1Loss()
+    loss_fn = SmoothL1Loss()
     # loss_fn = MSELoss()
     from src.train.customlossfunction import DiceLoss
-    loss_fn = DiceLoss()
+    # loss_fn = DiceLoss()
     # loss_fn = BCELoss(reduction='mean')
     show_output = True
-    infer_index = 2
+    infer_index = 3
     best_prec1 = 0
     for epoch in range(1, epochs):
         print("EPOCH:", epoch)

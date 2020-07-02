@@ -3,6 +3,8 @@ import torch.utils.data
 from PIL import Image
 from tqdm import trange, tqdm
 import asyncio
+import nest_asyncio
+from PIL import ImageFile
 
 
 class MonocularDataset(torch.utils.data.Dataset):
@@ -17,15 +19,20 @@ class MonocularDataset(torch.utils.data.Dataset):
         self.cache_bg = []
         self.preload = preload
         self.ds_type = ds_type
+        ImageFile.LOAD_TRUNCATED_IMAGES = True
 
         if self.preload:
-            loop = asyncio.new_event_loop()
-            preload_bg_fg = loop.create_task(self.preload_bg_fg())
-            preload_mask = loop.create_task(self.preload_mask())
-            # preload_dm = loop.create_task(self.preload_dm())
-            preload_bg = loop.create_task(self.preload_bg())
-            loop.run_until_complete(asyncio.wait([preload_bg_fg, preload_mask, preload_bg]))
-            loop.close()
+            asyncio.ensure_future(self.preload_mask())
+            asyncio.ensure_future(self.preload_dm())
+            # asyncio.ensure_future(self.preload_bg())
+            # asyncio.ensure_future(self.preload_bg_fg())
+            # loop = asyncio.new_event_loop()
+            # preload_bg_fg = loop.create_task(self.preload_bg_fg())
+            # # preload_mask = loop.create_task(self.preload_mask())
+            # # preload_dm = loop.create_task(self.preload_dm())
+            # preload_bg = loop.create_task(self.preload_bg())
+            # loop.run_until_complete(asyncio.wait([preload_bg_fg, preload_bg]))
+            # # loop.close()
 
         # (self.preload_dataset())
 
@@ -41,15 +48,20 @@ class MonocularDataset(torch.utils.data.Dataset):
         # print(len(self.cache))
 
         if self.preload:
-            bg_fg = self.cache_bg_fg[idx]  # .convert("RGB")
-            bg = self.cache_bg[idx]  # .convert("RGB")
-            mask = self.cache_mask[idx]
-            # dm = self.cache_dm[idx]
+            # bg_fg = self.cache_bg_fg[idx]  # .convert("RGB")
+            # bg = self.cache_bg[idx]  # .convert("RGB")
+            mask = self.cache_mask[idx].convert("RGB")
+            dm = self.cache_dm[idx]
         else:
-            bg_fg = Image.open(self.images[idx])  # .convert("RGB")
-            bg = Image.open(self.labels[idx]["bg_path"])  # .convert("RGB")
+            # bg_fg = Image.open(self.images[idx])  # .convert("RGB")
+            # bg = Image.open(self.labels[idx]["bg_path"])  # .convert("RGB")
             mask = Image.open(self.labels[idx]["masks"]).convert("RGB")
-            # dm = Image.open(self.labels[idx]["depth_mask"])
+            dm = Image.open(self.labels[idx]["depth_mask"])
+
+        bg_fg = Image.open(self.images[idx])  # .convert("RGB")
+        bg = Image.open(self.labels[idx]["bg_path"])  # .convert("RGB")
+        # mask = Image.open(self.labels[idx]["masks"]).convert("RGB")
+        # dm = Image.open(self.labels[idx]["depth_mask"])
 
         if self.transforms is not None:
             bg_fg = self.transforms(bg_fg)
@@ -60,18 +72,18 @@ class MonocularDataset(torch.utils.data.Dataset):
         if self.transforms is not None:
             mask = self.transforms(mask)
 
-        # if self.transforms is not None:
-        #     dm = self.transforms(dm)
+        if self.transforms is not None:
+            dm = self.transforms(dm)
 
         images.append(np.array(bg_fg, np.float32))
         images.append(np.array(bg, np.float32))
         images.append(np.array(mask, np.float32))
-        # images.append(np.array(dm, np.float32))
+        images.append(np.array(dm, np.float32))
 
         labels.append(self.images[idx])
         labels.append(self.labels[idx]["bg_path"])
         labels.append(self.labels[idx]["masks"])
-        # labels.append(self.labels[idx]["depth_mask"])
+        labels.append(self.labels[idx]["depth_mask"])
 
         return images, labels
 

@@ -472,6 +472,8 @@ class TrainModel:
                     loss.item()))
                 print('IOU : {}'.format(iou))
 
+            del data, target
+
         train_loss /= len(train_loader.dataset)
         total_iou /= len(train_loader.dataset)
         print('Batch IOU = {}'.format(total_iou))
@@ -506,9 +508,9 @@ class TrainModel:
             for batch_idx, (data, target) in enumerate(pbar):
                 data[0] = data[0].to(device)
                 data[1] = data[1].to(device)
-                if len(data) > 3:
+                if len(data) > 2:
                     data[2] = data[2].to(device)
-                if len(data) > 4:
+                if len(data) > 3:
                     data[3] = data[3].to(device)
 
                 output = model(data)
