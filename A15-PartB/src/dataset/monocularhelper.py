@@ -49,7 +49,7 @@ class MonocularHelper:
                 bg_path = bg_folder + os.path.sep + bg_name + bg_ext
 
                 target = {"labels": name_imgs[count], "masks": path_masks[count], "image_id": count, "bg_path": bg_path,
-                          "depth_mask": path_dms[count]}
+                          "depth_mask": path_dms[count], "bg_folder": bg_folder}
 
                 if master_count < train_count:
                     train_imgs.append(img_path)

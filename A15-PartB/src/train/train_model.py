@@ -472,7 +472,7 @@ class TrainModel:
                     loss.item()))
                 print('IOU : {}'.format(iou))
 
-            del data, target
+            del data, target, loss, y_pred
 
         train_loss /= len(train_loader.dataset)
         total_iou /= len(train_loader.dataset)
@@ -480,7 +480,9 @@ class TrainModel:
         self.train_losses.append(train_loss)
         self.train_acc.append(total_iou)
 
-        return y_pred, train_loss, total_iou
+        torch.cuda.empty_cache()
+        # return y_pred, \
+        return train_loss, total_iou
 
     def test_Monocular(self, model, device, test_loader, class_correct, class_total, epoch, lr_data, loss_fn,
                        show_output=False, infer_index=2):
@@ -549,6 +551,8 @@ class TrainModel:
                         , train_losses=self.train_losses, test_acc=self.test_acc,
                         test_losses=self.test_losses, lr_data=lr_data, class_correct=class_correct,
                         class_total=class_total)
+
+        torch.cuda.empty_cache()
 
         return output, total_iou
 
